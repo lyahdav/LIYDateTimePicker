@@ -1,0 +1,1235 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		133512308AC04DD9B7006087 /* MASLayoutConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F8AAB59C6544C9497932F01 /* MASLayoutConstraint.h */; };
+		1879B6D26EDD4389B5C3A814 /* libPods-MZDayPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D70983F1D1DA4FF9A2090A7B /* libPods-MZDayPicker.a */; };
+		1C64AE862E3E4EACAC33791A /* UIColor+HexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 996F22B9D131445580779A3E /* UIColor+HexString.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -DOS_OBJECT_USE_OBJC=0"; }; };
+		26ADE85EA5D64BE99BF37B57 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CFA260687AC84F9BB980060B /* NSLayoutConstraint+MASDebugAdditions.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		293910AB2DB44E1E98F32C5A /* Masonry.h in Headers */ = {isa = PBXBuildFile; fileRef = 1DBAF195BCDA40D28CE1CE2B /* Masonry.h */; };
+		2B985586B5754BE78DD9EFFB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5394FAD4CED946C999FDF485 /* QuartzCore.framework */; };
+		2D68DAC8E0844615A111264E /* MASConstraintMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 835EA2B31B204A2A932B7BE7 /* MASConstraintMaker.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		2F24AC4F944542E2AE71A87A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A325A0768FDD4A18B6A8855A /* Foundation.framework */; };
+		33914CFBCC9C44B6961CC07F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A325A0768FDD4A18B6A8855A /* Foundation.framework */; };
+		3860F8E89BF54F5C98216041 /* MASConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D193F9B0FE2419BAB3908B9 /* MASConstraint.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		4277E0AF42B2411D93D2783A /* View+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 207FC061388A4D12BF8936A3 /* View+MASAdditions.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		44365F2BAB96430E9C07683F /* MASConstraint+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E42A889B5F545F4934108F9 /* MASConstraint+Private.h */; };
+		44D330F7947F4C8A86C4D2FB /* UIColor+HexString.h in Headers */ = {isa = PBXBuildFile; fileRef = 128276DD341B4548A1556E29 /* UIColor+HexString.h */; };
+		46F28576911749ECAAECAD22 /* MASViewAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = C8C161A1D08E4874B2492CD5 /* MASViewAttribute.h */; };
+		4B6911C71CE04114BCEC27E4 /* MSCollectionViewCalendarLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = C3E19FA8FA3D4D3D89D3C8E4 /* MSCollectionViewCalendarLayout.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		5046068D48B9472B96405A3E /* MASViewConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = B51729F543724449AF9CF79E /* MASViewConstraint.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		507D6C1130C742CA92C39DA2 /* Pods-UIColor-HexString-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = DC6B051CA5844294B56A69C2 /* Pods-UIColor-HexString-dummy.m */; };
+		5987382B7B45437AA81349BA /* Pods-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B9403AF3F8FD4F928E8CD27C /* Pods-dummy.m */; };
+		623CEDC97D984459A419C0FB /* MZDay.m in Sources */ = {isa = PBXBuildFile; fileRef = C63BEBDAB74048B791BB1F8A /* MZDay.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -DOS_OBJECT_USE_OBJC=0"; }; };
+		68934CB068CC41B39C07931D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A325A0768FDD4A18B6A8855A /* Foundation.framework */; };
+		711C968C5B2E4C4A8615C84C /* NSLayoutConstraint+MASDebugAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7BC740AA58CD422E88BE4366 /* NSLayoutConstraint+MASDebugAdditions.h */; };
+		74C9CAD6924E4406A08707DB /* libPods-UIColor-HexString.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FD1E202A1994292B227A620 /* libPods-UIColor-HexString.a */; };
+		77890095E3024E74BE10937A /* Pods-Masonry-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 87A63DF5A8DC4E4DB4BAEAA5 /* Pods-Masonry-dummy.m */; };
+		7B399A15A71B43D1B4C67ED8 /* NSArray+MASAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 42D79FBCA6BA4C229500AB59 /* NSArray+MASAdditions.h */; };
+		81E8BA10C9E94650B0EB31F4 /* Pods-MSCollectionViewCalendarLayout-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8669BDB2DFB4487680B3BE57 /* Pods-MSCollectionViewCalendarLayout-dummy.m */; };
+		8409565EC9AC42D992AF9A95 /* View+MASAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 147AF3A97FAD48E0A37094C8 /* View+MASAdditions.h */; };
+		84CA1A4CA36E4BB0875A7887 /* libPods-MSCollectionViewCalendarLayout.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 082ECCB5D1C6493B859F46E3 /* libPods-MSCollectionViewCalendarLayout.a */; };
+		88C5E6770002455CBE8C1C90 /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AE94408681646208631228C /* MASCompositeConstraint.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8ADCE39F24284686A330FE75 /* MASConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = D381659B27DB4C509AEAED3B /* MASConstraint.h */; };
+		8BEC29FAAC9D47D5AB974F62 /* MASLayoutConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = CF99ACC19D374C02876F1439 /* MASLayoutConstraint.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		8E8254F815304A6F8CD62283 /* libPods-CupertinoYankee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6109E21F091431781C89DAF /* libPods-CupertinoYankee.a */; };
+		92E1AE9839D6480581B42613 /* Pods-CupertinoYankee-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 303BC71BD7EF40AFB6768162 /* Pods-CupertinoYankee-dummy.m */; };
+		93B9077F0AD742F1927DDF37 /* MASUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = A6C4701ADEB142B3A59221FA /* MASUtilities.h */; };
+		9BC4792403234AA486CA7CBD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A325A0768FDD4A18B6A8855A /* Foundation.framework */; };
+		A0F77EE1299E45A7890B2C8A /* MZDayPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 439DF94C95BD436B8C723424 /* MZDayPickerCell.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -DOS_OBJECT_USE_OBJC=0"; }; };
+		A7BAB891E574466D824572AB /* MZDay.h in Headers */ = {isa = PBXBuildFile; fileRef = 41E9D5D581D54DCCA5103228 /* MZDay.h */; };
+		A87A91230CF0470F9B17C335 /* MZDayPickerCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 67D0D2DA301349AB83366468 /* MZDayPickerCell.h */; };
+		AA4C2C6DC6794ABBA57A5FBD /* NSArray+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 64ACD1728A1C428F8ADE7C2B /* NSArray+MASAdditions.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		AECB2C06411E40459CF56C01 /* MZDayPicker.h in Headers */ = {isa = PBXBuildFile; fileRef = 4389D14E17B84A26BCA43E3E /* MZDayPicker.h */; };
+		B5408808F90842F797B8C66E /* MASConstraintMaker.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E2BE6B6D9794C8290BE8C66 /* MASConstraintMaker.h */; };
+		B967F4F43BAB43F8B518CB7D /* MSCollectionViewCalendarLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 86810DF3FDA247698A2192C1 /* MSCollectionViewCalendarLayout.h */; };
+		C18BE803E15C413788D92F22 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04336DFB2B5A4180A6600FE1 /* UIKit.framework */; };
+		C4DEA5DD81374DC0A8994837 /* NSDate+CupertinoYankee.h in Headers */ = {isa = PBXBuildFile; fileRef = 91E17E8146A742A892712077 /* NSDate+CupertinoYankee.h */; };
+		C8EEA18C891246FAACC589BF /* MZDayPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D48CEE588674D10962E8A7C /* MZDayPicker.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -DOS_OBJECT_USE_OBJC=0"; }; };
+		C97E45FBA9044B9CA07EDCD6 /* MASViewConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 053D1CEAE4CA4E5E8890E5C0 /* MASViewConstraint.h */; };
+		CD0715D39D604796A1C3D04E /* Pods-MZDayPicker-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D3BF75EE24A24CA6B8AEF433 /* Pods-MZDayPicker-dummy.m */; };
+		CF8D9C39A5B1469F9429DCF6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A325A0768FDD4A18B6A8855A /* Foundation.framework */; };
+		CFC74254A4234543AD173C79 /* MASCompositeConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 678E71E2ACD348AD8CB8D4A5 /* MASCompositeConstraint.h */; };
+		DADA1FAC50244236A2B3EF9F /* View+MASShorthandAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F04DC1513546E3AB9BB28A /* View+MASShorthandAdditions.h */; };
+		E4B8196D4C3B4F4FAE898B03 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A325A0768FDD4A18B6A8855A /* Foundation.framework */; };
+		E5EC60756A154543818F8D90 /* MASViewAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = CCE566E60012474C9E1B0B93 /* MASViewAttribute.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		EE3C31590B164440BC5DA2C0 /* NSDate+CupertinoYankee.m in Sources */ = {isa = PBXBuildFile; fileRef = C8033C385F8248D286A10391 /* NSDate+CupertinoYankee.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -DOS_OBJECT_USE_OBJC=0"; }; };
+		F4305A9848D648AB89480004 /* libPods-Masonry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A1C01DF5034AA3B67BD411 /* libPods-Masonry.a */; };
+		FE3F85FBD1EB417D9E9AE18F /* NSArray+MASShorthandAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 255397A35902430383F795FE /* NSArray+MASShorthandAdditions.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		22A3A763F4DF4AFB87936FE3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1697BE6C99C042D2B3EACD64 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED875F7920444B3A88E80884;
+			remoteInfo = "Pods-CupertinoYankee";
+		};
+		B10044C1DE0F41CDA0384D40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1697BE6C99C042D2B3EACD64 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 92AB36AC167649688A1D5AB0;
+			remoteInfo = "Pods-UIColor-HexString";
+		};
+		B24A98703791407DAA68161B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1697BE6C99C042D2B3EACD64 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C5FDB4A9AF4441D280382492;
+			remoteInfo = "Pods-MZDayPicker";
+		};
+		BDCA35460A82409294E72027 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1697BE6C99C042D2B3EACD64 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED875F7920444B3A88E80884;
+			remoteInfo = "Pods-CupertinoYankee";
+		};
+		D0375AB41EBD4EA081949CC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1697BE6C99C042D2B3EACD64 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2758787F95054469AC1A466A;
+			remoteInfo = "Pods-MSCollectionViewCalendarLayout";
+		};
+		D6E349D18B4148E48EA492CA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1697BE6C99C042D2B3EACD64 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FCC7AEEBC372483580725DC1;
+			remoteInfo = "Pods-Masonry";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		04336DFB2B5A4180A6600FE1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		053D1CEAE4CA4E5E8890E5C0 /* MASViewConstraint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MASViewConstraint.h; path = Masonry/MASViewConstraint.h; sourceTree = "<group>"; };
+		082ECCB5D1C6493B859F46E3 /* libPods-MSCollectionViewCalendarLayout.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MSCollectionViewCalendarLayout.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		09ADEAF25B7F422B84578262 /* Pods-UIColor-HexString-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-UIColor-HexString-Private.xcconfig"; sourceTree = "<group>"; };
+		0C6BD5B912E9428196E9FF08 /* Pods-MSCollectionViewCalendarLayout-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MSCollectionViewCalendarLayout-Private.xcconfig"; sourceTree = "<group>"; };
+		0FD1E202A1994292B227A620 /* libPods-UIColor-HexString.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-UIColor-HexString.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		128276DD341B4548A1556E29 /* UIColor+HexString.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIColor+HexString.h"; sourceTree = "<group>"; };
+		147AF3A97FAD48E0A37094C8 /* View+MASAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "View+MASAdditions.h"; path = "Masonry/View+MASAdditions.h"; sourceTree = "<group>"; };
+		1DBAF195BCDA40D28CE1CE2B /* Masonry.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Masonry.h; path = Masonry/Masonry.h; sourceTree = "<group>"; };
+		1FA18AD613FA48D1B0419348 /* Pods-CupertinoYankee-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-CupertinoYankee-prefix.pch"; sourceTree = "<group>"; };
+		207FC061388A4D12BF8936A3 /* View+MASAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "View+MASAdditions.m"; path = "Masonry/View+MASAdditions.m"; sourceTree = "<group>"; };
+		255397A35902430383F795FE /* NSArray+MASShorthandAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSArray+MASShorthandAdditions.h"; path = "Masonry/NSArray+MASShorthandAdditions.h"; sourceTree = "<group>"; };
+		2D48CEE588674D10962E8A7C /* MZDayPicker.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MZDayPicker.m; path = MZDayPicker/MZDayPicker.m; sourceTree = "<group>"; };
+		303BC71BD7EF40AFB6768162 /* Pods-CupertinoYankee-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-CupertinoYankee-dummy.m"; sourceTree = "<group>"; };
+		3053E41946BC46069B23A5B9 /* Pods-UIColor-HexString-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-UIColor-HexString-prefix.pch"; sourceTree = "<group>"; };
+		397E4908C8204D2C9011F779 /* Pods-CupertinoYankee-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CupertinoYankee-Private.xcconfig"; sourceTree = "<group>"; };
+		41E9D5D581D54DCCA5103228 /* MZDay.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MZDay.h; path = MZDayPicker/MZDay.h; sourceTree = "<group>"; };
+		42D79FBCA6BA4C229500AB59 /* NSArray+MASAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSArray+MASAdditions.h"; path = "Masonry/NSArray+MASAdditions.h"; sourceTree = "<group>"; };
+		4389D14E17B84A26BCA43E3E /* MZDayPicker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MZDayPicker.h; path = MZDayPicker/MZDayPicker.h; sourceTree = "<group>"; };
+		439DF94C95BD436B8C723424 /* MZDayPickerCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MZDayPickerCell.m; path = MZDayPicker/MZDayPickerCell.m; sourceTree = "<group>"; };
+		5394FAD4CED946C999FDF485 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
+		57580C1353814EE19D68166A /* Pods-Masonry.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Masonry.xcconfig"; sourceTree = "<group>"; };
+		5AE94408681646208631228C /* MASCompositeConstraint.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MASCompositeConstraint.m; path = Masonry/MASCompositeConstraint.m; sourceTree = "<group>"; };
+		5B2AB0FB7326437F87B3235B /* Pods-CupertinoYankee.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CupertinoYankee.xcconfig"; sourceTree = "<group>"; };
+		5E42A889B5F545F4934108F9 /* MASConstraint+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "MASConstraint+Private.h"; path = "Masonry/MASConstraint+Private.h"; sourceTree = "<group>"; };
+		64ACD1728A1C428F8ADE7C2B /* NSArray+MASAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSArray+MASAdditions.m"; path = "Masonry/NSArray+MASAdditions.m"; sourceTree = "<group>"; };
+		650447E970FC461CBFE87DA5 /* Pods-Masonry-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Masonry-prefix.pch"; sourceTree = "<group>"; };
+		66D507A83239463DA8C4C37C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		678E71E2ACD348AD8CB8D4A5 /* MASCompositeConstraint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MASCompositeConstraint.h; path = Masonry/MASCompositeConstraint.h; sourceTree = "<group>"; };
+		67D0D2DA301349AB83366468 /* MZDayPickerCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MZDayPickerCell.h; path = MZDayPicker/MZDayPickerCell.h; sourceTree = "<group>"; };
+		69F04DC1513546E3AB9BB28A /* View+MASShorthandAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "View+MASShorthandAdditions.h"; path = "Masonry/View+MASShorthandAdditions.h"; sourceTree = "<group>"; };
+		6A3898D313DE43EE8AE8571F /* Podfile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		6E2BE6B6D9794C8290BE8C66 /* MASConstraintMaker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MASConstraintMaker.h; path = Masonry/MASConstraintMaker.h; sourceTree = "<group>"; };
+		6F8AAB59C6544C9497932F01 /* MASLayoutConstraint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MASLayoutConstraint.h; path = Masonry/MASLayoutConstraint.h; sourceTree = "<group>"; };
+		736B70EBBBF54B5D8BDEC4F3 /* Pods-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-resources.sh"; sourceTree = "<group>"; };
+		7BC740AA58CD422E88BE4366 /* NSLayoutConstraint+MASDebugAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSLayoutConstraint+MASDebugAdditions.h"; path = "Masonry/NSLayoutConstraint+MASDebugAdditions.h"; sourceTree = "<group>"; };
+		7D193F9B0FE2419BAB3908B9 /* MASConstraint.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MASConstraint.m; path = Masonry/MASConstraint.m; sourceTree = "<group>"; };
+		81106D524B444489B336CDCB /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.xcconfig; sourceTree = "<group>"; };
+		835EA2B31B204A2A932B7BE7 /* MASConstraintMaker.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MASConstraintMaker.m; path = Masonry/MASConstraintMaker.m; sourceTree = "<group>"; };
+		84D50D84F0AB4EC293D49273 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-acknowledgements.plist"; sourceTree = "<group>"; };
+		8669BDB2DFB4487680B3BE57 /* Pods-MSCollectionViewCalendarLayout-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MSCollectionViewCalendarLayout-dummy.m"; sourceTree = "<group>"; };
+		86810DF3FDA247698A2192C1 /* MSCollectionViewCalendarLayout.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MSCollectionViewCalendarLayout.h; path = MSCollectionViewCalendarLayout/MSCollectionViewCalendarLayout.h; sourceTree = "<group>"; };
+		87A63DF5A8DC4E4DB4BAEAA5 /* Pods-Masonry-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Masonry-dummy.m"; sourceTree = "<group>"; };
+		8BF0C48849824C32893AA0C2 /* Pods-MZDayPicker-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MZDayPicker-Private.xcconfig"; sourceTree = "<group>"; };
+		91E17E8146A742A892712077 /* NSDate+CupertinoYankee.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSDate+CupertinoYankee.h"; path = "CupertinoYankee/NSDate+CupertinoYankee.h"; sourceTree = "<group>"; };
+		94E9152EE150450F97BF48DB /* Pods-Masonry-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Masonry-Private.xcconfig"; sourceTree = "<group>"; };
+		952E798EC1A94B338B82BD23 /* Pods-MSCollectionViewCalendarLayout.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MSCollectionViewCalendarLayout.xcconfig"; sourceTree = "<group>"; };
+		996F22B9D131445580779A3E /* UIColor+HexString.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HexString.m"; sourceTree = "<group>"; };
+		9B876682D5EB485D8EFA3416 /* Pods-UIColor-HexString.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-UIColor-HexString.xcconfig"; sourceTree = "<group>"; };
+		A325A0768FDD4A18B6A8855A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		A35AADF46AF94B7D818B7B01 /* Pods-MZDayPicker.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MZDayPicker.xcconfig"; sourceTree = "<group>"; };
+		A6C4701ADEB142B3A59221FA /* MASUtilities.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MASUtilities.h; path = Masonry/MASUtilities.h; sourceTree = "<group>"; };
+		B51218E51BE6431093F0551A /* Pods-MSCollectionViewCalendarLayout-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MSCollectionViewCalendarLayout-prefix.pch"; sourceTree = "<group>"; };
+		B51729F543724449AF9CF79E /* MASViewConstraint.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MASViewConstraint.m; path = Masonry/MASViewConstraint.m; sourceTree = "<group>"; };
+		B59F97A6E39042EBA479086A /* Pods-environment.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-environment.h"; sourceTree = "<group>"; };
+		B9403AF3F8FD4F928E8CD27C /* Pods-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-dummy.m"; sourceTree = "<group>"; };
+		C3E19FA8FA3D4D3D89D3C8E4 /* MSCollectionViewCalendarLayout.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MSCollectionViewCalendarLayout.m; path = MSCollectionViewCalendarLayout/MSCollectionViewCalendarLayout.m; sourceTree = "<group>"; };
+		C63BEBDAB74048B791BB1F8A /* MZDay.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MZDay.m; path = MZDayPicker/MZDay.m; sourceTree = "<group>"; };
+		C8033C385F8248D286A10391 /* NSDate+CupertinoYankee.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSDate+CupertinoYankee.m"; path = "CupertinoYankee/NSDate+CupertinoYankee.m"; sourceTree = "<group>"; };
+		C8C161A1D08E4874B2492CD5 /* MASViewAttribute.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MASViewAttribute.h; path = Masonry/MASViewAttribute.h; sourceTree = "<group>"; };
+		CCE566E60012474C9E1B0B93 /* MASViewAttribute.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MASViewAttribute.m; path = Masonry/MASViewAttribute.m; sourceTree = "<group>"; };
+		CF99ACC19D374C02876F1439 /* MASLayoutConstraint.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MASLayoutConstraint.m; path = Masonry/MASLayoutConstraint.m; sourceTree = "<group>"; };
+		CFA260687AC84F9BB980060B /* NSLayoutConstraint+MASDebugAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSLayoutConstraint+MASDebugAdditions.m"; path = "Masonry/NSLayoutConstraint+MASDebugAdditions.m"; sourceTree = "<group>"; };
+		D1A1C01DF5034AA3B67BD411 /* libPods-Masonry.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Masonry.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D381659B27DB4C509AEAED3B /* MASConstraint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MASConstraint.h; path = Masonry/MASConstraint.h; sourceTree = "<group>"; };
+		D3BF75EE24A24CA6B8AEF433 /* Pods-MZDayPicker-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MZDayPicker-dummy.m"; sourceTree = "<group>"; };
+		D3DD18E0C54A4B6484344313 /* Pods-MZDayPicker-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MZDayPicker-prefix.pch"; sourceTree = "<group>"; };
+		D660CACA06754215A351CB7A /* Pods-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-acknowledgements.markdown"; sourceTree = "<group>"; };
+		D70983F1D1DA4FF9A2090A7B /* libPods-MZDayPicker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MZDayPicker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC6B051CA5844294B56A69C2 /* Pods-UIColor-HexString-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-UIColor-HexString-dummy.m"; sourceTree = "<group>"; };
+		E6109E21F091431781C89DAF /* libPods-CupertinoYankee.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CupertinoYankee.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		20D0B3EC3B5B45C38E3705D6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68934CB068CC41B39C07931D /* Foundation.framework in Frameworks */,
+				2B985586B5754BE78DD9EFFB /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		432AAC55BEDE4F9296D6B615 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF8D9C39A5B1469F9429DCF6 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8886E889D4DF484E96A6987C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BC4792403234AA486CA7CBD /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DE4C89338C845CEADA6F3DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33914CFBCC9C44B6961CC07F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9346ED717DA64E988AD06D08 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4B8196D4C3B4F4FAE898B03 /* Foundation.framework in Frameworks */,
+				8E8254F815304A6F8CD62283 /* libPods-CupertinoYankee.a in Frameworks */,
+				84CA1A4CA36E4BB0875A7887 /* libPods-MSCollectionViewCalendarLayout.a in Frameworks */,
+				1879B6D26EDD4389B5C3A814 /* libPods-MZDayPicker.a in Frameworks */,
+				F4305A9848D648AB89480004 /* libPods-Masonry.a in Frameworks */,
+				74C9CAD6924E4406A08707DB /* libPods-UIColor-HexString.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D61038F866FB40E98CB4DD14 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2F24AC4F944542E2AE71A87A /* Foundation.framework in Frameworks */,
+				C18BE803E15C413788D92F22 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		19E17EAB94A84A8C93D58224 /* CupertinoYankee */ = {
+			isa = PBXGroup;
+			children = (
+				91E17E8146A742A892712077 /* NSDate+CupertinoYankee.h */,
+				C8033C385F8248D286A10391 /* NSDate+CupertinoYankee.m */,
+				3E5BE246D18F49FEA5FAC829 /* Support Files */,
+			);
+			name = CupertinoYankee;
+			path = CupertinoYankee;
+			sourceTree = "<group>";
+		};
+		3084FF81B5E54EE1B830990C = {
+			isa = PBXGroup;
+			children = (
+				6A3898D313DE43EE8AE8571F /* Podfile */,
+				6B639A3DB42B48019CD5461B /* Frameworks */,
+				755C7FB030C343DDB00E36FD /* Pods */,
+				D06C4BA2598C4C1090602828 /* Products */,
+				C826CADF74D342989F1B45C6 /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		3E5BE246D18F49FEA5FAC829 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				5B2AB0FB7326437F87B3235B /* Pods-CupertinoYankee.xcconfig */,
+				397E4908C8204D2C9011F779 /* Pods-CupertinoYankee-Private.xcconfig */,
+				303BC71BD7EF40AFB6768162 /* Pods-CupertinoYankee-dummy.m */,
+				1FA18AD613FA48D1B0419348 /* Pods-CupertinoYankee-prefix.pch */,
+			);
+			name = "Support Files";
+			sourceTree = SOURCE_ROOT;
+		};
+		407C5B0FC1E44C33AC52262E /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				A325A0768FDD4A18B6A8855A /* Foundation.framework */,
+				5394FAD4CED946C999FDF485 /* QuartzCore.framework */,
+				04336DFB2B5A4180A6600FE1 /* UIKit.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		64612CD2A4A242E7B798AE70 /* MZDayPicker */ = {
+			isa = PBXGroup;
+			children = (
+				41E9D5D581D54DCCA5103228 /* MZDay.h */,
+				C63BEBDAB74048B791BB1F8A /* MZDay.m */,
+				4389D14E17B84A26BCA43E3E /* MZDayPicker.h */,
+				2D48CEE588674D10962E8A7C /* MZDayPicker.m */,
+				67D0D2DA301349AB83366468 /* MZDayPickerCell.h */,
+				439DF94C95BD436B8C723424 /* MZDayPickerCell.m */,
+				70511282DCC146709C6E4D83 /* Support Files */,
+			);
+			name = MZDayPicker;
+			path = MZDayPicker;
+			sourceTree = "<group>";
+		};
+		6B639A3DB42B48019CD5461B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				407C5B0FC1E44C33AC52262E /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		70511282DCC146709C6E4D83 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				A35AADF46AF94B7D818B7B01 /* Pods-MZDayPicker.xcconfig */,
+				8BF0C48849824C32893AA0C2 /* Pods-MZDayPicker-Private.xcconfig */,
+				D3BF75EE24A24CA6B8AEF433 /* Pods-MZDayPicker-dummy.m */,
+				D3DD18E0C54A4B6484344313 /* Pods-MZDayPicker-prefix.pch */,
+			);
+			name = "Support Files";
+			sourceTree = SOURCE_ROOT;
+		};
+		755C7FB030C343DDB00E36FD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				19E17EAB94A84A8C93D58224 /* CupertinoYankee */,
+				83EE2E54CD1146C1BAB47A46 /* MSCollectionViewCalendarLayout */,
+				64612CD2A4A242E7B798AE70 /* MZDayPicker */,
+				9B2FBE0BAFAB4000BD899B9C /* Masonry */,
+				759A8C053CED497D80040581 /* UIColor-HexString */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		759A8C053CED497D80040581 /* UIColor-HexString */ = {
+			isa = PBXGroup;
+			children = (
+				128276DD341B4548A1556E29 /* UIColor+HexString.h */,
+				996F22B9D131445580779A3E /* UIColor+HexString.m */,
+				B3B9D2B0910E42F5A866B2F2 /* Support Files */,
+			);
+			name = "UIColor-HexString";
+			path = "UIColor-HexString";
+			sourceTree = "<group>";
+		};
+		83EE2E54CD1146C1BAB47A46 /* MSCollectionViewCalendarLayout */ = {
+			isa = PBXGroup;
+			children = (
+				86810DF3FDA247698A2192C1 /* MSCollectionViewCalendarLayout.h */,
+				C3E19FA8FA3D4D3D89D3C8E4 /* MSCollectionViewCalendarLayout.m */,
+				F0BDE08A1D7749028E4EE9A5 /* Support Files */,
+			);
+			name = MSCollectionViewCalendarLayout;
+			path = MSCollectionViewCalendarLayout;
+			sourceTree = "<group>";
+		};
+		8A3E4400B5F945598E6FA577 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				57580C1353814EE19D68166A /* Pods-Masonry.xcconfig */,
+				94E9152EE150450F97BF48DB /* Pods-Masonry-Private.xcconfig */,
+				87A63DF5A8DC4E4DB4BAEAA5 /* Pods-Masonry-dummy.m */,
+				650447E970FC461CBFE87DA5 /* Pods-Masonry-prefix.pch */,
+			);
+			name = "Support Files";
+			sourceTree = SOURCE_ROOT;
+		};
+		9B2FBE0BAFAB4000BD899B9C /* Masonry */ = {
+			isa = PBXGroup;
+			children = (
+				678E71E2ACD348AD8CB8D4A5 /* MASCompositeConstraint.h */,
+				5AE94408681646208631228C /* MASCompositeConstraint.m */,
+				D381659B27DB4C509AEAED3B /* MASConstraint.h */,
+				7D193F9B0FE2419BAB3908B9 /* MASConstraint.m */,
+				5E42A889B5F545F4934108F9 /* MASConstraint+Private.h */,
+				6E2BE6B6D9794C8290BE8C66 /* MASConstraintMaker.h */,
+				835EA2B31B204A2A932B7BE7 /* MASConstraintMaker.m */,
+				6F8AAB59C6544C9497932F01 /* MASLayoutConstraint.h */,
+				CF99ACC19D374C02876F1439 /* MASLayoutConstraint.m */,
+				A6C4701ADEB142B3A59221FA /* MASUtilities.h */,
+				C8C161A1D08E4874B2492CD5 /* MASViewAttribute.h */,
+				CCE566E60012474C9E1B0B93 /* MASViewAttribute.m */,
+				053D1CEAE4CA4E5E8890E5C0 /* MASViewConstraint.h */,
+				B51729F543724449AF9CF79E /* MASViewConstraint.m */,
+				1DBAF195BCDA40D28CE1CE2B /* Masonry.h */,
+				42D79FBCA6BA4C229500AB59 /* NSArray+MASAdditions.h */,
+				64ACD1728A1C428F8ADE7C2B /* NSArray+MASAdditions.m */,
+				255397A35902430383F795FE /* NSArray+MASShorthandAdditions.h */,
+				7BC740AA58CD422E88BE4366 /* NSLayoutConstraint+MASDebugAdditions.h */,
+				CFA260687AC84F9BB980060B /* NSLayoutConstraint+MASDebugAdditions.m */,
+				147AF3A97FAD48E0A37094C8 /* View+MASAdditions.h */,
+				207FC061388A4D12BF8936A3 /* View+MASAdditions.m */,
+				69F04DC1513546E3AB9BB28A /* View+MASShorthandAdditions.h */,
+				8A3E4400B5F945598E6FA577 /* Support Files */,
+			);
+			name = Masonry;
+			path = Masonry;
+			sourceTree = "<group>";
+		};
+		A9E355A657C540329ED951DE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				81106D524B444489B336CDCB /* Pods.xcconfig */,
+				D660CACA06754215A351CB7A /* Pods-acknowledgements.markdown */,
+				84D50D84F0AB4EC293D49273 /* Pods-acknowledgements.plist */,
+				B9403AF3F8FD4F928E8CD27C /* Pods-dummy.m */,
+				B59F97A6E39042EBA479086A /* Pods-environment.h */,
+				736B70EBBBF54B5D8BDEC4F3 /* Pods-resources.sh */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		B3B9D2B0910E42F5A866B2F2 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				9B876682D5EB485D8EFA3416 /* Pods-UIColor-HexString.xcconfig */,
+				09ADEAF25B7F422B84578262 /* Pods-UIColor-HexString-Private.xcconfig */,
+				DC6B051CA5844294B56A69C2 /* Pods-UIColor-HexString-dummy.m */,
+				3053E41946BC46069B23A5B9 /* Pods-UIColor-HexString-prefix.pch */,
+			);
+			name = "Support Files";
+			sourceTree = SOURCE_ROOT;
+		};
+		C826CADF74D342989F1B45C6 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				A9E355A657C540329ED951DE /* Pods */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		D06C4BA2598C4C1090602828 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				66D507A83239463DA8C4C37C /* libPods.a */,
+				E6109E21F091431781C89DAF /* libPods-CupertinoYankee.a */,
+				082ECCB5D1C6493B859F46E3 /* libPods-MSCollectionViewCalendarLayout.a */,
+				D70983F1D1DA4FF9A2090A7B /* libPods-MZDayPicker.a */,
+				D1A1C01DF5034AA3B67BD411 /* libPods-Masonry.a */,
+				0FD1E202A1994292B227A620 /* libPods-UIColor-HexString.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F0BDE08A1D7749028E4EE9A5 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				952E798EC1A94B338B82BD23 /* Pods-MSCollectionViewCalendarLayout.xcconfig */,
+				0C6BD5B912E9428196E9FF08 /* Pods-MSCollectionViewCalendarLayout-Private.xcconfig */,
+				8669BDB2DFB4487680B3BE57 /* Pods-MSCollectionViewCalendarLayout-dummy.m */,
+				B51218E51BE6431093F0551A /* Pods-MSCollectionViewCalendarLayout-prefix.pch */,
+			);
+			name = "Support Files";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		0F2C2F74FD984C999DE45F8F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4DEA5DD81374DC0A8994837 /* NSDate+CupertinoYankee.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2FFA81C760604CD18C11C62C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B967F4F43BAB43F8B518CB7D /* MSCollectionViewCalendarLayout.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6A06C4C28A314CF4A4B300D8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFC74254A4234543AD173C79 /* MASCompositeConstraint.h in Headers */,
+				44365F2BAB96430E9C07683F /* MASConstraint+Private.h in Headers */,
+				8ADCE39F24284686A330FE75 /* MASConstraint.h in Headers */,
+				B5408808F90842F797B8C66E /* MASConstraintMaker.h in Headers */,
+				133512308AC04DD9B7006087 /* MASLayoutConstraint.h in Headers */,
+				93B9077F0AD742F1927DDF37 /* MASUtilities.h in Headers */,
+				46F28576911749ECAAECAD22 /* MASViewAttribute.h in Headers */,
+				C97E45FBA9044B9CA07EDCD6 /* MASViewConstraint.h in Headers */,
+				293910AB2DB44E1E98F32C5A /* Masonry.h in Headers */,
+				7B399A15A71B43D1B4C67ED8 /* NSArray+MASAdditions.h in Headers */,
+				FE3F85FBD1EB417D9E9AE18F /* NSArray+MASShorthandAdditions.h in Headers */,
+				711C968C5B2E4C4A8615C84C /* NSLayoutConstraint+MASDebugAdditions.h in Headers */,
+				8409565EC9AC42D992AF9A95 /* View+MASAdditions.h in Headers */,
+				DADA1FAC50244236A2B3EF9F /* View+MASShorthandAdditions.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		88E0E87AAAEF4F1D8423EFD4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				44D330F7947F4C8A86C4D2FB /* UIColor+HexString.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DDB0156C8C7146EFB9269D85 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A7BAB891E574466D824572AB /* MZDay.h in Headers */,
+				AECB2C06411E40459CF56C01 /* MZDayPicker.h in Headers */,
+				A87A91230CF0470F9B17C335 /* MZDayPickerCell.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		2758787F95054469AC1A466A /* Pods-MSCollectionViewCalendarLayout */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E21597BEB4644218944747E0 /* Build configuration list for PBXNativeTarget "Pods-MSCollectionViewCalendarLayout" */;
+			buildPhases = (
+				A7B5B8846EF546F1B2B6DC5B /* Sources */,
+				432AAC55BEDE4F9296D6B615 /* Frameworks */,
+				2FFA81C760604CD18C11C62C /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2CCA1A4FB6B7429CA997C1AC /* PBXTargetDependency */,
+			);
+			name = "Pods-MSCollectionViewCalendarLayout";
+			productName = "Pods-MSCollectionViewCalendarLayout";
+			productReference = 082ECCB5D1C6493B859F46E3 /* libPods-MSCollectionViewCalendarLayout.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		92AB36AC167649688A1D5AB0 /* Pods-UIColor-HexString */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D8BE315999B4549943E033C /* Build configuration list for PBXNativeTarget "Pods-UIColor-HexString" */;
+			buildPhases = (
+				9FFFADA4706D45A79A842757 /* Sources */,
+				8DE4C89338C845CEADA6F3DF /* Frameworks */,
+				88E0E87AAAEF4F1D8423EFD4 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-UIColor-HexString";
+			productName = "Pods-UIColor-HexString";
+			productReference = 0FD1E202A1994292B227A620 /* libPods-UIColor-HexString.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		9671C3948A244E79A65FDFA0 /* Pods */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D7C833D4A284EFB8963EDA5 /* Build configuration list for PBXNativeTarget "Pods" */;
+			buildPhases = (
+				FED33DB0F608499A8F8D56C8 /* Sources */,
+				9346ED717DA64E988AD06D08 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8F10505D283C4ECE91764276 /* PBXTargetDependency */,
+				E7A85193726C40B99E3A0D9B /* PBXTargetDependency */,
+				385EB0D1F12140C5B34021E1 /* PBXTargetDependency */,
+				B2213C37F8B74E73A3203229 /* PBXTargetDependency */,
+				F51D581E83C74510AA63350F /* PBXTargetDependency */,
+			);
+			name = Pods;
+			productName = Pods;
+			productReference = 66D507A83239463DA8C4C37C /* libPods.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		C5FDB4A9AF4441D280382492 /* Pods-MZDayPicker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 02CD00A2695B4B7E8C94C74E /* Build configuration list for PBXNativeTarget "Pods-MZDayPicker" */;
+			buildPhases = (
+				F59540F8E524409BBDF05D7B /* Sources */,
+				20D0B3EC3B5B45C38E3705D6 /* Frameworks */,
+				DDB0156C8C7146EFB9269D85 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-MZDayPicker";
+			productName = "Pods-MZDayPicker";
+			productReference = D70983F1D1DA4FF9A2090A7B /* libPods-MZDayPicker.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		ED875F7920444B3A88E80884 /* Pods-CupertinoYankee */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8FC6EECB0E234307852920A8 /* Build configuration list for PBXNativeTarget "Pods-CupertinoYankee" */;
+			buildPhases = (
+				A9865DC9362E4073BBEEF03A /* Sources */,
+				8886E889D4DF484E96A6987C /* Frameworks */,
+				0F2C2F74FD984C999DE45F8F /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-CupertinoYankee";
+			productName = "Pods-CupertinoYankee";
+			productReference = E6109E21F091431781C89DAF /* libPods-CupertinoYankee.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		FCC7AEEBC372483580725DC1 /* Pods-Masonry */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDED312F8B3B4091B12A227E /* Build configuration list for PBXNativeTarget "Pods-Masonry" */;
+			buildPhases = (
+				572EB4D0A8CD405C8BBB1B7F /* Sources */,
+				D61038F866FB40E98CB4DD14 /* Frameworks */,
+				6A06C4C28A314CF4A4B300D8 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-Masonry";
+			productName = "Pods-Masonry";
+			productReference = D1A1C01DF5034AA3B67BD411 /* libPods-Masonry.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1697BE6C99C042D2B3EACD64 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+			};
+			buildConfigurationList = 4670069944274935A6994A89 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 3084FF81B5E54EE1B830990C;
+			productRefGroup = D06C4BA2598C4C1090602828 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+			);
+			projectRoot = "";
+			targets = (
+				9671C3948A244E79A65FDFA0 /* Pods */,
+				ED875F7920444B3A88E80884 /* Pods-CupertinoYankee */,
+				2758787F95054469AC1A466A /* Pods-MSCollectionViewCalendarLayout */,
+				C5FDB4A9AF4441D280382492 /* Pods-MZDayPicker */,
+				FCC7AEEBC372483580725DC1 /* Pods-Masonry */,
+				92AB36AC167649688A1D5AB0 /* Pods-UIColor-HexString */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		572EB4D0A8CD405C8BBB1B7F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88C5E6770002455CBE8C1C90 /* MASCompositeConstraint.m in Sources */,
+				3860F8E89BF54F5C98216041 /* MASConstraint.m in Sources */,
+				2D68DAC8E0844615A111264E /* MASConstraintMaker.m in Sources */,
+				8BEC29FAAC9D47D5AB974F62 /* MASLayoutConstraint.m in Sources */,
+				E5EC60756A154543818F8D90 /* MASViewAttribute.m in Sources */,
+				5046068D48B9472B96405A3E /* MASViewConstraint.m in Sources */,
+				AA4C2C6DC6794ABBA57A5FBD /* NSArray+MASAdditions.m in Sources */,
+				26ADE85EA5D64BE99BF37B57 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
+				77890095E3024E74BE10937A /* Pods-Masonry-dummy.m in Sources */,
+				4277E0AF42B2411D93D2783A /* View+MASAdditions.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9FFFADA4706D45A79A842757 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				507D6C1130C742CA92C39DA2 /* Pods-UIColor-HexString-dummy.m in Sources */,
+				1C64AE862E3E4EACAC33791A /* UIColor+HexString.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A7B5B8846EF546F1B2B6DC5B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B6911C71CE04114BCEC27E4 /* MSCollectionViewCalendarLayout.m in Sources */,
+				81E8BA10C9E94650B0EB31F4 /* Pods-MSCollectionViewCalendarLayout-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9865DC9362E4073BBEEF03A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE3C31590B164440BC5DA2C0 /* NSDate+CupertinoYankee.m in Sources */,
+				92E1AE9839D6480581B42613 /* Pods-CupertinoYankee-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F59540F8E524409BBDF05D7B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				623CEDC97D984459A419C0FB /* MZDay.m in Sources */,
+				C8EEA18C891246FAACC589BF /* MZDayPicker.m in Sources */,
+				A0F77EE1299E45A7890B2C8A /* MZDayPickerCell.m in Sources */,
+				CD0715D39D604796A1C3D04E /* Pods-MZDayPicker-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FED33DB0F608499A8F8D56C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5987382B7B45437AA81349BA /* Pods-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2CCA1A4FB6B7429CA997C1AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ED875F7920444B3A88E80884 /* Pods-CupertinoYankee */;
+			targetProxy = BDCA35460A82409294E72027 /* PBXContainerItemProxy */;
+		};
+		385EB0D1F12140C5B34021E1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C5FDB4A9AF4441D280382492 /* Pods-MZDayPicker */;
+			targetProxy = B24A98703791407DAA68161B /* PBXContainerItemProxy */;
+		};
+		8F10505D283C4ECE91764276 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ED875F7920444B3A88E80884 /* Pods-CupertinoYankee */;
+			targetProxy = 22A3A763F4DF4AFB87936FE3 /* PBXContainerItemProxy */;
+		};
+		B2213C37F8B74E73A3203229 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FCC7AEEBC372483580725DC1 /* Pods-Masonry */;
+			targetProxy = D6E349D18B4148E48EA492CA /* PBXContainerItemProxy */;
+		};
+		E7A85193726C40B99E3A0D9B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2758787F95054469AC1A466A /* Pods-MSCollectionViewCalendarLayout */;
+			targetProxy = D0375AB41EBD4EA081949CC4 /* PBXContainerItemProxy */;
+		};
+		F51D581E83C74510AA63350F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 92AB36AC167649688A1D5AB0 /* Pods-UIColor-HexString */;
+			targetProxy = B10044C1DE0F41CDA0384D40 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0E9B369C8B914AD9B200315D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 94E9152EE150450F97BF48DB /* Pods-Masonry-Private.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pods-Masonry-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		0FF1A29035BA44E6A47EA528 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 81106D524B444489B336CDCB /* Pods.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		11A84F4397C74AD69BCE7787 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C6BD5B912E9428196E9FF08 /* Pods-MSCollectionViewCalendarLayout-Private.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pods-MSCollectionViewCalendarLayout-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		140701526F204596970F48F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				STRIP_INSTALLED_PRODUCT = NO;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1BE8C0DBE39D434E8FFAF6FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 81106D524B444489B336CDCB /* Pods.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_CFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1DA6FF0CDDAE40D69A86C7D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 397E4908C8204D2C9011F779 /* Pods-CupertinoYankee-Private.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pods-CupertinoYankee-prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_CFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		514391DA305B4DF0A532E312 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8BF0C48849824C32893AA0C2 /* Pods-MZDayPicker-Private.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pods-MZDayPicker-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		78C6028369314B9985BB90D6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8BF0C48849824C32893AA0C2 /* Pods-MZDayPicker-Private.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pods-MZDayPicker-prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_CFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8EF10434EC4549BDA5AB91D6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C6BD5B912E9428196E9FF08 /* Pods-MSCollectionViewCalendarLayout-Private.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pods-MSCollectionViewCalendarLayout-prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_CFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8F605B8D152947A590422151 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 09ADEAF25B7F422B84578262 /* Pods-UIColor-HexString-Private.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pods-UIColor-HexString-prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_CFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A94C6523AB584566B9FBD7DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 94E9152EE150450F97BF48DB /* Pods-Masonry-Private.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pods-Masonry-prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_CFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNS_BLOCK_ASSERTIONS=1",
+					"$(inherited)",
+				);
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BC5D7C57874040A3BF1E7546 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
+			};
+			name = Debug;
+		};
+		DDAB20C96B484130B222B9F7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 397E4908C8204D2C9011F779 /* Pods-CupertinoYankee-Private.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pods-CupertinoYankee-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F4D1E4F8BA6246E0AF2D52A6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 09ADEAF25B7F422B84578262 /* Pods-UIColor-HexString-Private.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/xcodeproj.dst;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Pods-UIColor-HexString-prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		02CD00A2695B4B7E8C94C74E /* Build configuration list for PBXNativeTarget "Pods-MZDayPicker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				514391DA305B4DF0A532E312 /* Debug */,
+				78C6028369314B9985BB90D6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4670069944274935A6994A89 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC5D7C57874040A3BF1E7546 /* Debug */,
+				140701526F204596970F48F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D8BE315999B4549943E033C /* Build configuration list for PBXNativeTarget "Pods-UIColor-HexString" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F4D1E4F8BA6246E0AF2D52A6 /* Debug */,
+				8F605B8D152947A590422151 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D7C833D4A284EFB8963EDA5 /* Build configuration list for PBXNativeTarget "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FF1A29035BA44E6A47EA528 /* Debug */,
+				1BE8C0DBE39D434E8FFAF6FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8FC6EECB0E234307852920A8 /* Build configuration list for PBXNativeTarget "Pods-CupertinoYankee" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DDAB20C96B484130B222B9F7 /* Debug */,
+				1DA6FF0CDDAE40D69A86C7D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E21597BEB4644218944747E0 /* Build configuration list for PBXNativeTarget "Pods-MSCollectionViewCalendarLayout" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				11A84F4397C74AD69BCE7787 /* Debug */,
+				8EF10434EC4549BDA5AB91D6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EDED312F8B3B4091B12A227E /* Build configuration list for PBXNativeTarget "Pods-Masonry" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0E9B369C8B914AD9B200315D /* Debug */,
+				A94C6523AB584566B9FBD7DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1697BE6C99C042D2B3EACD64 /* Project object */;
+}

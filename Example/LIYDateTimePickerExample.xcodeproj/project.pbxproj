@@ -1,0 +1,587 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B737BC27809E40EDAB73D254 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86CB68FA9A864D7DB8411DB4 /* libPods.a */; };
+		FE697C69193AD37400D84E6C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE697C68193AD37400D84E6C /* Foundation.framework */; };
+		FE697C6B193AD37400D84E6C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE697C6A193AD37400D84E6C /* CoreGraphics.framework */; };
+		FE697C6D193AD37400D84E6C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE697C6C193AD37400D84E6C /* UIKit.framework */; };
+		FE697C73193AD37400D84E6C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FE697C71193AD37400D84E6C /* InfoPlist.strings */; };
+		FE697C75193AD37400D84E6C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE697C74193AD37400D84E6C /* main.m */; };
+		FE697C79193AD37400D84E6C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE697C78193AD37400D84E6C /* AppDelegate.m */; };
+		FE697C7C193AD37400D84E6C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FE697C7A193AD37400D84E6C /* Main.storyboard */; };
+		FE697C7F193AD37400D84E6C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE697C7E193AD37400D84E6C /* ViewController.m */; };
+		FE697C81193AD37400D84E6C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FE697C80193AD37400D84E6C /* Images.xcassets */; };
+		FE697C88193AD37400D84E6C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE697C87193AD37400D84E6C /* XCTest.framework */; };
+		FE697C89193AD37400D84E6C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE697C68193AD37400D84E6C /* Foundation.framework */; };
+		FE697C8A193AD37400D84E6C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE697C6C193AD37400D84E6C /* UIKit.framework */; };
+		FE697C92193AD37400D84E6C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FE697C90193AD37400D84E6C /* InfoPlist.strings */; };
+		FE697C94193AD37400D84E6C /* LIYDateTimePickerExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FE697C93193AD37400D84E6C /* LIYDateTimePickerExampleTests.m */; };
+		FE7AE16319536C6C0096E350 /* MSCurrentTimeGridline.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15219536C6C0096E350 /* MSCurrentTimeGridline.m */; };
+		FE7AE16419536C6C0096E350 /* MSCurrentTimeIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15419536C6C0096E350 /* MSCurrentTimeIndicator.m */; };
+		FE7AE16519536C6C0096E350 /* MSDayColumnHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15619536C6C0096E350 /* MSDayColumnHeader.m */; };
+		FE7AE16619536C6C0096E350 /* MSDayColumnHeaderBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15819536C6C0096E350 /* MSDayColumnHeaderBackground.m */; };
+		FE7AE16719536C6C0096E350 /* MSEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15A19536C6C0096E350 /* MSEventCell.m */; };
+		FE7AE16819536C6C0096E350 /* MSGridline.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15C19536C6C0096E350 /* MSGridline.m */; };
+		FE7AE16919536C6C0096E350 /* MSTimeRowHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15E19536C6C0096E350 /* MSTimeRowHeader.m */; };
+		FE7AE16A19536C6C0096E350 /* MSTimeRowHeaderBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE16019536C6C0096E350 /* MSTimeRowHeaderBackground.m */; };
+		FE7AE16B19536C6C0096E350 /* LIYDateTimePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE16219536C6C0096E350 /* LIYDateTimePickerViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FE697C8B193AD37400D84E6C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FE697C5D193AD37400D84E6C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FE697C64193AD37400D84E6C;
+			remoteInfo = LIYDateTimePickerExample;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3E0D2BBF8FDD413F86A4B3ED /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		86CB68FA9A864D7DB8411DB4 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE697C65193AD37400D84E6C /* LIYDateTimePickerExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LIYDateTimePickerExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE697C68193AD37400D84E6C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FE697C6A193AD37400D84E6C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		FE697C6C193AD37400D84E6C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		FE697C70193AD37400D84E6C /* LIYDateTimePickerExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LIYDateTimePickerExample-Info.plist"; sourceTree = "<group>"; };
+		FE697C72193AD37400D84E6C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FE697C74193AD37400D84E6C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FE697C76193AD37400D84E6C /* LIYDateTimePickerExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LIYDateTimePickerExample-Prefix.pch"; sourceTree = "<group>"; };
+		FE697C77193AD37400D84E6C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		FE697C78193AD37400D84E6C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		FE697C7B193AD37400D84E6C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		FE697C7D193AD37400D84E6C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		FE697C7E193AD37400D84E6C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		FE697C80193AD37400D84E6C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		FE697C86193AD37400D84E6C /* LIYDateTimePickerExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LIYDateTimePickerExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE697C87193AD37400D84E6C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		FE697C8F193AD37400D84E6C /* LIYDateTimePickerExampleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LIYDateTimePickerExampleTests-Info.plist"; sourceTree = "<group>"; };
+		FE697C91193AD37400D84E6C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FE697C93193AD37400D84E6C /* LIYDateTimePickerExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LIYDateTimePickerExampleTests.m; sourceTree = "<group>"; };
+		FE7AE15119536C6C0096E350 /* MSCurrentTimeGridline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSCurrentTimeGridline.h; sourceTree = "<group>"; };
+		FE7AE15219536C6C0096E350 /* MSCurrentTimeGridline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSCurrentTimeGridline.m; sourceTree = "<group>"; };
+		FE7AE15319536C6C0096E350 /* MSCurrentTimeIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSCurrentTimeIndicator.h; sourceTree = "<group>"; };
+		FE7AE15419536C6C0096E350 /* MSCurrentTimeIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSCurrentTimeIndicator.m; sourceTree = "<group>"; };
+		FE7AE15519536C6C0096E350 /* MSDayColumnHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSDayColumnHeader.h; sourceTree = "<group>"; };
+		FE7AE15619536C6C0096E350 /* MSDayColumnHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSDayColumnHeader.m; sourceTree = "<group>"; };
+		FE7AE15719536C6C0096E350 /* MSDayColumnHeaderBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSDayColumnHeaderBackground.h; sourceTree = "<group>"; };
+		FE7AE15819536C6C0096E350 /* MSDayColumnHeaderBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSDayColumnHeaderBackground.m; sourceTree = "<group>"; };
+		FE7AE15919536C6C0096E350 /* MSEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSEventCell.h; sourceTree = "<group>"; };
+		FE7AE15A19536C6C0096E350 /* MSEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSEventCell.m; sourceTree = "<group>"; };
+		FE7AE15B19536C6C0096E350 /* MSGridline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSGridline.h; sourceTree = "<group>"; };
+		FE7AE15C19536C6C0096E350 /* MSGridline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSGridline.m; sourceTree = "<group>"; };
+		FE7AE15D19536C6C0096E350 /* MSTimeRowHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTimeRowHeader.h; sourceTree = "<group>"; };
+		FE7AE15E19536C6C0096E350 /* MSTimeRowHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTimeRowHeader.m; sourceTree = "<group>"; };
+		FE7AE15F19536C6C0096E350 /* MSTimeRowHeaderBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSTimeRowHeaderBackground.h; sourceTree = "<group>"; };
+		FE7AE16019536C6C0096E350 /* MSTimeRowHeaderBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSTimeRowHeaderBackground.m; sourceTree = "<group>"; };
+		FE7AE16119536C6C0096E350 /* LIYDateTimePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIYDateTimePickerViewController.h; sourceTree = "<group>"; };
+		FE7AE16219536C6C0096E350 /* LIYDateTimePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYDateTimePickerViewController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FE697C62193AD37400D84E6C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE697C6B193AD37400D84E6C /* CoreGraphics.framework in Frameworks */,
+				FE697C6D193AD37400D84E6C /* UIKit.framework in Frameworks */,
+				FE697C69193AD37400D84E6C /* Foundation.framework in Frameworks */,
+				B737BC27809E40EDAB73D254 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FE697C83193AD37400D84E6C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE697C88193AD37400D84E6C /* XCTest.framework in Frameworks */,
+				FE697C8A193AD37400D84E6C /* UIKit.framework in Frameworks */,
+				FE697C89193AD37400D84E6C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FE697C5C193AD37400D84E6C = {
+			isa = PBXGroup;
+			children = (
+				FE7AE14F19536C6C0096E350 /* Classes */,
+				FE697C6E193AD37400D84E6C /* LIYDateTimePickerExample */,
+				FE697C8D193AD37400D84E6C /* LIYDateTimePickerExampleTests */,
+				FE697C67193AD37400D84E6C /* Frameworks */,
+				FE697C66193AD37400D84E6C /* Products */,
+				3E0D2BBF8FDD413F86A4B3ED /* Pods.xcconfig */,
+			);
+			sourceTree = "<group>";
+		};
+		FE697C66193AD37400D84E6C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FE697C65193AD37400D84E6C /* LIYDateTimePickerExample.app */,
+				FE697C86193AD37400D84E6C /* LIYDateTimePickerExampleTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FE697C67193AD37400D84E6C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FE697C68193AD37400D84E6C /* Foundation.framework */,
+				FE697C6A193AD37400D84E6C /* CoreGraphics.framework */,
+				FE697C6C193AD37400D84E6C /* UIKit.framework */,
+				FE697C87193AD37400D84E6C /* XCTest.framework */,
+				86CB68FA9A864D7DB8411DB4 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FE697C6E193AD37400D84E6C /* LIYDateTimePickerExample */ = {
+			isa = PBXGroup;
+			children = (
+				FE697C77193AD37400D84E6C /* AppDelegate.h */,
+				FE697C78193AD37400D84E6C /* AppDelegate.m */,
+				FE697C7A193AD37400D84E6C /* Main.storyboard */,
+				FE697C7D193AD37400D84E6C /* ViewController.h */,
+				FE697C7E193AD37400D84E6C /* ViewController.m */,
+				FE697C80193AD37400D84E6C /* Images.xcassets */,
+				FE697C6F193AD37400D84E6C /* Supporting Files */,
+			);
+			path = LIYDateTimePickerExample;
+			sourceTree = "<group>";
+		};
+		FE697C6F193AD37400D84E6C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FE697C70193AD37400D84E6C /* LIYDateTimePickerExample-Info.plist */,
+				FE697C71193AD37400D84E6C /* InfoPlist.strings */,
+				FE697C74193AD37400D84E6C /* main.m */,
+				FE697C76193AD37400D84E6C /* LIYDateTimePickerExample-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FE697C8D193AD37400D84E6C /* LIYDateTimePickerExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				FE697C93193AD37400D84E6C /* LIYDateTimePickerExampleTests.m */,
+				FE697C8E193AD37400D84E6C /* Supporting Files */,
+			);
+			path = LIYDateTimePickerExampleTests;
+			sourceTree = "<group>";
+		};
+		FE697C8E193AD37400D84E6C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FE697C8F193AD37400D84E6C /* LIYDateTimePickerExampleTests-Info.plist */,
+				FE697C90193AD37400D84E6C /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FE7AE14F19536C6C0096E350 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				FE7AE15019536C6C0096E350 /* CollectionViewReusableViews */,
+				FE7AE16119536C6C0096E350 /* LIYDateTimePickerViewController.h */,
+				FE7AE16219536C6C0096E350 /* LIYDateTimePickerViewController.m */,
+			);
+			name = Classes;
+			path = ../Classes;
+			sourceTree = "<group>";
+		};
+		FE7AE15019536C6C0096E350 /* CollectionViewReusableViews */ = {
+			isa = PBXGroup;
+			children = (
+				FE7AE15119536C6C0096E350 /* MSCurrentTimeGridline.h */,
+				FE7AE15219536C6C0096E350 /* MSCurrentTimeGridline.m */,
+				FE7AE15319536C6C0096E350 /* MSCurrentTimeIndicator.h */,
+				FE7AE15419536C6C0096E350 /* MSCurrentTimeIndicator.m */,
+				FE7AE15519536C6C0096E350 /* MSDayColumnHeader.h */,
+				FE7AE15619536C6C0096E350 /* MSDayColumnHeader.m */,
+				FE7AE15719536C6C0096E350 /* MSDayColumnHeaderBackground.h */,
+				FE7AE15819536C6C0096E350 /* MSDayColumnHeaderBackground.m */,
+				FE7AE15919536C6C0096E350 /* MSEventCell.h */,
+				FE7AE15A19536C6C0096E350 /* MSEventCell.m */,
+				FE7AE15B19536C6C0096E350 /* MSGridline.h */,
+				FE7AE15C19536C6C0096E350 /* MSGridline.m */,
+				FE7AE15D19536C6C0096E350 /* MSTimeRowHeader.h */,
+				FE7AE15E19536C6C0096E350 /* MSTimeRowHeader.m */,
+				FE7AE15F19536C6C0096E350 /* MSTimeRowHeaderBackground.h */,
+				FE7AE16019536C6C0096E350 /* MSTimeRowHeaderBackground.m */,
+			);
+			path = CollectionViewReusableViews;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FE697C64193AD37400D84E6C /* LIYDateTimePickerExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FE697C97193AD37400D84E6C /* Build configuration list for PBXNativeTarget "LIYDateTimePickerExample" */;
+			buildPhases = (
+				D2B220969BDC49B78A327BDF /* Check Pods Manifest.lock */,
+				FE697C61193AD37400D84E6C /* Sources */,
+				FE697C62193AD37400D84E6C /* Frameworks */,
+				FE697C63193AD37400D84E6C /* Resources */,
+				A930C94F7FED45E3B5E7D9BD /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LIYDateTimePickerExample;
+			productName = LIYDateTimePickerExample;
+			productReference = FE697C65193AD37400D84E6C /* LIYDateTimePickerExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FE697C85193AD37400D84E6C /* LIYDateTimePickerExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FE697C9A193AD37400D84E6C /* Build configuration list for PBXNativeTarget "LIYDateTimePickerExampleTests" */;
+			buildPhases = (
+				FE697C82193AD37400D84E6C /* Sources */,
+				FE697C83193AD37400D84E6C /* Frameworks */,
+				FE697C84193AD37400D84E6C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FE697C8C193AD37400D84E6C /* PBXTargetDependency */,
+			);
+			name = LIYDateTimePickerExampleTests;
+			productName = LIYDateTimePickerExampleTests;
+			productReference = FE697C86193AD37400D84E6C /* LIYDateTimePickerExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FE697C5D193AD37400D84E6C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Liron Yahdav";
+				TargetAttributes = {
+					FE697C85193AD37400D84E6C = {
+						TestTargetID = FE697C64193AD37400D84E6C;
+					};
+				};
+			};
+			buildConfigurationList = FE697C60193AD37400D84E6C /* Build configuration list for PBXProject "LIYDateTimePickerExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FE697C5C193AD37400D84E6C;
+			productRefGroup = FE697C66193AD37400D84E6C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FE697C64193AD37400D84E6C /* LIYDateTimePickerExample */,
+				FE697C85193AD37400D84E6C /* LIYDateTimePickerExampleTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FE697C63193AD37400D84E6C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE697C81193AD37400D84E6C /* Images.xcassets in Resources */,
+				FE697C73193AD37400D84E6C /* InfoPlist.strings in Resources */,
+				FE697C7C193AD37400D84E6C /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FE697C84193AD37400D84E6C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE697C92193AD37400D84E6C /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A930C94F7FED45E3B5E7D9BD /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D2B220969BDC49B78A327BDF /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FE697C61193AD37400D84E6C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE697C7F193AD37400D84E6C /* ViewController.m in Sources */,
+				FE7AE16619536C6C0096E350 /* MSDayColumnHeaderBackground.m in Sources */,
+				FE7AE16B19536C6C0096E350 /* LIYDateTimePickerViewController.m in Sources */,
+				FE7AE16A19536C6C0096E350 /* MSTimeRowHeaderBackground.m in Sources */,
+				FE7AE16719536C6C0096E350 /* MSEventCell.m in Sources */,
+				FE7AE16819536C6C0096E350 /* MSGridline.m in Sources */,
+				FE7AE16919536C6C0096E350 /* MSTimeRowHeader.m in Sources */,
+				FE7AE16519536C6C0096E350 /* MSDayColumnHeader.m in Sources */,
+				FE697C79193AD37400D84E6C /* AppDelegate.m in Sources */,
+				FE7AE16319536C6C0096E350 /* MSCurrentTimeGridline.m in Sources */,
+				FE7AE16419536C6C0096E350 /* MSCurrentTimeIndicator.m in Sources */,
+				FE697C75193AD37400D84E6C /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FE697C82193AD37400D84E6C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE697C94193AD37400D84E6C /* LIYDateTimePickerExampleTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FE697C8C193AD37400D84E6C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FE697C64193AD37400D84E6C /* LIYDateTimePickerExample */;
+			targetProxy = FE697C8B193AD37400D84E6C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FE697C71193AD37400D84E6C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FE697C72193AD37400D84E6C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FE697C7A193AD37400D84E6C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FE697C7B193AD37400D84E6C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		FE697C90193AD37400D84E6C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FE697C91193AD37400D84E6C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FE697C95193AD37400D84E6C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		FE697C96193AD37400D84E6C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FE697C98193AD37400D84E6C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3E0D2BBF8FDD413F86A4B3ED /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LIYDateTimePickerExample/LIYDateTimePickerExample-Prefix.pch";
+				INFOPLIST_FILE = "LIYDateTimePickerExample/LIYDateTimePickerExample-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FE697C99193AD37400D84E6C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3E0D2BBF8FDD413F86A4B3ED /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LIYDateTimePickerExample/LIYDateTimePickerExample-Prefix.pch";
+				INFOPLIST_FILE = "LIYDateTimePickerExample/LIYDateTimePickerExample-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		FE697C9B193AD37400D84E6C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/LIYDateTimePickerExample.app/LIYDateTimePickerExample";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LIYDateTimePickerExample/LIYDateTimePickerExample-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "LIYDateTimePickerExampleTests/LIYDateTimePickerExampleTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		FE697C9C193AD37400D84E6C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/LIYDateTimePickerExample.app/LIYDateTimePickerExample";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LIYDateTimePickerExample/LIYDateTimePickerExample-Prefix.pch";
+				INFOPLIST_FILE = "LIYDateTimePickerExampleTests/LIYDateTimePickerExampleTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FE697C60193AD37400D84E6C /* Build configuration list for PBXProject "LIYDateTimePickerExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE697C95193AD37400D84E6C /* Debug */,
+				FE697C96193AD37400D84E6C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FE697C97193AD37400D84E6C /* Build configuration list for PBXNativeTarget "LIYDateTimePickerExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE697C98193AD37400D84E6C /* Debug */,
+				FE697C99193AD37400D84E6C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FE697C9A193AD37400D84E6C /* Build configuration list for PBXNativeTarget "LIYDateTimePickerExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE697C9B193AD37400D84E6C /* Debug */,
+				FE697C9C193AD37400D84E6C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FE697C5D193AD37400D84E6C /* Project object */;
+}

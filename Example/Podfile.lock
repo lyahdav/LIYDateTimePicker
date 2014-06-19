@@ -1,0 +1,28 @@
+PODS:
+  - CupertinoYankee (0.1.1)
+  - Masonry (0.5.2)
+  - MSCollectionViewCalendarLayout (0.1.3):
+    - CupertinoYankee (~> 0.1)
+  - MZDayPicker (0.0.1)
+  - UIColor-HexString (1.1.0)
+
+DEPENDENCIES:
+  - Masonry
+  - MSCollectionViewCalendarLayout
+  - MZDayPicker
+  - MZDayPicker (from `https://github.com/lyahdav/MZDayPicker.git`, branch `hightlight_today`)
+  - UIColor-HexString
+
+EXTERNAL SOURCES:
+  MZDayPicker:
+    :branch: hightlight_today
+    :git: https://github.com/lyahdav/MZDayPicker.git
+
+SPEC CHECKSUMS:
+  CupertinoYankee: b07873e724c2c5c1a249c555a5bd3d508c04e0de
+  Masonry: ec0189e1a07af00913e4a1a335ea76887adc86e1
+  MSCollectionViewCalendarLayout: 10ca29578b0dd9b8586b1beed3ab479a3788b4b5
+  MZDayPicker: 94f265c68d72c6665a2324b1284a61708d2d7e3d
+  UIColor-HexString: a9eabf02c1a2f9036ed6ac9cb2a3ea086f3b39e4
+
+COCOAPODS: 0.33.1

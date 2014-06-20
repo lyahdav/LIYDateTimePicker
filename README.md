@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/cocoapods/l/LIYDateTimePicker.svg?style=flat)](http://cocoadocs.org/docsets/LIYDateTimePicker)
 [![Platform](https://img.shields.io/cocoapods/p/LIYDateTimePicker.svg?style=flat)](http://cocoadocs.org/docsets/LIYDateTimePicker)
 
-<img src="https://raw.githubusercontent.com/lyahdav/LIYDateTimePicker/master/Screens/Screen1.png" alt="Calendar" width="320px"/>
+<img src="https://raw.githubusercontent.com/lyahdav/LIYDateTimePicker/master/Screens/Screen1.png" alt="Calendar" width="320px"/> 
 <img src="https://raw.githubusercontent.com/lyahdav/LIYDateTimePicker/master/Screens/Screen2.png" alt="Calendar" width="320px"/>
 
 ## Usage

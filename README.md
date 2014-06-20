@@ -19,7 +19,7 @@ All you need to use this in your app is:
 And implement the `LIYDateTimePickerDelegate`:
 
     - (void)dateTimePicker:(LIYDateTimePickerViewController *)dateTimePickerViewController didSelectDate:(NSDate *)selectedDate {
-        self.selectedTimeLabel.text = [selectedDate description];
+        NSLog(@"Selected date: %@", [selectedDate description]);
         [self.navigationController popViewControllerAnimated:YES];
     }
 

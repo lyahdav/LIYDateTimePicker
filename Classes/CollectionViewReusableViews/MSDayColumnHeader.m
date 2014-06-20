@@ -14,6 +14,8 @@
 
 @property (nonatomic, strong) UILabel *title;
 @property (nonatomic, strong) UIView *titleBackground;
+@property (nonatomic, strong) UIView *allDayView;
+@property (nonatomic, strong) UILabel *allDayLabel;
 
 @end
 
@@ -24,22 +26,43 @@
     self = [super initWithFrame:frame];
     if (self) {
         
-        self.titleBackground = [UIView new];
-        self.titleBackground.layer.cornerRadius = nearbyintf(15.0);
-        [self addSubview:self.titleBackground];
-        
         self.backgroundColor = [UIColor clearColor];
         self.title = [UILabel new];
         self.title.backgroundColor = [UIColor clearColor];
         [self addSubview:self.title];
         
-        [self.titleBackground mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self.title).with.insets(UIEdgeInsetsMake(-6.0, -12.0, -4.0, -12.0));
+        [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self);
+            make.top.equalTo(@(kLIYAllDayHeight));
         }];
         
-        [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(self);
+        self.allDayView = [UIView new];
+        [self addSubview:self.allDayView];
+        self.allDayView.backgroundColor = [UIColor lightGrayColor];
+        self.allDayView.clipsToBounds = YES;
+        [self.allDayView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.bottom.equalTo(self);
+            make.height.equalTo(@(kLIYAllDayHeight));
+            make.leading.equalTo(@0);
+            make.trailing.equalTo(@0);
         }];
+        
+        self.allDayLabel = [UILabel new];
+        [self.allDayView addSubview:self.allDayLabel];
+        self.allDayLabel.text = @"all-day";
+        [self.allDayLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.equalTo(self.allDayView);
+            make.left.equalTo(@10);
+        }];
+        self.allDayLabel.font = [UIFont systemFontOfSize:10.0];
+        
+        self.allDayEventsLabel = [UILabel new];
+        [self.allDayView addSubview:self.allDayEventsLabel];
+        [self.allDayEventsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.equalTo(self.allDayView);
+            make.leading.equalTo(self.allDayLabel).with.offset(50);
+        }];
+        self.allDayEventsLabel.font = [UIFont systemFontOfSize:10.0];
     }
     return self;
 }
@@ -57,18 +80,17 @@
     [self setNeedsLayout];
 }
 
-- (void)setCurrentDay:(BOOL)currentDay
-{
-    _currentDay = currentDay;
+- (void)setShowAllDaySection:(BOOL)showAllDaySection {
+    _showAllDaySection = showAllDaySection;
     
-    if (currentDay) {
-        self.title.textColor = [UIColor whiteColor];
-        self.title.font = [UIFont boldSystemFontOfSize:16.0];
-        self.titleBackground.backgroundColor = [UIColor colorWithHexString:@"fd3935"];
+    if (showAllDaySection) {
+        [self.allDayView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.equalTo(@(kLIYAllDayHeight));
+        }];
     } else {
-        self.title.font = [UIFont systemFontOfSize:16.0];
-        self.title.textColor = [UIColor blackColor];
-        self.titleBackground.backgroundColor = [UIColor clearColor];
+        [self.allDayView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.equalTo(@0);
+        }];
     }
 }
 

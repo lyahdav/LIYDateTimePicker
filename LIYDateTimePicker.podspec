@@ -31,4 +31,5 @@ Pod::Spec.new do |s|
   s.dependency 'MSCollectionViewCalendarLayout'
   s.dependency 'UIColor-HexString'
   s.dependency 'Masonry'
+  s.dependency 'ObjectiveSugar'
 end

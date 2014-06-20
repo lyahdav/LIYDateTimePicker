@@ -9,6 +9,7 @@
 #import "LIYDateTimePickerViewController.h"
 #import "MSCollectionViewCalendarLayout.h"
 #import "MZDayPicker.h"
+#import "ObjectiveSugar.h"
 
 // Collection View Reusable Views
 #import "MSGridline.h"
@@ -30,7 +31,8 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
 @interface LIYDateTimePickerViewController () <MZDayPickerDelegate, MZDayPickerDataSource, MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource>
 
 @property (nonatomic, strong) MSCollectionViewCalendarLayout *collectionViewCalendarLayout;
-@property (atomic, strong) NSArray *events;
+@property (atomic, strong) NSMutableArray *allDayEvents;
+@property (atomic, strong) NSMutableArray *nonAllDayEvents;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) MZDayPicker *dayPicker;
@@ -40,6 +42,7 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
 @property (nonatomic, strong) UILabel *dragLabel;
 @property (nonatomic, strong) NSLayoutConstraint *dragViewY;
 @property (nonatomic, strong) NSLayoutConstraint *dragLabelY;
+@property (nonatomic, strong) EKEventStore *eventStore;
 
 @end
 
@@ -245,18 +248,33 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
 }
 
 - (void)loadEventKitEventsForSelectedDay {
-    EKEventStore *eventStore = [[EKEventStore alloc] init];
-    [eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+    if (!self.eventStore) {
+        self.eventStore = [[EKEventStore alloc] init];
+    }
+    __weak EKEventStore *weakEventStore = self.eventStore;
+    __weak typeof(self) weakSelf = self;
+    [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        EKEventStore *strongEventStore = weakEventStore;
+        typeof(self) strongSelf = weakSelf;
         NSAssert(granted, @"calendar access denied");
         
-        NSPredicate *predicate = [eventStore predicateForEventsWithStartDate:[self.date beginningOfDay] // TODO weakify?
-                                                                          endDate:[self nextDayForDate:[self.date beginningOfDay]] // TODO weakify?
+        NSPredicate *predicate = [strongEventStore predicateForEventsWithStartDate:[strongSelf.date beginningOfDay]
+                                                                          endDate:[strongSelf nextDayForDate:[strongSelf.date beginningOfDay]]
                                                                         calendars:nil];
-        self.events = [eventStore eventsMatchingPredicate:predicate]; // TODO weakify?
+        NSArray *events = [strongEventStore eventsMatchingPredicate:predicate];
+        strongSelf.nonAllDayEvents = [NSMutableArray array];
+        strongSelf.allDayEvents = [NSMutableArray array];
+        for(EKEvent *event in events) {
+            if (event.isAllDay) {
+                [strongSelf.allDayEvents addObject:event];
+            } else {
+                [strongSelf.nonAllDayEvents addObject:event];
+            }
+        }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.collectionViewCalendarLayout invalidateLayoutCache];
-            [self.collectionView reloadData]; // TODO weakify?
-            [self scrollToHour:6];
+            [strongSelf.collectionViewCalendarLayout invalidateLayoutCache];
+            [strongSelf.collectionView reloadData];
+            [strongSelf scrollToHour:6];
         });
         
     }];
@@ -312,17 +330,17 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     NSInteger numberOfInvisibleCells = 2; // we have start and end pseudo cells
-    return self.events.count + numberOfInvisibleCells;
+    return self.nonAllDayEvents.count + numberOfInvisibleCells;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0 || indexPath.row == self.events.count + 1) {
+    if (indexPath.row == 0 || indexPath.row == self.nonAllDayEvents.count + 1) {
         // we don't actually have cells to display for the pseudo events
         return [collectionView dequeueReusableCellWithReuseIdentifier:HLInvisibleEventCellReuseIdentifier forIndexPath:indexPath];
     }
 
     MSEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MSEventCellReuseIdentifier forIndexPath:indexPath];
-    cell.event = self.events[indexPath.row - 1];
+    cell.event = self.nonAllDayEvents[indexPath.row - 1];
     return cell;
 }
 
@@ -334,6 +352,17 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
         NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
         dayColumnHeader.day = day;
         dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
+        if (self.allDayEvents.count == 0) {
+            dayColumnHeader.showAllDaySection = NO;
+            self.collectionViewCalendarLayout.dayColumnHeaderHeight = 50.0f; // TODO don't hardcode
+        } else {
+            dayColumnHeader.showAllDaySection = YES;
+            self.collectionViewCalendarLayout.dayColumnHeaderHeight = 50.0f + kLIYAllDayHeight; // TODO don't hardcode
+            NSArray *allDayEventTitles = [self.allDayEvents map:^id(EKEvent *event) { // TODO: compute once
+                return event.title;
+            }];
+            dayColumnHeader.allDayEventsLabel.text = [allDayEventTitles componentsJoinedByString:@", "];
+        }
         view = dayColumnHeader;
     } else if (kind == MSCollectionElementKindTimeRowHeader) {
         MSTimeRowHeader *timeRowHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSTimeRowHeaderReuseIdentifier forIndexPath:indexPath];
@@ -352,10 +381,10 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
 - (NSDate *)collectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout startTimeForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 0) {
         return [self.date beginningOfDay];
-    } else if (indexPath.row == self.events.count + 1) {
+    } else if (indexPath.row == self.nonAllDayEvents.count + 1) {
         return [self.date endOfDay];
     } else {
-        EKEvent *event = self.events[indexPath.item - 1];
+        EKEvent *event = self.nonAllDayEvents[indexPath.item - 1];
         return event.startDate;
     }
 }
@@ -363,10 +392,10 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
 - (NSDate *)collectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout endTimeForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 0) {
         return [self.date beginningOfDay];
-    } else if (indexPath.row == self.events.count + 1) {
+    } else if (indexPath.row == self.nonAllDayEvents.count + 1) {
         return [self.date endOfDay];
     } else {
-        EKEvent *event = self.events[indexPath.item - 1];
+        EKEvent *event = self.nonAllDayEvents[indexPath.item - 1];
         return event.endDate;
     }
 }

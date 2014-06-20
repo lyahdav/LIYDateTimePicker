@@ -30,6 +30,12 @@
 #define COCOAPODS_VERSION_MINOR_Masonry 5
 #define COCOAPODS_VERSION_PATCH_Masonry 2
 
+// ObjectiveSugar
+#define COCOAPODS_POD_AVAILABLE_ObjectiveSugar
+#define COCOAPODS_VERSION_MAJOR_ObjectiveSugar 1
+#define COCOAPODS_VERSION_MINOR_ObjectiveSugar 1
+#define COCOAPODS_VERSION_PATCH_ObjectiveSugar 0
+
 // UIColor-HexString
 #define COCOAPODS_POD_AVAILABLE_UIColor_HexString
 #define COCOAPODS_VERSION_MAJOR_UIColor_HexString 1

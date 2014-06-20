@@ -288,6 +288,7 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
                     [strongSelf.nonAllDayEvents addObject:event];
                 }
             }
+            strongSelf.collectionViewCalendarLayout.dayColumnHeaderHeight = strongSelf.allDayEvents.count == 0 ? 50.0f : 50.0f + kLIYAllDayHeight; // TODO don't hardcode
             [strongSelf.collectionViewCalendarLayout invalidateLayoutCache];
             [strongSelf.collectionView reloadData];
             [strongSelf scrollToHour:6];
@@ -375,10 +376,8 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
         dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
         if (self.allDayEvents.count == 0) {
             dayColumnHeader.showAllDaySection = NO;
-            self.collectionViewCalendarLayout.dayColumnHeaderHeight = 50.0f; // TODO don't hardcode
         } else {
             dayColumnHeader.showAllDaySection = YES;
-            self.collectionViewCalendarLayout.dayColumnHeaderHeight = 50.0f + kLIYAllDayHeight; // TODO don't hardcode
             NSArray *allDayEventTitles = [self.allDayEvents map:^id(EKEvent *event) { // TODO: compute once
                 return event.title;
             }];

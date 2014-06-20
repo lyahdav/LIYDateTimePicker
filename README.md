@@ -19,7 +19,7 @@ it, simply add the following line to your Podfile:
 
 ## Author
 
-Liron Yahdav, lyahdav@gmail.com
+Liron Yahdav
 
 ## License
 

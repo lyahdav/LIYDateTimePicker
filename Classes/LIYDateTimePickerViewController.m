@@ -275,19 +275,19 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
         NSAssert(granted, @"calendar access denied");
         
         NSPredicate *predicate = [strongEventStore predicateForEventsWithStartDate:[strongSelf.date beginningOfDay]
-                                                                          endDate:[strongSelf nextDayForDate:[strongSelf.date beginningOfDay]]
-                                                                        calendars:nil];
+                                                                           endDate:[strongSelf nextDayForDate:[strongSelf.date beginningOfDay]]
+                                                                         calendars:nil];
         NSArray *events = [strongEventStore eventsMatchingPredicate:predicate];
-        strongSelf.nonAllDayEvents = [NSMutableArray array];
-        strongSelf.allDayEvents = [NSMutableArray array];
-        for(EKEvent *event in events) {
-            if (event.isAllDay) {
-                [strongSelf.allDayEvents addObject:event];
-            } else {
-                [strongSelf.nonAllDayEvents addObject:event];
-            }
-        }
         dispatch_async(dispatch_get_main_queue(), ^{
+            strongSelf.nonAllDayEvents = [NSMutableArray array];
+            strongSelf.allDayEvents = [NSMutableArray array];
+            for(EKEvent *event in events) {
+                if (event.isAllDay) {
+                    [strongSelf.allDayEvents addObject:event];
+                } else {
+                    [strongSelf.nonAllDayEvents addObject:event];
+                }
+            }
             [strongSelf.collectionViewCalendarLayout invalidateLayoutCache];
             [strongSelf.collectionView reloadData];
             [strongSelf scrollToHour:6];
@@ -319,9 +319,14 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
 
 - (void)setDate:(NSDate *)date {
     _date = date;
+    
+    // clear out events immediately because loadEventKitEventsForSelectedDay loads events asynchronously
+    self.nonAllDayEvents = [NSMutableArray array];
+    self.allDayEvents = [NSMutableArray array];
     [self.collectionViewCalendarLayout invalidateLayoutCache];
     [self.collectionView reloadData];
     [self scrollToHour:6];
+    
     [self loadEventKitEventsForSelectedDay];
 }
 

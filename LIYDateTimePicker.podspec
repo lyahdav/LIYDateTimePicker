@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
                        An iOS view controller for picking a date and time in way that doesn't suck
                        DESC
   s.homepage         = "https://github.com/lyahdav/LIYDateTimePicker"
-  s.screenshots      = "https://raw.github.com/lyahdav/LIYDateTimePicker/master/Screens/screen1.png"
+  s.screenshots      = "https://raw.githubusercontent.com/lyahdav/LIYDateTimePicker/master/Screens/Screen1.png"
   s.license          = 'MIT'
   s.author           = { "Liron Yahdav" => "lyahdav@users.noreply.github.com" }
   s.source           = { :git => "https://github.com/lyahdav/LIYDateTimePicker.git", :tag => s.version.to_s }

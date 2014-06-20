@@ -4,8 +4,8 @@
 [![License](https://img.shields.io/cocoapods/l/LIYDateTimePicker.svg?style=flat)](http://cocoadocs.org/docsets/LIYDateTimePicker)
 [![Platform](https://img.shields.io/cocoapods/p/LIYDateTimePicker.svg?style=flat)](http://cocoadocs.org/docsets/LIYDateTimePicker)
 
-[![](https://raw.github.com/lyahdav/LIYDateTimePicker/master/Screens/screen1.png)](https://raw.github.com/lyahdav/LIYDateTimePicker/master/Screens/screen1.png)
-[![](https://raw.github.com/lyahdav/LIYDateTimePicker/master/Screens/screen2.png)](https://raw.github.com/lyahdav/LIYDateTimePicker/master/Screens/screen2.png)
+[![](https://raw.githubusercontent.com/lyahdav/LIYDateTimePicker/master/Screens/Screen1.png)](https://raw.github.com/lyahdav/LIYDateTimePicker/master/Screens/screen1.png)
+[![](https://raw.githubusercontent.com/lyahdav/LIYDateTimePicker/master/Screens/Screen2.png)](https://raw.githubusercontent.com/lyahdav/LIYDateTimePicker/master/Screens/Screen2.png)
 
 ## Usage
 

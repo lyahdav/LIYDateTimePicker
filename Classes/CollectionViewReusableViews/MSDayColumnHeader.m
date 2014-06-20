@@ -38,7 +38,7 @@
         
         self.allDayView = [UIView new];
         [self addSubview:self.allDayView];
-        self.allDayView.backgroundColor = [UIColor lightGrayColor];
+        self.allDayView.backgroundColor = [[UIColor colorWithHexString:@"35b1f1"] colorWithAlphaComponent:0.2];
         self.allDayView.clipsToBounds = YES;
         [self.allDayView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.bottom.equalTo(self);
@@ -57,12 +57,13 @@
         self.allDayLabel.font = [UIFont systemFontOfSize:10.0];
         
         self.allDayEventsLabel = [UILabel new];
+        self.allDayEventsLabel.textColor = [UIColor colorWithHexString:@"21729c"];
         [self.allDayView addSubview:self.allDayEventsLabel];
         [self.allDayEventsLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.allDayView);
-            make.leading.equalTo(self.allDayLabel).with.offset(50);
+            make.leading.equalTo(self.allDayLabel.mas_trailing).with.offset(15);
         }];
-        self.allDayEventsLabel.font = [UIFont systemFontOfSize:10.0];
+        self.allDayEventsLabel.font = [UIFont boldSystemFontOfSize:10.0];
     }
     return self;
 }

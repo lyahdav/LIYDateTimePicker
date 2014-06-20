@@ -47,8 +47,8 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
 @interface LIYDateTimePickerViewController () <MZDayPickerDelegate, MZDayPickerDataSource, MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource>
 
 @property (nonatomic, strong) MSCollectionViewCalendarLayout *collectionViewCalendarLayout;
-@property (atomic, strong) NSMutableArray *allDayEvents;
-@property (atomic, strong) NSMutableArray *nonAllDayEvents;
+@property (nonatomic, strong) NSArray *allDayEvents;
+@property (nonatomic, strong) NSArray *nonAllDayEvents;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) MZDayPicker *dayPicker;
@@ -278,20 +278,20 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
                                                                            endDate:[strongSelf nextDayForDate:[strongSelf.date beginningOfDay]]
                                                                          calendars:nil];
         NSArray *events = [strongEventStore eventsMatchingPredicate:predicate];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            strongSelf.nonAllDayEvents = [NSMutableArray array];
-            strongSelf.allDayEvents = [NSMutableArray array];
+        dispatch_async(dispatch_get_main_queue(), ^{ // TODO invalidate previous block if a new one is enqueued
+            NSMutableArray *nonAllDayEvents = [NSMutableArray array];
+            NSMutableArray *allDayEvents = [NSMutableArray array];
             for(EKEvent *event in events) {
                 if (event.isAllDay) {
-                    [strongSelf.allDayEvents addObject:event];
+                    [allDayEvents addObject:event];
                 } else {
-                    [strongSelf.nonAllDayEvents addObject:event];
+                    [nonAllDayEvents addObject:event];
                 }
             }
-            strongSelf.collectionViewCalendarLayout.dayColumnHeaderHeight = strongSelf.allDayEvents.count == 0 ? 50.0f : 50.0f + kLIYAllDayHeight; // TODO don't hardcode
+            strongSelf.nonAllDayEvents = nonAllDayEvents;
+            strongSelf.allDayEvents = allDayEvents;
             [strongSelf.collectionViewCalendarLayout invalidateLayoutCache];
             [strongSelf.collectionView reloadData];
-            [strongSelf scrollToHour:6];
         });
         
     }];
@@ -329,6 +329,11 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
     [self scrollToHour:6];
     
     [self loadEventKitEventsForSelectedDay];
+}
+
+- (void)setAllDayEvents:(NSMutableArray *)allDayEvents {
+    _allDayEvents = allDayEvents;
+    self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == 0 ? 50.0f : 50.0f + kLIYAllDayHeight; // TODO don't hardcode
 }
 
 #pragma mark - MZDayPickerDataSource
@@ -374,6 +379,7 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
         NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
         dayColumnHeader.day = day;
         dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
+
         if (self.allDayEvents.count == 0) {
             dayColumnHeader.showAllDaySection = NO;
         } else {
@@ -383,6 +389,7 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
             }];
             dayColumnHeader.allDayEventsLabel.text = [allDayEventTitles componentsJoinedByString:@", "];
         }
+
         view = dayColumnHeader;
     } else if (kind == MSCollectionElementKindTimeRowHeader) {
         MSTimeRowHeader *timeRowHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSTimeRowHeaderReuseIdentifier forIndexPath:indexPath];

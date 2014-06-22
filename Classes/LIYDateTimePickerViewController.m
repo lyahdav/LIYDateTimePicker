@@ -26,7 +26,28 @@
 NSString * const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString * const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
 NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
-NSString * const kLIYInvisibleEventCellReuseIdentifier = @"kLIYInvisibleEventCellReuseIdentifier";
+
+# pragma mark - LIYCollectionViewCalendarLayout
+
+// TODO submit pull request to MSCollectionViewCalendarLayout so we don't need this
+
+@interface LIYCollectionViewCalendarLayout : MSCollectionViewCalendarLayout
+
+@end
+
+@implementation LIYCollectionViewCalendarLayout
+
+- (NSInteger)earliestHourForSection:(NSInteger)section {
+    return 0;
+}
+
+- (NSInteger)latestHourForSection:(NSInteger)section {
+    return 24;
+}
+
+@end
+
+#pragma mark - NSDate (LIYAdditional)
 
 // TODO: this shouldn't be necessary as it's defined in MZDayPicker.h, but it's required for `pod lib lint` to succeed. Figure out how to fix that.
 @implementation NSDate (LIYAdditional)
@@ -43,6 +64,8 @@ NSString * const kLIYInvisibleEventCellReuseIdentifier = @"kLIYInvisibleEventCel
     [comp1 year]  == [comp2 year];
 }
 @end
+
+#pragma mark - LIYDateTimePickerViewController
 
 @interface LIYDateTimePickerViewController () <MZDayPickerDelegate, MZDayPickerDataSource, MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource>
 
@@ -111,7 +134,7 @@ NSString * const kLIYInvisibleEventCellReuseIdentifier = @"kLIYInvisibleEventCel
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelTapped:)];
     }
     
-    self.collectionViewCalendarLayout = [[MSCollectionViewCalendarLayout alloc] init];
+    self.collectionViewCalendarLayout = [[LIYCollectionViewCalendarLayout alloc] init];
     self.collectionViewCalendarLayout.hourHeight = 50.0; //TODO const
     self.collectionViewCalendarLayout.delegate = self;
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.collectionViewCalendarLayout];
@@ -120,7 +143,6 @@ NSString * const kLIYInvisibleEventCellReuseIdentifier = @"kLIYInvisibleEventCel
     [self.view addSubview:self.collectionView];
     
     [self.collectionView registerClass:MSEventCell.class forCellWithReuseIdentifier:MSEventCellReuseIdentifier];
-    [self.collectionView registerClass:UICollectionViewCell.class forCellWithReuseIdentifier:kLIYInvisibleEventCellReuseIdentifier];
     [self.collectionView registerClass:MSDayColumnHeader.class forSupplementaryViewOfKind:MSCollectionElementKindDayColumnHeader withReuseIdentifier:MSDayColumnHeaderReuseIdentifier];
     [self.collectionView registerClass:MSTimeRowHeader.class forSupplementaryViewOfKind:MSCollectionElementKindTimeRowHeader withReuseIdentifier:MSTimeRowHeaderReuseIdentifier];
 
@@ -354,18 +376,12 @@ NSString * const kLIYInvisibleEventCellReuseIdentifier = @"kLIYInvisibleEventCel
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    NSInteger numberOfInvisibleCells = 2; // we have start and end pseudo cells
-    return self.nonAllDayEvents.count + numberOfInvisibleCells;
+    return self.nonAllDayEvents.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0 || indexPath.row == self.nonAllDayEvents.count + 1) {
-        // we don't actually have cells to display for the pseudo events
-        return [collectionView dequeueReusableCellWithReuseIdentifier:kLIYInvisibleEventCellReuseIdentifier forIndexPath:indexPath];
-    }
-
     MSEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MSEventCellReuseIdentifier forIndexPath:indexPath];
-    cell.event = self.nonAllDayEvents[indexPath.row - 1];
+    cell.event = self.nonAllDayEvents[indexPath.row];
     return cell;
 }
 
@@ -404,29 +420,17 @@ NSString * const kLIYInvisibleEventCellReuseIdentifier = @"kLIYInvisibleEventCel
 }
 
 - (NSDate *)collectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout startTimeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0) {
-        return [self.date beginningOfDay];
-    } else if (indexPath.row == self.nonAllDayEvents.count + 1) {
-        return [self.date endOfDay];
-    } else {
-        EKEvent *event = self.nonAllDayEvents[indexPath.item - 1];
-        NSTimeInterval startDate = [event.startDate timeIntervalSince1970];
-        startDate = fmax(startDate, [[self.date beginningOfDay] timeIntervalSince1970]);
-        return [NSDate dateWithTimeIntervalSince1970:startDate];
-    }
+    EKEvent *event = self.nonAllDayEvents[indexPath.item];
+    NSTimeInterval startDate = [event.startDate timeIntervalSince1970];
+    startDate = fmax(startDate, [[self.date beginningOfDay] timeIntervalSince1970]);
+    return [NSDate dateWithTimeIntervalSince1970:startDate];
 }
 
 - (NSDate *)collectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout endTimeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0) {
-        return [self.date beginningOfDay];
-    } else if (indexPath.row == self.nonAllDayEvents.count + 1) {
-        return [self.date endOfDay];
-    } else {
-        EKEvent *event = self.nonAllDayEvents[indexPath.item - 1];
-        NSTimeInterval endDate = [event.endDate timeIntervalSince1970];
-        endDate = fmin(endDate, [[self.date endOfDay] timeIntervalSince1970]);
-        return [NSDate dateWithTimeIntervalSince1970:endDate];
-    }
+    EKEvent *event = self.nonAllDayEvents[indexPath.item];
+    NSTimeInterval endDate = [event.endDate timeIntervalSince1970];
+    endDate = fmin(endDate, [[self.date endOfDay] timeIntervalSince1970]);
+    return [NSDate dateWithTimeIntervalSince1970:endDate];
 }
 
 - (NSDate *)currentTimeComponentsForCollectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout {

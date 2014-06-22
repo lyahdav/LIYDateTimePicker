@@ -30,11 +30,11 @@ LIYDateTimePicker requires either iOS 7.x and above.
 
 ## Installation
 
-LIYDateTimePicker is available through [CocoaPods](http://cocoapods.org). To install
+LIYDateTimePicker will be available through [CocoaPods](http://cocoapods.org). For now to install
 it, simply add the following lines to your Podfile:
 
     pod 'MZDayPicker', :git => 'https://github.com/lyahdav/MZDayPicker.git', :branch => 'hightlight_today'
-    pod "LIYDateTimePicker"
+    pod 'LIYDateTimePicker', :git => 'https://github.com/lyahdav/LIYDateTimePicker.git'
 
 NOTE: this pod requires a fork of MZDayPicker. Unfortunately according to http://stackoverflow.com/a/17735833/62 you cannot specify dependencies in a pod to pods on github. Instead you'll have to add the MZDayPicker fork before LIYDateTimePicker as shown above.
 

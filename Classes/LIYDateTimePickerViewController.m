@@ -26,7 +26,7 @@
 NSString * const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString * const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
 NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
-NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReuseIdentifier";
+NSString * const kLIYInvisibleEventCellReuseIdentifier = @"kLIYInvisibleEventCellReuseIdentifier";
 
 // TODO: this shouldn't be necessary as it's defined in MZDayPicker.h, but it's required for `pod lib lint` to succeed. Figure out how to fix that.
 @implementation NSDate (LIYAdditional)
@@ -96,8 +96,7 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
     [self.delegate dateTimePicker:self didSelectDate:nil];
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     if (self) {
         _date = [NSDate date];
@@ -105,8 +104,7 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     if (self.showCancelButton) {
@@ -122,7 +120,7 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
     [self.view addSubview:self.collectionView];
     
     [self.collectionView registerClass:MSEventCell.class forCellWithReuseIdentifier:MSEventCellReuseIdentifier];
-    [self.collectionView registerClass:UICollectionViewCell.class forCellWithReuseIdentifier:HLInvisibleEventCellReuseIdentifier];
+    [self.collectionView registerClass:UICollectionViewCell.class forCellWithReuseIdentifier:kLIYInvisibleEventCellReuseIdentifier];
     [self.collectionView registerClass:MSDayColumnHeader.class forSupplementaryViewOfKind:MSCollectionElementKindDayColumnHeader withReuseIdentifier:MSDayColumnHeaderReuseIdentifier];
     [self.collectionView registerClass:MSTimeRowHeader.class forSupplementaryViewOfKind:MSCollectionElementKindTimeRowHeader withReuseIdentifier:MSTimeRowHeaderReuseIdentifier];
 
@@ -363,7 +361,7 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 0 || indexPath.row == self.nonAllDayEvents.count + 1) {
         // we don't actually have cells to display for the pseudo events
-        return [collectionView dequeueReusableCellWithReuseIdentifier:HLInvisibleEventCellReuseIdentifier forIndexPath:indexPath];
+        return [collectionView dequeueReusableCellWithReuseIdentifier:kLIYInvisibleEventCellReuseIdentifier forIndexPath:indexPath];
     }
 
     MSEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MSEventCellReuseIdentifier forIndexPath:indexPath];
@@ -412,7 +410,9 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
         return [self.date endOfDay];
     } else {
         EKEvent *event = self.nonAllDayEvents[indexPath.item - 1];
-        return event.startDate;
+        NSTimeInterval startDate = [event.startDate timeIntervalSince1970];
+        startDate = fmax(startDate, [[self.date beginningOfDay] timeIntervalSince1970]);
+        return [NSDate dateWithTimeIntervalSince1970:startDate];
     }
 }
 
@@ -423,7 +423,9 @@ NSString * const HLInvisibleEventCellReuseIdentifier = @"HLInvisibleEventCellReu
         return [self.date endOfDay];
     } else {
         EKEvent *event = self.nonAllDayEvents[indexPath.item - 1];
-        return event.endDate;
+        NSTimeInterval endDate = [event.endDate timeIntervalSince1970];
+        endDate = fmin(endDate, [[self.date endOfDay] timeIntervalSince1970]);
+        return [NSDate dateWithTimeIntervalSince1970:endDate];
     }
 }
 

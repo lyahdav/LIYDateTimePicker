@@ -21,7 +21,9 @@
 
 + (LIYDateTimePickerViewController *)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate;
 
+@property (nonatomic) BOOL allowTimeSelection;
 @property (nonatomic) BOOL showCancelButton;
+@property (nonatomic) BOOL showDayPicker;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, weak) id<LIYDateTimePickerDelegate> delegate;
 

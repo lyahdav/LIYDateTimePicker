@@ -123,6 +123,8 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     self = [super init];
     if (self) {
         _date = [NSDate date];
+        _showDayPicker = YES;
+        _allowTimeSelection = YES;
     }
     return self;
 }
@@ -154,14 +156,24 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     [self.collectionViewCalendarLayout registerClass:MSTimeRowHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindTimeRowHeaderBackground];
     [self.collectionViewCalendarLayout registerClass:MSDayColumnHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindDayColumnHeaderBackground];
 
-    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(collectionViewTapped:)];
-    [self.collectionView addGestureRecognizer:self.tapGestureRecognizer];
-    
-    
+    if (self.showDayPicker) {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+        [self createDayPicker];
+    }
 
+    [self setupConstraints];
+    
+    if (self.allowTimeSelection) {
+        [self setupTimeSelector];
+    }
+    
+    [self loadEventKitEventsForSelectedDay];
+}
+
+- (void)createDayPicker {
     self.dayPicker = [[MZDayPicker alloc] initWithFrame:CGRectZero month:9 year:2013];
     [self.view addSubview:self.dayPicker];
-
+    
     self.dayPicker.delegate = self;
     self.dayPicker.dataSource = self;
     
@@ -174,37 +186,36 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     [self.dayPicker setStartDate:self.date endDate:[self.date dateByAddingTimeInterval:60*60*24*14]]; // TODO create property for this value
     
     [self.dayPicker setCurrentDate:self.date animated:NO];
-
-    [self setupConstraints];
-    
-    [self setupDragView];
-    
-    [self loadEventKitEventsForSelectedDay];
 }
 
 - (void)setupConstraints {
     self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.dayPicker.translatesAutoresizingMaskIntoConstraints = NO;
 
-    NSObject *collectionView = self.collectionView, *dayPicker = self.dayPicker, *topLayoutGuide = self.topLayoutGuide;
+    NSObject *collectionView = self.collectionView, *dayPicker = self.dayPicker ?: [UIView new], *topLayoutGuide = self.topLayoutGuide;
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:@"V:[topLayoutGuide][dayPicker(64)][collectionView]|"
+                               constraintsWithVisualFormat:self.showDayPicker ? @"V:[topLayoutGuide][dayPicker(64)][collectionView]|" : @"V:|[collectionView]|"
                                options:0
                                metrics:nil
                                views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, collectionView)]];
-    [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:@"H:|[dayPicker]|"
-                               options:0
-                               metrics:nil
-                               views:NSDictionaryOfVariableBindings(dayPicker)]];
     [self.view addConstraints:[NSLayoutConstraint
                                constraintsWithVisualFormat:@"H:|[collectionView]|"
                                options:0
                                metrics:nil
                                views:NSDictionaryOfVariableBindings(collectionView)]];
+    if (self.showDayPicker) {
+        [self.view addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"H:|[dayPicker]|"
+                                   options:0
+                                   metrics:nil
+                                   views:NSDictionaryOfVariableBindings(dayPicker)]];
+    }
 }
 
-- (void)setupDragView {
+- (void)setupTimeSelector {
+    self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(collectionViewTapped:)];
+    [self.collectionView addGestureRecognizer:self.tapGestureRecognizer];
+    
     UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onLongPress:)];
     [self.view addGestureRecognizer:longPressRecognizer];
     

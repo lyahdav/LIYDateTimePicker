@@ -257,12 +257,11 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     
     self.dragDateFormatter = [[NSDateFormatter alloc] init];
     [self.dragDateFormatter setDateFormat:@"h:mm a"];
-    
 }
 
 - (NSDate *)dateFromYCoord:(CGFloat)y {
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *dateComponents = [cal components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.date];
+    NSDateComponents *dateComponents = [cal components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.date];
     CGFloat hour = round([self hourAtYCoord:y] * 4) / 4;
     dateComponents.hour = trunc(hour);
     dateComponents.minute = round((hour - trunc(hour)) * 60);

@@ -46,6 +46,7 @@
 /* Begin PBXFileReference section */
 		3E0D2BBF8FDD413F86A4B3ED /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		86CB68FA9A864D7DB8411DB4 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAEBCA2C195948950065848E /* LIYDateTimePicker.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = LIYDateTimePicker.podspec; path = ../LIYDateTimePicker.podspec; sourceTree = "<group>"; };
 		FE697C65193AD37400D84E6C /* LIYDateTimePickerExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LIYDateTimePickerExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE697C68193AD37400D84E6C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FE697C6A193AD37400D84E6C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -119,6 +120,7 @@
 				FE697C67193AD37400D84E6C /* Frameworks */,
 				FE697C66193AD37400D84E6C /* Products */,
 				3E0D2BBF8FDD413F86A4B3ED /* Pods.xcconfig */,
+				AAEBCA2C195948950065848E /* LIYDateTimePicker.podspec */,
 			);
 			sourceTree = "<group>";
 		};

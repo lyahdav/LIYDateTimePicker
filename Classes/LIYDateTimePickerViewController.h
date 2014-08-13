@@ -20,6 +20,7 @@
 @interface LIYDateTimePickerViewController : UIViewController
 
 + (LIYDateTimePickerViewController *)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate;
+- (void)reloadEvents;
 
 @property (nonatomic) BOOL allowTimeSelection;
 @property (nonatomic) BOOL showCancelButton;

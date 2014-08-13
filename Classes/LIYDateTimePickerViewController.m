@@ -94,6 +94,10 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     return vc;
 }
 
+- (void)reloadEvents {
+    [self loadEventKitEventsForSelectedDay];
+}
+
 - (void)collectionViewTapped:(UITapGestureRecognizer *)recognizer {
     self.dragViewY.constant = [recognizer locationInView:self.view].y;
     self.dragLabelY.constant = [recognizer locationInView:self.view].y;

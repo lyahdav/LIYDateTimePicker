@@ -6,7 +6,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = "LIYDateTimePicker"
-  s.version          = "0.1.3"
+  s.version          = “0.1.4”
   s.summary          = "iOS view controller for picking a date and time."
   s.description      = <<-DESC
                        An iOS view controller for picking a date and time in way that doesn't suck

@@ -19,4 +19,11 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (IBAction)showCalendarTap:(UIButton *)sender {
+    LIYDateTimePickerViewController *vc = [LIYDateTimePickerViewController timePickerForDate:[NSDate date] delegate:self];
+    vc.showDayPicker = NO;
+    vc.allowTimeSelection = NO;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 @end

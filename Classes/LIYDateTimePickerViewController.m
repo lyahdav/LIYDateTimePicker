@@ -82,20 +82,17 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 @property (nonatomic, strong) NSLayoutConstraint *dragViewY;
 @property (nonatomic, strong) NSLayoutConstraint *dragLabelY;
 @property (nonatomic, strong) EKEventStore *eventStore;
+@property (nonatomic, strong) NSMutableArray *visibleCalendars;
 
 @end
 
 @implementation LIYDateTimePickerViewController
 
-+ (LIYDateTimePickerViewController *)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate {
-    LIYDateTimePickerViewController *vc = [[LIYDateTimePickerViewController alloc] init];
++ (instancetype)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate {
+    LIYDateTimePickerViewController *vc = [self new];
     vc.delegate = delegate;
     vc.date = date;
     return vc;
-}
-
-- (void)reloadEvents {
-    [self loadEventKitEventsForSelectedDay];
 }
 
 - (void)collectionViewTapped:(UITapGestureRecognizer *)recognizer {
@@ -171,7 +168,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
         [self setupTimeSelector];
     }
     
-    [self loadEventKitEventsForSelectedDay];
+    [self reloadEvents];
 }
 
 - (void)createDayPicker {
@@ -297,25 +294,31 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     return [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:date options:0];
 }
 
-- (void)loadEventKitEventsForSelectedDay {
+- (void)reloadEvents {
+    if (![self isViewLoaded]) {
+        return;
+    }
+
     if (!self.eventStore) {
         self.eventStore = [[EKEventStore alloc] init];
     }
-    __weak EKEventStore *weakEventStore = self.eventStore;
-    __weak typeof(self) weakSelf = self;
+    EKEventStore *__weak weakEventStore = self.eventStore;
+    typeof(self) __weak weakSelf = self;
     [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
         EKEventStore *strongEventStore = weakEventStore;
         typeof(self) strongSelf = weakSelf;
-        NSAssert(granted, @"calendar access denied");
-        
+        if (!granted) {
+            return;
+        }
+
         NSPredicate *predicate = [strongEventStore predicateForEventsWithStartDate:[strongSelf.date beginningOfDay]
                                                                            endDate:[strongSelf nextDayForDate:[strongSelf.date beginningOfDay]]
-                                                                         calendars:nil];
+                                                                         calendars:self.visibleCalendars];
         NSArray *events = [strongEventStore eventsMatchingPredicate:predicate];
         dispatch_async(dispatch_get_main_queue(), ^{ // TODO invalidate previous block if a new one is enqueued
             NSMutableArray *nonAllDayEvents = [NSMutableArray array];
             NSMutableArray *allDayEvents = [NSMutableArray array];
-            for(EKEvent *event in events) {
+            for (EKEvent *event in events) {
                 if (event.isAllDay) {
                     [allDayEvents addObject:event];
                 } else {
@@ -327,7 +330,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
             [strongSelf.collectionViewCalendarLayout invalidateLayoutCache];
             [strongSelf.collectionView reloadData];
         });
-        
+
     }];
 }
 
@@ -355,14 +358,41 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 - (void)setDate:(NSDate *)date {
     _date = date;
     
-    // clear out events immediately because loadEventKitEventsForSelectedDay loads events asynchronously
+    // clear out events immediately because reloadEvents loads events asynchronously
     self.nonAllDayEvents = [NSMutableArray array];
     self.allDayEvents = [NSMutableArray array];
     [self.collectionViewCalendarLayout invalidateLayoutCache];
     [self.collectionView reloadData];
     [self scrollToHour:6];
     
-    [self loadEventKitEventsForSelectedDay];
+    [self reloadEvents];
+}
+
+- (NSMutableArray *)visibleCalendars {
+    if (self.visibleCalendarTitles == nil) {
+        return nil;
+    }
+
+    if (_visibleCalendars == nil) {
+        _visibleCalendars = [NSMutableArray array];
+        NSArray *calendars = [self.eventStore calendarsForEntityType:EKEntityTypeEvent];
+        for(NSString *title in self.visibleCalendarTitles) {
+            for(EKCalendar *calendar in calendars) {
+                if ([calendar.title isEqualToString:title]) {
+                    [_visibleCalendars addObject:calendar];
+                }
+            }
+        }
+    }
+
+
+    return _visibleCalendars;
+}
+
+- (void)setVisibleCalendarTitles:(NSArray *)visibleCalendarTitles {
+    _visibleCalendarTitles = visibleCalendarTitles;
+    _visibleCalendars = nil;
+    [self reloadEvents];
 }
 
 - (void)setAllDayEvents:(NSMutableArray *)allDayEvents {

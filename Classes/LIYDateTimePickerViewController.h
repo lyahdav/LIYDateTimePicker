@@ -19,7 +19,7 @@
 
 @interface LIYDateTimePickerViewController : UIViewController
 
-+ (LIYDateTimePickerViewController *)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate;
++ (instancetype)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate;
 - (void)reloadEvents;
 
 @property (nonatomic) BOOL allowTimeSelection;
@@ -27,5 +27,6 @@
 @property (nonatomic) BOOL showDayPicker;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, weak) id<LIYDateTimePickerDelegate> delegate;
+@property (nonatomic, strong) NSArray *visibleCalendarTitles; //<! nil means all calendars
 
 @end

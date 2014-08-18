@@ -474,6 +474,11 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     EKEvent *event = self.nonAllDayEvents[indexPath.item];
     NSTimeInterval endDate = [event.endDate timeIntervalSince1970];
     endDate = fmin(endDate, [[self.date endOfDay] timeIntervalSince1970]);
+    NSDate *startDate = [self collectionView:self.collectionView layout:self.collectionViewCalendarLayout startTimeForItemAtIndexPath:indexPath];
+
+    if (endDate - [startDate timeIntervalSince1970] < 15*60) {
+        endDate = [startDate timeIntervalSince1970] + 15*60; // set to minimum 15 min gap
+    }
     return [NSDate dateWithTimeIntervalSince1970:endDate];
 }
 

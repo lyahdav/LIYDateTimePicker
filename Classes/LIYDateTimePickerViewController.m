@@ -73,7 +73,6 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 @property (nonatomic, strong) NSArray *allDayEvents;
 @property (nonatomic, strong) NSArray *nonAllDayEvents;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
-@property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) MZDayPicker *dayPicker;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDateFormatter *dragDateFormatter;

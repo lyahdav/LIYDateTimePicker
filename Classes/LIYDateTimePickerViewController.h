@@ -28,5 +28,6 @@
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, weak) id<LIYDateTimePickerDelegate> delegate;
 @property (nonatomic, strong) NSArray *visibleCalendarTitles; //<! nil means all calendars
+@property (nonatomic, strong) UICollectionView *collectionView;
 
 @end

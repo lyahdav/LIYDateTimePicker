@@ -41,7 +41,7 @@ static NSString *const kLIYCalendarCellIdentifier = @"calendarCell";
 
 - (IBAction)onPickTimeTap:(id)sender {
     LIYDateTimePickerViewController *vc = [LIYDateTimePickerViewController timePickerForDate:[NSDate date] delegate:self];
-    vc.visibleCalendarTitles = self.visibleCalendarTitles;
+//    vc.visibleCalendarTitles = self.visibleCalendarTitles;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -52,7 +52,7 @@ static NSString *const kLIYCalendarCellIdentifier = @"calendarCell";
 
 - (IBAction)showCalendarTap:(UIButton *)sender {
     LIYDateTimePickerViewController *vc = [LIYDateTimePickerViewController timePickerForDate:[NSDate date] delegate:self];
-    vc.visibleCalendarTitles = self.visibleCalendarTitles;
+//    vc.visibleCalendarTitles = self.visibleCalendarTitles;
     vc.showDayPicker = NO;
     vc.allowTimeSelection = NO;
     [self.navigationController pushViewController:vc animated:YES];

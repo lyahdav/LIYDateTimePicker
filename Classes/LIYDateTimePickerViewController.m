@@ -81,7 +81,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 @property (nonatomic, strong) NSLayoutConstraint *dragViewY;
 @property (nonatomic, strong) NSLayoutConstraint *dragLabelY;
 @property (nonatomic, strong) EKEventStore *eventStore;
-@property (nonatomic, strong) NSMutableArray *visibleCalendars;
+
 
 @end
 
@@ -367,30 +367,8 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     [self reloadEvents];
 }
 
-- (NSMutableArray *)visibleCalendars {
-    if (self.visibleCalendarTitles == nil) {
-        return nil;
-    }
-
-    if (_visibleCalendars == nil) {
-        _visibleCalendars = [NSMutableArray array];
-        NSArray *calendars = [self.eventStore calendarsForEntityType:EKEntityTypeEvent];
-        for(NSString *title in self.visibleCalendarTitles) {
-            for(EKCalendar *calendar in calendars) {
-                if ([calendar.title isEqualToString:title]) {
-                    [_visibleCalendars addObject:calendar];
-                }
-            }
-        }
-    }
-
-
-    return _visibleCalendars;
-}
-
-- (void)setVisibleCalendarTitles:(NSArray *)visibleCalendarTitles {
-    _visibleCalendarTitles = visibleCalendarTitles;
-    _visibleCalendars = nil;
+-(void) setVisibleCalendars:(NSArray *)visibleCalendars{
+    _visibleCalendars = visibleCalendars;
     [self reloadEvents];
 }
 

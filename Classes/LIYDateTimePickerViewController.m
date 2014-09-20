@@ -183,7 +183,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"EE"];
     
-    [self.dayPicker setStartDate:self.date endDate:[self.date dateByAddingTimeInterval:60*60*24*14]]; // TODO create property for this value
+    [self.dayPicker setStartDate:self.date endDate:[self endDate]]; // TODO create property for this value
     
     [self.dayPicker setCurrentDate:self.date animated:NO];
 }
@@ -292,6 +292,17 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     
     return [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:date options:0];
 }
+
+-(NSDate *) endDate{
+    return [self.date dateByAddingTimeInterval:60*60*24*14];
+}
+
+-(void) resetToDate:(NSDate *) newDate{
+    self.date = newDate;
+    [self.dayPicker setStartDate:newDate endDate:[self endDate]];
+    [self reloadEvents];
+}
+
 
 - (void)reloadEvents {
     if (![self isViewLoaded]) {

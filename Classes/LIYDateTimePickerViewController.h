@@ -21,6 +21,7 @@
 
 + (instancetype)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate;
 - (void)reloadEvents;
+-(void) resetToDate:(NSDate *) newDate;
 
 @property (nonatomic) BOOL allowTimeSelection;
 @property (nonatomic) BOOL showCancelButton;

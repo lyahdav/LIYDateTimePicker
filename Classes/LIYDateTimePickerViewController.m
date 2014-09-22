@@ -297,12 +297,6 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     return [self.date dateByAddingTimeInterval:60*60*24*14];
 }
 
--(void) resetToDate:(NSDate *) newDate{
-    self.date = newDate;
-    [self.dayPicker setStartDate:newDate endDate:[self endDate]];
-    [self reloadEvents];
-}
-
 
 - (void)reloadEvents {
     if (![self isViewLoaded]) {
@@ -367,6 +361,12 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 
 - (void)setDate:(NSDate *)date {
     _date = date;
+    
+    if (![date isEqualToDate:self.dayPicker.currentDate]){
+        [self.dayPicker setStartDate:self.date endDate:[self endDate]];
+        [self.dayPicker setCurrentDate:date animated:YES];
+
+    }
     
     // clear out events immediately because reloadEvents loads events asynchronously
     self.nonAllDayEvents = [NSMutableArray array];

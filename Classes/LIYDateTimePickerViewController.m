@@ -177,7 +177,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     self.dayPicker.delegate = self;
     self.dayPicker.dataSource = self;
     
-    self.dayPicker.dayNameLabelFontSize = 12.0f;
+    self.dayPicker.dayNameLabelFontSize = 10.0f;
     self.dayPicker.dayLabelFontSize = 18.0f;
     
     self.dateFormatter = [[NSDateFormatter alloc] init];

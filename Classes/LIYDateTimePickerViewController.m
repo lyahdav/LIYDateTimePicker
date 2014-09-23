@@ -194,7 +194,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 
     NSObject *collectionView = self.collectionView, *dayPicker = self.dayPicker ?: [UIView new], *topLayoutGuide = self.topLayoutGuide;
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:self.showDayPicker ? @"V:[topLayoutGuide][dayPicker(64)][collectionView]|" : @"V:|[collectionView]|"
+                               constraintsWithVisualFormat:self.showDayPicker ? @"V:[topLayoutGuide][dayPicker(100)][collectionView]|" : @"V:|[collectionView]|"
                                options:0
                                metrics:nil
                                views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, collectionView)]];

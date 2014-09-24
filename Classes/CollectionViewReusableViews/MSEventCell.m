@@ -104,7 +104,8 @@
 {
     _event = event;
     self.title.attributedText = [[NSAttributedString alloc] initWithString:event.title attributes:[self titleAttributesHighlighted:self.selected]];
-    self.location.attributedText = [[NSAttributedString alloc] initWithString:event.location ?: @"" attributes:[self subtitleAttributesHighlighted:self.selected]];;
+    self.location.attributedText = [[NSAttributedString alloc] initWithString:event.location ?: @"" attributes:[self subtitleAttributesHighlighted:self.selected]];
+    self.eventBorderColor = [UIColor colorWithCGColor: self.event.calendar.CGColor];
 }
 
 - (void)updateColors
@@ -143,17 +144,17 @@
 
 - (UIColor *)backgroundColorHighlighted:(BOOL)selected
 {
-    return selected ? [UIColor colorWithHexString:@"35b1f1"] : [[UIColor colorWithHexString:@"35b1f1"] colorWithAlphaComponent:0.2];
+    return selected ? [UIColor colorWithHexString:@"ffffff"] : [[UIColor colorWithHexString:@"ffffff"] colorWithAlphaComponent:1.0];
 }
 
 - (UIColor *)textColorHighlighted:(BOOL)selected
 {
-    return selected ? [UIColor whiteColor] : [UIColor colorWithHexString:@"21729c"];
+    return selected ? [UIColor whiteColor] : [UIColor colorWithHexString:@"353535"];
 }
 
 - (UIColor *)borderColor
 {
-    return [[self backgroundColorHighlighted:NO] colorWithAlphaComponent:1.0];
+    return self.eventBorderColor;
 }
 
 @end

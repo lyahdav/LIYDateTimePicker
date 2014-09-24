@@ -16,5 +16,6 @@ static const NSInteger kLIYAllDayHeight = 20;
 @property (nonatomic, assign) BOOL currentDay;
 @property (nonatomic) BOOL showAllDaySection;
 @property (nonatomic, strong) UILabel *allDayEventsLabel;
+@property (nonatomic, strong) NSString *dayTitlePrefix;
 
 @end

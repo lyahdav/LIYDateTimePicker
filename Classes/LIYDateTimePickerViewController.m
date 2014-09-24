@@ -141,7 +141,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     self.collectionViewCalendarLayout.delegate = self;
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.collectionViewCalendarLayout];
     self.collectionView.dataSource = self;
-    self.collectionView.backgroundColor = [UIColor whiteColor];
+    self.collectionView.backgroundColor = [UIColor colorWithRed:234.0f/255.0f green:234.0f/255.0f blue:234.0f/255.0f alpha:1.0];
     [self.view addSubview:self.collectionView];
     
     [self.collectionView registerClass:MSEventCell.class forCellWithReuseIdentifier:MSEventCellReuseIdentifier];
@@ -178,7 +178,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     self.dayPicker.dataSource = self;
     
     self.dayPicker.dayNameLabelFontSize = 10.0f;
-    self.dayPicker.dayLabelFontSize = 18.0f;
+    self.dayPicker.dayLabelFontSize = 16.0f;
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"EE"];
@@ -194,7 +194,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 
     NSObject *collectionView = self.collectionView, *dayPicker = self.dayPicker ?: [UIView new], *topLayoutGuide = self.topLayoutGuide;
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:self.showDayPicker ? @"V:[topLayoutGuide][dayPicker(100)][collectionView]|" : @"V:|[collectionView]|"
+                               constraintsWithVisualFormat:self.showDayPicker ? @"V:[topLayoutGuide][dayPicker(82)][collectionView]|" : @"V:|[collectionView]|"
                                options:0
                                metrics:nil
                                views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, collectionView)]];
@@ -385,7 +385,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 
 - (void)setAllDayEvents:(NSMutableArray *)allDayEvents {
     _allDayEvents = allDayEvents;
-    self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == 0 ? 50.0f : 50.0f + kLIYAllDayHeight; // TODO don't hardcode
+    self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == 0 ? 56.0f : 56.0f + kLIYAllDayHeight; // TODO don't hardcode
 }
 
 #pragma mark - MZDayPickerDataSource
@@ -425,6 +425,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
         NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
         dayColumnHeader.day = day;
         dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
+        dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
 
         if (self.allDayEvents.count == 0) {
             dayColumnHeader.showAllDaySection = NO;

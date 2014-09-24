@@ -29,5 +29,6 @@
 @property (nonatomic, weak) id<LIYDateTimePickerDelegate> delegate;
 @property (nonatomic, strong) NSArray *visibleCalendars;
 @property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) NSString *dayTitlePrefix;
 
 @end

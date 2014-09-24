@@ -29,6 +29,7 @@
         self.backgroundColor = [UIColor clearColor];
         self.title = [UILabel new];
         self.title.backgroundColor = [UIColor clearColor];
+        self.title.font = [UIFont boldSystemFontOfSize:14.0];
         [self addSubview:self.title];
         
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -75,9 +76,15 @@
     static NSDateFormatter *dateFormatter;
     if (!dateFormatter) {
         dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? @"EEE MMM d" : @"EEEE MMMM d, YYYY");
+        dateFormatter.dateFormat = ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? @"EEE MMM d" : @"EEEE, MMM d, hh:mm a");
     }
-    self.title.text = [dateFormatter stringFromDate:day];
+    
+    if (!self.dayTitlePrefix){
+        self.title.text = [dateFormatter stringFromDate:day];
+    }else{
+        self.title.text = [NSString stringWithFormat:@"%@ %@", self.dayTitlePrefix, [dateFormatter stringFromDate:day]];
+    }
+
     [self setNeedsLayout];
 }
 

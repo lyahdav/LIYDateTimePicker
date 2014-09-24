@@ -16,6 +16,6 @@
 
 @property (nonatomic, strong) UILabel *title;
 @property (nonatomic, strong) UILabel *location;
-@property (nonatomic, strong) UIColor *eventBorderColor;
+
 
 @end

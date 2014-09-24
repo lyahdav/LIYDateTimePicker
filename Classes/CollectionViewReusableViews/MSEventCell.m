@@ -76,6 +76,12 @@
     return self;
 }
 
+-(void) layoutSubviews{
+    [super layoutSubviews];
+    
+    [self updateColors];
+}
+
 #pragma mark - UICollectionViewCell
 
 - (void)setSelected:(BOOL)selected
@@ -105,7 +111,7 @@
     _event = event;
     self.title.attributedText = [[NSAttributedString alloc] initWithString:event.title attributes:[self titleAttributesHighlighted:self.selected]];
     self.location.attributedText = [[NSAttributedString alloc] initWithString:event.location ?: @"" attributes:[self subtitleAttributesHighlighted:self.selected]];
-    self.eventBorderColor = [UIColor colorWithCGColor: self.event.calendar.CGColor];
+
 }
 
 - (void)updateColors
@@ -154,7 +160,7 @@
 
 - (UIColor *)borderColor
 {
-    return self.eventBorderColor;
+    return [UIColor colorWithCGColor: self.event.calendar.CGColor];
 }
 
 @end

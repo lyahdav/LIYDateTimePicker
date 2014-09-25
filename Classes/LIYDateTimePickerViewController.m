@@ -21,6 +21,7 @@
 #import "MSCurrentTimeIndicator.h"
 #import "MSCurrentTimeGridline.h"
 #import <EventKit/EventKit.h>
+#import <EventKitUI/EventKitUI.h>
 #import "NSDate+CupertinoYankee.h"
 
 NSString * const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
@@ -67,7 +68,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 
 #pragma mark - LIYDateTimePickerViewController
 
-@interface LIYDateTimePickerViewController () <MZDayPickerDelegate, MZDayPickerDataSource, MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource>
+@interface LIYDateTimePickerViewController () <MZDayPickerDelegate, MZDayPickerDataSource, MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, strong) MSCollectionViewCalendarLayout *collectionViewCalendarLayout;
 @property (nonatomic, strong) NSArray *allDayEvents;
@@ -141,6 +142,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     self.collectionViewCalendarLayout.delegate = self;
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.collectionViewCalendarLayout];
     self.collectionView.dataSource = self;
+    self.collectionView.delegate = self;
     self.collectionView.backgroundColor = [UIColor colorWithRed:234.0f/255.0f green:234.0f/255.0f blue:234.0f/255.0f alpha:1.0];
     [self.view addSubview:self.collectionView];
     
@@ -399,6 +401,16 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day
 {
     self.date = day.date;
+}
+
+
+
+
+#pragma mark - UICollectionViewDelegate
+-(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    EKEventViewController *vc = [[EKEventViewController alloc] init];
+    vc.event = self.nonAllDayEvents[indexPath.row];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - UICollectionViewDataSource

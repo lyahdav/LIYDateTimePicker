@@ -8,6 +8,7 @@
 
 #import "MSTimeRowHeader.h"
 #import "Masonry.h"
+#import "UIColor+HexString.h"
 
 @implementation MSTimeRowHeader
 
@@ -18,7 +19,8 @@
         self.backgroundColor = [UIColor clearColor];
         self.title = [UILabel new];
         self.title.backgroundColor = [UIColor clearColor];
-        self.title.font = [UIFont systemFontOfSize:12.0];
+        self.title.font = [UIFont systemFontOfSize:10.0];
+        self.title.textColor = [UIColor colorWithHexString:@"808080"];
         [self addSubview:self.title];
         
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {

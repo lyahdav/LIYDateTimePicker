@@ -28,6 +28,7 @@
 NSString * const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString * const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
 NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
+CGFloat const kFixedTimeBuddleWidth = 120.0f;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
@@ -88,7 +89,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 @property (nonatomic, strong) NSLayoutConstraint *dragViewY;
 @property (nonatomic, strong) NSLayoutConstraint *dragLabelY;
 @property (nonatomic, strong) EKEventStore *eventStore;
-@property (nonatomic, strong) UIView *fixedSelectedTimeLine;
+//@property (nonatomic, strong) UIView *fixedSelectedTimeLine;
 @property (nonatomic, strong) UIView *fixedSelectedTimeBubble;
 @property (nonatomic, strong) UILabel *fixedSelectedTimeBubbleTime;
 @property (nonatomic, strong) NSDate *selectedDate;
@@ -186,6 +187,8 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 -(void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
+    //self.showFixedTimeSelection = YES;
+    
     if (self.showFixedTimeSelection){
         [self setupFixedTimeSelector];
     }
@@ -193,15 +196,12 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 
 -(void) setupFixedTimeSelector{
     
-    
     self.fixedDateFormatter = [[NSDateFormatter alloc] init];
     [self.fixedDateFormatter setDateFormat:@"h:mm a"];
     
+    [self drawfixedTimeSelectorLines];
     
     CGFloat middleY = self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
-    self.fixedSelectedTimeLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 2.0f)];
-    self.fixedSelectedTimeLine.backgroundColor = [UIColor purpleColor];
-    [self.view addSubview:self.fixedSelectedTimeLine];
     
     self.fixedSelectedTimeBubble = [[UIView alloc] initWithFrame:CGRectMake(0.0f, middleY, 120.0f, 30.0f)];
     self.fixedSelectedTimeBubble.backgroundColor = [UIColor redColor];
@@ -220,6 +220,32 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
     
 }
+
+
+-(void) drawfixedTimeSelectorLines{
+
+//    CGFloat middleY = self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
+//    
+//    UIBezierPath *path = [UIBezierPath bezierPath];
+//    //draw a line
+//    [path moveToPoint:CGPointMake(0.0, middleY)];
+//    [path addLineToPoint:CGPointMake((self.view.frame.size.width / 2) - kFixedTimeBuddleWidth, middleY)];
+//    [path stroke];
+//    
+//    float dashPattern[] = {2,6,4,2};
+//    [path setLineDash:dashPattern count:4 phase:3];
+//    
+//    UIColor *fill = [UIColor blueColor];
+//    shapelayer.strokeStart = 0.0;
+//    shapelayer.strokeColor = fill.CGColor;
+//    shapelayer.lineWidth = 5.0;
+//    shapelayer.lineJoin = kCALineJoinMiter;
+//    shapelayer.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInt:10],[NSNumber numberWithInt:7], nil];
+//    shapelayer.lineDashPhase = 3.0f;
+//    shapelayer.path = path.CGPath;
+}
+
+
 
 - (void)createDayPicker {
     self.dayPicker = [[MZDayPicker alloc] initWithFrame:CGRectZero month:9 year:2013];

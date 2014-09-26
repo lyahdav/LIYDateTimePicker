@@ -86,22 +86,9 @@
 
 - (void)setSelected:(BOOL)selected
 {
-    if (selected && (self.selected != selected)) {
-        [UIView animateWithDuration:0.1 animations:^{
-            self.transform = CGAffineTransformMakeScale(1.025, 1.025);
-            self.layer.shadowOpacity = 0.2;
-        } completion:^(BOOL finished) {
-            [UIView animateWithDuration:0.1 animations:^{
-                self.transform = CGAffineTransformIdentity;
-            }];
-        }];
-    } else if (selected) {
-        self.layer.shadowOpacity = 0.2;
-    } else {
-        self.layer.shadowOpacity = 0.0;
-    }
+
     [super setSelected:selected]; // Must be here for animation to fire
-    [self updateColors];
+
 }
 
 #pragma mark - MSEventCell

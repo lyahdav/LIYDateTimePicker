@@ -23,6 +23,7 @@
 - (void)reloadEvents;
 
 @property (nonatomic) BOOL allowTimeSelection;
+@property (nonatomic) BOOL showFixedTimeSelection;
 @property (nonatomic) BOOL showCancelButton;
 @property (nonatomic) BOOL showDayPicker;
 @property (nonatomic, strong) NSDate *date;

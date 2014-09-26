@@ -22,7 +22,8 @@
 #import "MSCurrentTimeGridline.h"
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
-#import "NSDate+CupertinoYankee.h"
+#import "NSDate+CupertinoYankee.h" 
+#import "UIColor+HexString.h"
 
 NSString * const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString * const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
@@ -66,9 +67,13 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 }
 @end
 
+
+
+
+
 #pragma mark - LIYDateTimePickerViewController
 
-@interface LIYDateTimePickerViewController () <MZDayPickerDelegate, MZDayPickerDataSource, MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource, UICollectionViewDelegate>
+@interface LIYDateTimePickerViewController () <MZDayPickerDelegate, MZDayPickerDataSource, MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) MSCollectionViewCalendarLayout *collectionViewCalendarLayout;
 @property (nonatomic, strong) NSArray *allDayEvents;
@@ -77,12 +82,16 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 @property (nonatomic, strong) MZDayPicker *dayPicker;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDateFormatter *dragDateFormatter;
+@property (nonatomic, strong) NSDateFormatter *fixedDateFormatter;
 @property (nonatomic, strong) UIView *dragView;
 @property (nonatomic, strong) UILabel *dragLabel;
 @property (nonatomic, strong) NSLayoutConstraint *dragViewY;
 @property (nonatomic, strong) NSLayoutConstraint *dragLabelY;
 @property (nonatomic, strong) EKEventStore *eventStore;
-
+@property (nonatomic, strong) UIView *fixedSelectedTimeLine;
+@property (nonatomic, strong) UIView *fixedSelectedTimeBubble;
+@property (nonatomic, strong) UILabel *fixedSelectedTimeBubbleTime;
+@property (nonatomic, strong) NSDate *selectedDate;
 
 @end
 
@@ -170,6 +179,46 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     }
     
     [self reloadEvents];
+
+}
+
+
+-(void) viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    if (self.showFixedTimeSelection){
+        [self setupFixedTimeSelector];
+    }
+}
+
+-(void) setupFixedTimeSelector{
+    
+    
+    self.fixedDateFormatter = [[NSDateFormatter alloc] init];
+    [self.fixedDateFormatter setDateFormat:@"h:mm a"];
+    
+    
+    CGFloat middleY = self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
+    self.fixedSelectedTimeLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 2.0f)];
+    self.fixedSelectedTimeLine.backgroundColor = [UIColor purpleColor];
+    [self.view addSubview:self.fixedSelectedTimeLine];
+    
+    self.fixedSelectedTimeBubble = [[UIView alloc] initWithFrame:CGRectMake(0.0f, middleY, 120.0f, 30.0f)];
+    self.fixedSelectedTimeBubble.backgroundColor = [UIColor redColor];
+    self.fixedSelectedTimeBubble.layer.cornerRadius = 15.0f;
+    [self.fixedSelectedTimeBubble.layer masksToBounds];
+    self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
+    self.fixedSelectedTimeBubble.layer.borderColor = [UIColor colorWithHexString:@"353535"].CGColor;
+    self.fixedSelectedTimeBubble.layer.borderWidth = 1.0f;
+    self.fixedSelectedTimeBubble.backgroundColor = [UIColor colorWithWhite:1.0f alpha:.6f];
+    [self.view addSubview:self.fixedSelectedTimeBubble];
+    
+    self.fixedSelectedTimeBubbleTime = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 30.0f)];
+    self.fixedSelectedTimeBubbleTime.textAlignment = NSTextAlignmentCenter;
+    self.fixedSelectedTimeBubbleTime.textColor = [UIColor colorWithHexString:@"59c7f1"];
+    self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
+    [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
+    
 }
 
 - (void)createDayPicker {
@@ -359,6 +408,18 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
     return hour;
 }
 
+
+
+#pragma mark - UIScrollViewDelegate
+-(void) scrollViewDidScroll:(UIScrollView *)scrollView{
+
+    //self.fixedSelectedTimeBubbleTime.text = [NSString stringWithFormat:@"%.1f", [self hourAtYCoord:10.0f + scrollView.contentOffset.y + (self.collectionView.frame.size.height / 2)]];
+    NSDate *date = [self dateFromYCoord:(10.0f + scrollView.contentOffset.y + (self.collectionView.frame.size.height / 2))];
+    self.fixedSelectedTimeBubbleTime.text = [self.fixedDateFormatter stringFromDate:date];
+}
+
+
+
 # pragma mark - properties
 
 - (void)setDate:(NSDate *)date {
@@ -414,6 +475,7 @@ NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifi
 }
 
 #pragma mark - UICollectionViewDataSource
+
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;

@@ -89,7 +89,7 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 @property (nonatomic, strong) NSLayoutConstraint *dragViewY;
 @property (nonatomic, strong) NSLayoutConstraint *dragLabelY;
 @property (nonatomic, strong) EKEventStore *eventStore;
-//@property (nonatomic, strong) UIView *fixedSelectedTimeLine;
+@property (nonatomic, strong) UIView *fixedSelectedTimeLine;
 @property (nonatomic, strong) UIView *fixedSelectedTimeBubble;
 @property (nonatomic, strong) UILabel *fixedSelectedTimeBubbleTime;
 @property (nonatomic, strong) NSDate *selectedDate;
@@ -175,9 +175,7 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 
     [self setupConstraints];
     
-    if (self.allowTimeSelection) {
-        [self setupTimeSelector];
-    }
+
     
     [self reloadEvents];
 
@@ -187,11 +185,37 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 -(void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    //self.showFixedTimeSelection = YES;
+    if (self.allowTimeSelection) {
+        [self setupSaveButton];
+    }
     
-    if (self.showFixedTimeSelection){
+}
+
+-(void) viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    if (self.allowTimeSelection){
         [self setupFixedTimeSelector];
     }
+    
+}
+
+#pragma mark - Actions
+-(void) saveButtonTapped{
+    [self.delegate dateTimePicker:self didSelectDate:self.selectedDate];
+}
+
+#pragma mark - Convenience
+
+-(void) setupSaveButton{
+    UIButton *saveButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, self.view.frame.size.height - 44.0f, self.view.frame.size.width, 44.0f)];
+    [saveButton addTarget:self action:@selector(saveButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    saveButton.backgroundColor = [UIColor orangeColor];
+    [saveButton setTitle:@"Save" forState:UIControlStateNormal];
+    saveButton.titleLabel.textColor = [UIColor whiteColor];
+    
+    [self.view addSubview:saveButton];
+    
 }
 
 -(void) setupFixedTimeSelector{
@@ -199,9 +223,11 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
     self.fixedDateFormatter = [[NSDateFormatter alloc] init];
     [self.fixedDateFormatter setDateFormat:@"h:mm a"];
     
-    [self drawfixedTimeSelectorLines];
+    CGFloat middleY = 40.0f + self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
     
-    CGFloat middleY = self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
+    self.fixedSelectedTimeLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f)];
+    self.fixedSelectedTimeLine.backgroundColor = [UIColor colorWithRed:0.0f green:0.5f blue:1.0f alpha:.2f];
+    [self.view addSubview:self.fixedSelectedTimeLine];
     
     self.fixedSelectedTimeBubble = [[UIView alloc] initWithFrame:CGRectMake(0.0f, middleY, 120.0f, 30.0f)];
     self.fixedSelectedTimeBubble.backgroundColor = [UIColor redColor];
@@ -210,7 +236,7 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
     self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
     self.fixedSelectedTimeBubble.layer.borderColor = [UIColor colorWithHexString:@"353535"].CGColor;
     self.fixedSelectedTimeBubble.layer.borderWidth = 1.0f;
-    self.fixedSelectedTimeBubble.backgroundColor = [UIColor colorWithWhite:1.0f alpha:.6f];
+    self.fixedSelectedTimeBubble.backgroundColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
     [self.view addSubview:self.fixedSelectedTimeBubble];
     
     self.fixedSelectedTimeBubbleTime = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 30.0f)];
@@ -219,30 +245,6 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
     self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
     [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
     
-}
-
-
--(void) drawfixedTimeSelectorLines{
-
-//    CGFloat middleY = self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
-//    
-//    UIBezierPath *path = [UIBezierPath bezierPath];
-//    //draw a line
-//    [path moveToPoint:CGPointMake(0.0, middleY)];
-//    [path addLineToPoint:CGPointMake((self.view.frame.size.width / 2) - kFixedTimeBuddleWidth, middleY)];
-//    [path stroke];
-//    
-//    float dashPattern[] = {2,6,4,2};
-//    [path setLineDash:dashPattern count:4 phase:3];
-//    
-//    UIColor *fill = [UIColor blueColor];
-//    shapelayer.strokeStart = 0.0;
-//    shapelayer.strokeColor = fill.CGColor;
-//    shapelayer.lineWidth = 5.0;
-//    shapelayer.lineJoin = kCALineJoinMiter;
-//    shapelayer.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInt:10],[NSNumber numberWithInt:7], nil];
-//    shapelayer.lineDashPhase = 3.0f;
-//    shapelayer.path = path.CGPath;
 }
 
 
@@ -439,9 +441,8 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 #pragma mark - UIScrollViewDelegate
 -(void) scrollViewDidScroll:(UIScrollView *)scrollView{
 
-    //self.fixedSelectedTimeBubbleTime.text = [NSString stringWithFormat:@"%.1f", [self hourAtYCoord:10.0f + scrollView.contentOffset.y + (self.collectionView.frame.size.height / 2)]];
-    NSDate *date = [self dateFromYCoord:(10.0f + scrollView.contentOffset.y + (self.collectionView.frame.size.height / 2))];
-    self.fixedSelectedTimeBubbleTime.text = [self.fixedDateFormatter stringFromDate:date];
+    self.selectedDate = [self dateFromYCoord:(12.0f + scrollView.contentOffset.y + (self.collectionView.frame.size.height / 2))];
+    self.fixedSelectedTimeBubbleTime.text = [self.fixedDateFormatter stringFromDate:self.selectedDate];
 }
 
 

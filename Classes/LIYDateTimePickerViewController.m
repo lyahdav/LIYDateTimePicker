@@ -93,6 +93,7 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 @property (nonatomic, strong) UIView *fixedSelectedTimeBubble;
 @property (nonatomic, strong) UILabel *fixedSelectedTimeBubbleTime;
 @property (nonatomic, strong) NSDate *selectedDate;
+@property (nonatomic, strong) MSDayColumnHeader *dayColumnHeader;
 
 @end
 
@@ -147,6 +148,8 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelTapped:)];
     }
     
+    
+    
     self.collectionViewCalendarLayout = [[LIYCollectionViewCalendarLayout alloc] init];
     self.collectionViewCalendarLayout.hourHeight = 50.0; //TODO const
     self.collectionViewCalendarLayout.delegate = self;
@@ -174,16 +177,18 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
     }
 
     [self setupConstraints];
+
+    [self reloadEvents];
     
 
-    
-    [self reloadEvents];
 
 }
 
 
 -(void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
+    self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0.0f;
     
     if (self.allowTimeSelection) {
         [self setupSaveButton];
@@ -207,6 +212,14 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 
 #pragma mark - Convenience
 
+-(void) setSelectedTimeText{
+    
+    self.selectedDate = [self dateFromYCoord:(12.0f + self.collectionView.contentOffset.y + (self.collectionView.frame.size.height / 2))];
+    self.fixedSelectedTimeBubbleTime.text = [self.fixedDateFormatter stringFromDate:self.selectedDate];
+    
+    [self.dayColumnHeader setDay:self.selectedDate];
+}
+
 -(void) setupSaveButton{
     UIButton *saveButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, self.view.frame.size.height - 44.0f, self.view.frame.size.width, 44.0f)];
     [saveButton addTarget:self action:@selector(saveButtonTapped) forControlEvents:UIControlEventTouchUpInside];
@@ -220,6 +233,8 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 
 -(void) setupFixedTimeSelector{
     
+
+    // floating bubble and line
     self.fixedDateFormatter = [[NSDateFormatter alloc] init];
     [self.fixedDateFormatter setDateFormat:@"h:mm a"];
     
@@ -244,6 +259,8 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
     self.fixedSelectedTimeBubbleTime.textColor = [UIColor colorWithHexString:@"59c7f1"];
     self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
     [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
+    
+    [self setSelectedTimeText];
     
 }
 
@@ -441,8 +458,9 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 #pragma mark - UIScrollViewDelegate
 -(void) scrollViewDidScroll:(UIScrollView *)scrollView{
 
-    self.selectedDate = [self dateFromYCoord:(12.0f + scrollView.contentOffset.y + (self.collectionView.frame.size.height / 2))];
-    self.fixedSelectedTimeBubbleTime.text = [self.fixedDateFormatter stringFromDate:self.selectedDate];
+    [self setSelectedTimeText];
+    
+
 }
 
 
@@ -504,6 +522,7 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 #pragma mark - UICollectionViewDataSource
 
 
+
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
@@ -512,7 +531,9 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
     return self.nonAllDayEvents.count;
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+ - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+     
+
     MSEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MSEventCellReuseIdentifier forIndexPath:indexPath];
     cell.event = self.nonAllDayEvents[indexPath.row];
     return cell;
@@ -520,25 +541,28 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     UICollectionReusableView *view;
+    
+    
     if (kind == MSCollectionElementKindDayColumnHeader) {
-        MSDayColumnHeader *dayColumnHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSDayColumnHeaderReuseIdentifier forIndexPath:indexPath];
+        self.dayColumnHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSDayColumnHeaderReuseIdentifier forIndexPath:indexPath];
         NSDate *day = [self.collectionViewCalendarLayout dateForDayColumnHeaderAtIndexPath:indexPath];
         NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
-        dayColumnHeader.day = day;
-        dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
-        dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
+        
+        self.dayColumnHeader.day = day;
+        self.dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
+        self.dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
 
         if (self.allDayEvents.count == 0) {
-            dayColumnHeader.showAllDaySection = NO;
+            self.dayColumnHeader.showAllDaySection = NO;
         } else {
-            dayColumnHeader.showAllDaySection = YES;
+            self.dayColumnHeader.showAllDaySection = YES;
             NSArray *allDayEventTitles = [self.allDayEvents map:^id(EKEvent *event) { // TODO: compute once
                 return event.title;
             }];
-            dayColumnHeader.allDayEventsLabel.text = [allDayEventTitles componentsJoinedByString:@", "];
+            self.dayColumnHeader.allDayEventsLabel.text = [allDayEventTitles componentsJoinedByString:@", "];
         }
 
-        view = dayColumnHeader;
+        view = self.dayColumnHeader;
     } else if (kind == MSCollectionElementKindTimeRowHeader) {
         MSTimeRowHeader *timeRowHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSTimeRowHeaderReuseIdentifier forIndexPath:indexPath];
         timeRowHeader.time = [self.collectionViewCalendarLayout dateForTimeRowHeaderAtIndexPath:indexPath];

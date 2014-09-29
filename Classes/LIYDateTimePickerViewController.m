@@ -29,6 +29,8 @@ NSString * const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString * const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
 NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
 CGFloat const kFixedTimeBuddleWidth = 120.0f;
+CGFloat const kLIYBottomTimeLineBufferForSelection = 177.0f;
+CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
@@ -194,6 +196,15 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
         [self setupSaveButton];
     }
     
+    if (self.allowTimeSelection){
+        UIEdgeInsets edgeInsets = self.collectionView.contentInset;
+        edgeInsets.top = kLIYTopTimeLineBufferForSelection;
+        edgeInsets.bottom = kLIYBottomTimeLineBufferForSelection;
+        self.collectionView.contentInset = edgeInsets;
+    }
+ 
+    
+    
 }
 
 -(void) viewDidAppear:(BOOL)animated{
@@ -217,7 +228,9 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
     self.selectedDate = [self dateFromYCoord:(12.0f + self.collectionView.contentOffset.y + (self.collectionView.frame.size.height / 2))];
     self.fixedSelectedTimeBubbleTime.text = [self.fixedDateFormatter stringFromDate:self.selectedDate];
     
-    [self.dayColumnHeader setDay:self.selectedDate];
+    if (self.allowTimeSelection){
+        [self.dayColumnHeader setDay:self.selectedDate];
+    }
 }
 
 -(void) setupSaveButton{
@@ -233,32 +246,41 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 
 -(void) setupFixedTimeSelector{
     
-
-    // floating bubble and line
-    self.fixedDateFormatter = [[NSDateFormatter alloc] init];
-    [self.fixedDateFormatter setDateFormat:@"h:mm a"];
-    
     CGFloat middleY = 40.0f + self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
     
-    self.fixedSelectedTimeLine = [[UIView alloc] initWithFrame:CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f)];
-    self.fixedSelectedTimeLine.backgroundColor = [UIColor colorWithRed:0.0f green:0.5f blue:1.0f alpha:.2f];
-    [self.view addSubview:self.fixedSelectedTimeLine];
+
+    if (!self.fixedDateFormatter)
+    {
+        // floating bubble and line
+        self.fixedDateFormatter = [[NSDateFormatter alloc] init];
+        [self.fixedDateFormatter setDateFormat:@"h:mm a"];
+        
+
+        self.fixedSelectedTimeLine = [[UIView alloc] init]; //]WithFrame:CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f)];
+        self.fixedSelectedTimeLine.backgroundColor = [UIColor colorWithRed:0.0f green:0.5f blue:1.0f alpha:.2f];
+        [self.view addSubview:self.fixedSelectedTimeLine];
+        
+        self.fixedSelectedTimeBubble = [[UIView alloc] init];//WithFrame:CGRectMake(0.0f, middleY, 120.0f, 30.0f)];
+        self.fixedSelectedTimeBubble.backgroundColor = [UIColor redColor];
+        self.fixedSelectedTimeBubble.layer.cornerRadius = 15.0f;
+        [self.fixedSelectedTimeBubble.layer masksToBounds];
+        self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
+        self.fixedSelectedTimeBubble.layer.borderColor = [UIColor colorWithHexString:@"353535"].CGColor;
+        self.fixedSelectedTimeBubble.layer.borderWidth = 1.0f;
+        self.fixedSelectedTimeBubble.backgroundColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
+        [self.view addSubview:self.fixedSelectedTimeBubble];
+        
+        self.fixedSelectedTimeBubbleTime = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 30.0f)];
+        self.fixedSelectedTimeBubbleTime.textAlignment = NSTextAlignmentCenter;
+        self.fixedSelectedTimeBubbleTime.textColor = [UIColor colorWithHexString:@"59c7f1"];
+        self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
+        [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
+    }
     
-    self.fixedSelectedTimeBubble = [[UIView alloc] initWithFrame:CGRectMake(0.0f, middleY, 120.0f, 30.0f)];
-    self.fixedSelectedTimeBubble.backgroundColor = [UIColor redColor];
-    self.fixedSelectedTimeBubble.layer.cornerRadius = 15.0f;
-    [self.fixedSelectedTimeBubble.layer masksToBounds];
+    self.fixedSelectedTimeLine.frame = CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f);
+    self.fixedSelectedTimeBubble.frame = CGRectMake(0.0f, middleY, 120.0f, 30.0f);
     self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
-    self.fixedSelectedTimeBubble.layer.borderColor = [UIColor colorWithHexString:@"353535"].CGColor;
-    self.fixedSelectedTimeBubble.layer.borderWidth = 1.0f;
-    self.fixedSelectedTimeBubble.backgroundColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
-    [self.view addSubview:self.fixedSelectedTimeBubble];
     
-    self.fixedSelectedTimeBubbleTime = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 30.0f)];
-    self.fixedSelectedTimeBubbleTime.textAlignment = NSTextAlignmentCenter;
-    self.fixedSelectedTimeBubbleTime.textColor = [UIColor colorWithHexString:@"59c7f1"];
-    self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
-    [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
     
     [self setSelectedTimeText];
     
@@ -356,6 +378,11 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 }
 
 - (NSDate *)dateFromYCoord:(CGFloat)y {
+    
+    if (self.allDayEvents.count > 0){
+        y = y + kLIYAllDayHeight * self.allDayEvents.count;
+    }
+    
     NSCalendar *cal = [NSCalendar currentCalendar];
     NSDateComponents *dateComponents = [cal components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.date];
     CGFloat hour = round([self hourAtYCoord:y] * 4) / 4;
@@ -494,6 +521,12 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 - (void)setAllDayEvents:(NSMutableArray *)allDayEvents {
     _allDayEvents = allDayEvents;
     self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == 0 ? 56.0f : 56.0f + kLIYAllDayHeight; // TODO don't hardcode
+    
+    if (allDayEvents.count > 0){
+        UIEdgeInsets edgeInsets = self.collectionView.contentInset;
+        edgeInsets.bottom = kLIYBottomTimeLineBufferForSelection - kLIYAllDayHeight * allDayEvents.count;
+        self.collectionView.contentInset = edgeInsets;
+    }
 }
 
 #pragma mark - MZDayPickerDataSource
@@ -547,10 +580,12 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
         self.dayColumnHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSDayColumnHeaderReuseIdentifier forIndexPath:indexPath];
         NSDate *day = [self.collectionViewCalendarLayout dateForDayColumnHeaderAtIndexPath:indexPath];
         NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
-        
+
+        self.dayColumnHeader.showTimeInHeader = self.allowTimeSelection;
         self.dayColumnHeader.day = day;
         self.dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
         self.dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
+
 
         if (self.allDayEvents.count == 0) {
             self.dayColumnHeader.showAllDaySection = NO;

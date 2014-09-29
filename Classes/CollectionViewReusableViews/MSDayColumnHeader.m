@@ -77,10 +77,13 @@
 {
     _day = day;
     
-    static NSDateFormatter *dateFormatter;
-    if (!dateFormatter) {
-        dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? @"EEE MMM d" : @"EEEE, MMM d, hh:mm a");
+
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        
+    if (self.showTimeInHeader){
+        dateFormatter.dateFormat = @"EEEE, MMM d, hh:mm a";
+    }else{
+        dateFormatter.dateFormat = @"EEEE, MMMM d";
     }
     
     if (!self.dayTitlePrefix){

@@ -1,3 +1,4 @@
+
 //
 //  ViewController.m
 //  CalendarExample
@@ -97,6 +98,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) MSDayColumnHeader *dayColumnHeader;
 
+
 @end
 
 @implementation LIYDateTimePickerViewController
@@ -189,14 +191,13 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 -(void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+
     
     self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0.0f;
     
     if (self.allowTimeSelection) {
         [self setupSaveButton];
-    }
-    
-    if (self.allowTimeSelection){
+
         UIEdgeInsets edgeInsets = self.collectionView.contentInset;
         edgeInsets.top = kLIYTopTimeLineBufferForSelection;
         edgeInsets.bottom = kLIYBottomTimeLineBufferForSelection;
@@ -209,6 +210,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 -(void) viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+
     
     if (self.allowTimeSelection){
         [self setupFixedTimeSelector];
@@ -229,6 +231,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     self.fixedSelectedTimeBubbleTime.text = [self.fixedDateFormatter stringFromDate:self.selectedDate];
     
     if (self.allowTimeSelection){
+        
         [self.dayColumnHeader setDay:self.selectedDate];
     }
 }
@@ -280,6 +283,15 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     self.fixedSelectedTimeLine.frame = CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f);
     self.fixedSelectedTimeBubble.frame = CGRectMake(0.0f, middleY, 120.0f, 30.0f);
     self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
+    
+    if (self.date){
+        NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:self.date];
+        
+        float minuteFactor = dateComponents.minute / 60.0f;
+        float timeFactor = dateComponents.hour + minuteFactor;
+        CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection;
+        [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:NO];
+    }
     
     
     [self setSelectedTimeText];
@@ -407,6 +419,14 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
         self.dragLabel.hidden = YES;
         [self.delegate dateTimePicker:self didSelectDate:selectedDate];
     }
+}
+
+-(NSDate *) combineDateAndTime:(NSDate *) dateForDay timeDate:(NSDate *) dateForTime{
+
+    NSDateComponents *timeComps = [[NSCalendar currentCalendar] components:(NSCalendarUnitMinute | NSCalendarUnitHour) fromDate:dateForTime];
+    
+    return [[NSCalendar currentCalendar] dateBySettingHour:timeComps.hour minute:timeComps.minute second:0 ofDate:dateForDay options:nil];
+
 }
 
 - (NSDate *)nextDayForDate:(NSDate *)date {
@@ -539,7 +559,11 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day
 {
-    self.date = day.date;
+    
+    self.date = [self combineDateAndTime:day.date timeDate:self.date];
+    
+    [self setupFixedTimeSelector];
+
 }
 
 
@@ -582,7 +606,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
         NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
 
         self.dayColumnHeader.showTimeInHeader = self.allowTimeSelection;
-        self.dayColumnHeader.day = day;
+        self.dayColumnHeader.day = [self combineDateAndTime:day timeDate:self.date];
         self.dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
         self.dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
 

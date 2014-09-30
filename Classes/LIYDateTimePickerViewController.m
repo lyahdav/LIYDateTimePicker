@@ -203,7 +203,9 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
         self.collectionView.contentInset = edgeInsets;
     }
  
-    
+    if (self.allowTimeSelection){
+        [self setupFixedTimeSelector];
+    }
     
 }
 
@@ -211,9 +213,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [super viewDidAppear:animated];
 
     
-    if (self.allowTimeSelection){
-        [self setupFixedTimeSelector];
-    }
+
     
     self.isDoneLoading = YES;
     

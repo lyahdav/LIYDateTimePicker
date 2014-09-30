@@ -97,6 +97,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 @property (nonatomic, strong) UILabel *fixedSelectedTimeBubbleTime;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) MSDayColumnHeader *dayColumnHeader;
+@property (nonatomic, assign) BOOL isDoneLoading;
 
 
 @end
@@ -183,14 +184,13 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [self setupConstraints];
 
     [self reloadEvents];
-    
-
 
 }
 
 
 -(void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    self.isDoneLoading = NO;
 
     
     self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0.0f;
@@ -215,6 +215,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     if (self.allowTimeSelection){
         [self setupFixedTimeSelector];
     }
+    
+    self.isDoneLoading = YES;
     
 }
 
@@ -505,7 +507,9 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 #pragma mark - UIScrollViewDelegate
 -(void) scrollViewDidScroll:(UIScrollView *)scrollView{
 
-    [self setSelectedTimeText];
+    if (self.isDoneLoading) {
+        [self setSelectedTimeText];
+    }
     
 
 }
@@ -560,11 +564,10 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day
 {
-    
+
     self.date = [self combineDateAndTime:day.date timeDate:self.date];
     
     [self setupFixedTimeSelector];
-
 }
 
 

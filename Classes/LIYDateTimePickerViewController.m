@@ -183,17 +183,16 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
     [self setupConstraints];
 
-    [self reloadEvents];
+
 
 }
 
 
 -(void) viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [self reloadEvents];
     self.isDoneLoading = NO;
 
-    
-    self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0.0f;
     
     if (self.allowTimeSelection) {
         [self setupSaveButton];
@@ -251,52 +250,55 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 -(void) setupFixedTimeSelector{
     
-    CGFloat middleY = 40.0f + self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
+    if (self.allowTimeSelection){
     
-
-    if (!self.fixedDateFormatter)
-    {
-        // floating bubble and line
-        self.fixedDateFormatter = [[NSDateFormatter alloc] init];
-        [self.fixedDateFormatter setDateFormat:@"h:mm a"];
+        CGFloat middleY = 40.0f + self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
         
 
-        self.fixedSelectedTimeLine = [[UIView alloc] init]; //]WithFrame:CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f)];
-        self.fixedSelectedTimeLine.backgroundColor = [UIColor colorWithRed:0.0f green:0.5f blue:1.0f alpha:.2f];
-        [self.view addSubview:self.fixedSelectedTimeLine];
+        if (!self.fixedDateFormatter)
+        {
+            // floating bubble and line
+            self.fixedDateFormatter = [[NSDateFormatter alloc] init];
+            [self.fixedDateFormatter setDateFormat:@"h:mm a"];
+            
+
+            self.fixedSelectedTimeLine = [[UIView alloc] init]; //]WithFrame:CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f)];
+            self.fixedSelectedTimeLine.backgroundColor = [UIColor colorWithRed:0.0f green:0.5f blue:1.0f alpha:.2f];
+            [self.view addSubview:self.fixedSelectedTimeLine];
+            
+            self.fixedSelectedTimeBubble = [[UIView alloc] init];//WithFrame:CGRectMake(0.0f, middleY, 120.0f, 30.0f)];
+            self.fixedSelectedTimeBubble.backgroundColor = [UIColor redColor];
+            self.fixedSelectedTimeBubble.layer.cornerRadius = 15.0f;
+            [self.fixedSelectedTimeBubble.layer masksToBounds];
+            self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
+            self.fixedSelectedTimeBubble.layer.borderColor = [UIColor colorWithHexString:@"353535"].CGColor;
+            self.fixedSelectedTimeBubble.layer.borderWidth = 1.0f;
+            self.fixedSelectedTimeBubble.backgroundColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
+            [self.view addSubview:self.fixedSelectedTimeBubble];
+            
+            self.fixedSelectedTimeBubbleTime = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 30.0f)];
+            self.fixedSelectedTimeBubbleTime.textAlignment = NSTextAlignmentCenter;
+            self.fixedSelectedTimeBubbleTime.textColor = [UIColor colorWithHexString:@"59c7f1"];
+            self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
+            [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
+        }
         
-        self.fixedSelectedTimeBubble = [[UIView alloc] init];//WithFrame:CGRectMake(0.0f, middleY, 120.0f, 30.0f)];
-        self.fixedSelectedTimeBubble.backgroundColor = [UIColor redColor];
-        self.fixedSelectedTimeBubble.layer.cornerRadius = 15.0f;
-        [self.fixedSelectedTimeBubble.layer masksToBounds];
+        self.fixedSelectedTimeLine.frame = CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f);
+        self.fixedSelectedTimeBubble.frame = CGRectMake(0.0f, middleY, 120.0f, 30.0f);
         self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
-        self.fixedSelectedTimeBubble.layer.borderColor = [UIColor colorWithHexString:@"353535"].CGColor;
-        self.fixedSelectedTimeBubble.layer.borderWidth = 1.0f;
-        self.fixedSelectedTimeBubble.backgroundColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
-        [self.view addSubview:self.fixedSelectedTimeBubble];
         
-        self.fixedSelectedTimeBubbleTime = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 30.0f)];
-        self.fixedSelectedTimeBubbleTime.textAlignment = NSTextAlignmentCenter;
-        self.fixedSelectedTimeBubbleTime.textColor = [UIColor colorWithHexString:@"59c7f1"];
-        self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
-        [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
-    }
-    
-    self.fixedSelectedTimeLine.frame = CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f);
-    self.fixedSelectedTimeBubble.frame = CGRectMake(0.0f, middleY, 120.0f, 30.0f);
-    self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
-    
-    if (self.date){
-        NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:self.date];
+        if (self.date){
+            NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:self.date];
+            
+            float minuteFactor = dateComponents.minute / 60.0f;
+            float timeFactor = dateComponents.hour + minuteFactor;
+            CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection;
+            [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:NO];
+        }
         
-        float minuteFactor = dateComponents.minute / 60.0f;
-        float timeFactor = dateComponents.hour + minuteFactor;
-        CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection;
-        [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:NO];
+        
+        [self setSelectedTimeText];
     }
-    
-    
-    [self setSelectedTimeText];
     
 }
 

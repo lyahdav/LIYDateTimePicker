@@ -517,7 +517,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 - (void)setDate:(NSDate *)date {
     _date = date;
     
-    if (![date isEqualToDate:self.dayPicker.currentDate]){
+    if (self.dayPicker.currentDate && ![date isSameDayAsDate:self.dayPicker.currentDate])
+    {
         [self.dayPicker setStartDate:self.date endDate:[self endDate]];
         [self.dayPicker setCurrentDate:date animated:YES];
 

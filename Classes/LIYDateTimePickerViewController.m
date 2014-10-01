@@ -465,7 +465,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
         NSPredicate *predicate = [strongEventStore predicateForEventsWithStartDate:[strongSelf.date beginningOfDay]
                                                                            endDate:[strongSelf nextDayForDate:[strongSelf.date beginningOfDay]]
-                                                                         calendars:self.visibleCalendars];
+                                                                         calendars:strongSelf.visibleCalendars];
         NSArray *events = [strongEventStore eventsMatchingPredicate:predicate];
         dispatch_async(dispatch_get_main_queue(), ^{ // TODO invalidate previous block if a new one is enqueued
             NSMutableArray *nonAllDayEvents = [NSMutableArray array];
@@ -538,12 +538,12 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [self.collectionView reloadData];
     [self scrollToHour:6];
     
-    [self reloadEvents];
+    //[self reloadEvents];
 }
 
 -(void) setVisibleCalendars:(NSArray *)visibleCalendars{
     _visibleCalendars = visibleCalendars;
-    [self reloadEvents];
+    //[self reloadEvents];
 }
 
 - (void)setAllDayEvents:(NSMutableArray *)allDayEvents {
@@ -571,6 +571,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     self.date = [self combineDateAndTime:day.date timeDate:self.date];
     
     [self setupFixedTimeSelector];
+    
+    [self reloadEvents];
 }
 
 

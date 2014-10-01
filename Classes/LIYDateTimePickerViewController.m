@@ -537,13 +537,10 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [self.collectionViewCalendarLayout invalidateLayoutCache];
     [self.collectionView reloadData];
     [self scrollToHour:6];
-    
-    //[self reloadEvents];
 }
 
 -(void) setVisibleCalendars:(NSArray *)visibleCalendars{
     _visibleCalendars = visibleCalendars;
-    //[self reloadEvents];
 }
 
 - (void)setAllDayEvents:(NSMutableArray *)allDayEvents {

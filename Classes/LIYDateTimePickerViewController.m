@@ -107,6 +107,12 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 + (instancetype)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate {
     LIYDateTimePickerViewController *vc = [self new];
     vc.delegate = delegate;
+    
+    if (!date)
+    {
+        date = [NSDate date];
+    }
+        
     vc.date = date;
     return vc;
 }
@@ -193,26 +199,21 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [self reloadEvents];
     self.isDoneLoading = NO;
 
-    
-    if (self.allowTimeSelection) {
-        [self setupSaveButton];
-
-        UIEdgeInsets edgeInsets = self.collectionView.contentInset;
-        edgeInsets.top = kLIYTopTimeLineBufferForSelection;
-        edgeInsets.bottom = kLIYBottomTimeLineBufferForSelection;
-        self.collectionView.contentInset = edgeInsets;
-    }
- 
-    if (self.allowTimeSelection){
-        [self setupFixedTimeSelector];
-    }
-    
 }
 
 -(void) viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 
-    
+    if (self.allowTimeSelection){
+        [self setupFixedTimeSelector];
+
+        UIEdgeInsets edgeInsets = self.collectionView.contentInset;
+        edgeInsets.top = kLIYTopTimeLineBufferForSelection;
+        edgeInsets.bottom = kLIYBottomTimeLineBufferForSelection;
+        self.collectionView.contentInset = edgeInsets;
+        
+        [self setupSaveButton];
+    }
 
     
     self.isDoneLoading = YES;
@@ -293,7 +294,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
             float minuteFactor = dateComponents.minute / 60.0f;
             float timeFactor = dateComponents.hour + minuteFactor;
             CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection;
-            [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:NO];
+            [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:YES];
         }
         
         

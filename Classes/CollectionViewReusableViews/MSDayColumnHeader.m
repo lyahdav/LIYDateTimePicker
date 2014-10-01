@@ -66,9 +66,9 @@
         }];
         self.allDayEventsLabel.font = [UIFont boldSystemFontOfSize:10.0];
         
-        UIView *bottomBorder = [[UIView alloc] initWithFrame:CGRectMake(0.0f, self.frame.size.height, self.frame.size.width, 1.0f)];
-        bottomBorder.backgroundColor = [UIColor colorWithHexString:@"d0d0d0"];
-        [self addSubview:bottomBorder];
+//        UIView *bottomBorder = [[UIView alloc] initWithFrame:CGRectMake(0.0f, self.frame.size.height, self.frame.size.width, 1.0f)];
+//        bottomBorder.backgroundColor = [UIColor colorWithHexString:@"d0d0d0"];
+//        [self addSubview:bottomBorder];
     }
     return self;
 }

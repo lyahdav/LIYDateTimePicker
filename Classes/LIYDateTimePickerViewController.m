@@ -427,11 +427,16 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 }
 
 -(NSDate *) combineDateAndTime:(NSDate *) dateForDay timeDate:(NSDate *) dateForTime{
-
-    NSDateComponents *timeComps = [[NSCalendar currentCalendar] components:(NSCalendarUnitMinute | NSCalendarUnitHour) fromDate:dateForTime];
     
-    return [[NSCalendar currentCalendar] dateBySettingHour:timeComps.hour minute:timeComps.minute second:0 ofDate:dateForDay options:nil];
-
+    NSDateComponents *timeComps = [[NSCalendar currentCalendar] components:(NSCalendarUnitMinute | NSCalendarUnitHour) fromDate:dateForTime];
+    NSDateComponents *dateComps = [[NSCalendar currentCalendar] components:(NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitYear) fromDate:dateForDay];
+    
+    dateComps.hour = timeComps.hour;
+    dateComps.minute = timeComps.minute;
+    
+    NSDate *toReturn = [[NSCalendar currentCalendar] dateFromComponents:dateComps];
+    return toReturn;
+    
 }
 
 - (NSDate *)nextDayForDate:(NSDate *)date {

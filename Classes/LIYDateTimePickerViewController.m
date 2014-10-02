@@ -598,8 +598,13 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
      
 
     MSEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MSEventCellReuseIdentifier forIndexPath:indexPath];
-    cell.event = self.nonAllDayEvents[indexPath.row];
-    return cell;
+     
+     // this is a safety check since we were seeing a crash here. not sure how this would happen.
+    if (indexPath.row < self.nonAllDayEvents.count){
+         cell.event = self.nonAllDayEvents[indexPath.row];
+    }
+    
+     return cell;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {

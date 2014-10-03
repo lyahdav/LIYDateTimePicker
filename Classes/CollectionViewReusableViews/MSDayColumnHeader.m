@@ -28,14 +28,15 @@
         
         self.backgroundColor = [UIColor clearColor];
         self.title = [UILabel new];
-        self.title.textAlignment = NSTextAlignmentCenter;
+        self.title.textAlignment = NSTextAlignmentLeft;
         self.title.backgroundColor = [UIColor clearColor];
         self.title.font = [UIFont boldSystemFontOfSize:14.0];
         [self addSubview:self.title];
         
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self);
+//            make.centerX.equalTo(self);
             make.top.equalTo(@(kLIYAllDayHeight));
+            make.left.equalTo(@16.0f);
         }];
         
         self.allDayView = [UIView new];

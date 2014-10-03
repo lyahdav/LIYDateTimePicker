@@ -162,6 +162,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     
     self.collectionViewCalendarLayout = [[LIYCollectionViewCalendarLayout alloc] init];
     self.collectionViewCalendarLayout.hourHeight = 50.0; //TODO const
+    self.collectionViewCalendarLayout.sectionWidth = self.view.frame.size.width - 66.0f;
     self.collectionViewCalendarLayout.delegate = self;
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.collectionViewCalendarLayout];
     self.collectionView.dataSource = self;
@@ -174,8 +175,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [self.collectionView registerClass:MSTimeRowHeader.class forSupplementaryViewOfKind:MSCollectionElementKindTimeRowHeader withReuseIdentifier:MSTimeRowHeaderReuseIdentifier];
 
     // These are optional. If you don't want any of the decoration views, just don't register a class for them.
-    //[self.collectionViewCalendarLayout registerClass:MSCurrentTimeIndicator.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeIndicator];
-    //[self.collectionViewCalendarLayout registerClass:MSCurrentTimeGridline.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeHorizontalGridline];
+    [self.collectionViewCalendarLayout registerClass:MSCurrentTimeIndicator.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeIndicator];
+    [self.collectionViewCalendarLayout registerClass:MSCurrentTimeGridline.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeHorizontalGridline];
     [self.collectionViewCalendarLayout registerClass:MSGridline.class forDecorationViewOfKind:MSCollectionElementKindVerticalGridline];
     [self.collectionViewCalendarLayout registerClass:MSGridline.class forDecorationViewOfKind:MSCollectionElementKindHorizontalGridline];
     [self.collectionViewCalendarLayout registerClass:MSTimeRowHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindTimeRowHeaderBackground];
@@ -212,6 +213,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
         self.collectionView.contentInset = edgeInsets;
         
         [self setupSaveButton];
+    }else{
+        [self scrollToTime:[NSDate date]];
     }
 
     
@@ -288,12 +291,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
         self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
         
         if (self.date){
-            NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:self.date];
-            
-            float minuteFactor = dateComponents.minute / 60.0f;
-            float timeFactor = dateComponents.hour + minuteFactor;
-            CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection;
-            [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:YES];
+            [self scrollToTime:self.date];
         }
         
         
@@ -302,6 +300,14 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     
 }
 
+-(void) scrollToTime:(NSDate *) dateTime{
+    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:dateTime];
+    
+    float minuteFactor = dateComponents.minute / 60.0f;
+    float timeFactor = dateComponents.hour + minuteFactor;
+    CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection + 80.0f;
+    [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:YES];
+}
 
 
 - (void)createDayPicker {

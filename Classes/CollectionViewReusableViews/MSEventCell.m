@@ -14,6 +14,7 @@
 @interface MSEventCell ()
 
 @property (nonatomic, strong) UIView *borderView;
+@property (nonatomic, strong) UIView *bottomBorderView;
 
 @end
 
@@ -36,6 +37,8 @@
         
         self.borderView = [UIView new];
         [self.contentView addSubview:self.borderView];
+        self.bottomBorderView = [UIView new];
+        [self.contentView addSubview:self.bottomBorderView];
         
         self.title = [UILabel new];
         self.title.numberOfLines = 0;
@@ -58,6 +61,12 @@
             make.width.equalTo(@(borderWidth));
             make.left.equalTo(self.mas_left);
             make.top.equalTo(self.mas_top);
+        }];
+        
+        [self.bottomBorderView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.height.equalTo(@(borderWidth));
+            make.left.equalTo(self.mas_left);
+            make.right.equalTo(self.mas_right);
         }];
         
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -105,6 +114,7 @@
 {
     self.contentView.backgroundColor = [self backgroundColorHighlighted:self.selected];
     self.borderView.backgroundColor = [self borderColor];
+    self.bottomBorderView.backgroundColor = [UIColor colorWithHexString:@"eaeaea"];
     self.title.textColor = [self textColorHighlighted:self.selected];
     self.location.textColor = [self textColorHighlighted:self.selected];
 }
@@ -149,5 +159,6 @@
 {
     return [UIColor colorWithCGColor: self.event.calendar.CGColor];
 }
+
 
 @end

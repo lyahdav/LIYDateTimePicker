@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MSDayColumnHeader.h"
+#import "MSCollectionViewCalendarLayout.h"
 
 @class LIYDateTimePickerViewController;
 
@@ -30,5 +32,8 @@
 @property (nonatomic, strong) NSArray *visibleCalendars;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSString *dayTitlePrefix;
+@property (nonatomic, strong) MSDayColumnHeader *dayColumnHeader;
+@property (nonatomic, strong) MSCollectionViewCalendarLayout *collectionViewCalendarLayout;
+
 
 @end

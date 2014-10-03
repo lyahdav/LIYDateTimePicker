@@ -79,7 +79,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 @interface LIYDateTimePickerViewController () <MZDayPickerDelegate, MZDayPickerDataSource, MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate>
 
-@property (nonatomic, strong) MSCollectionViewCalendarLayout *collectionViewCalendarLayout;
+
 @property (nonatomic, strong) NSArray *allDayEvents;
 @property (nonatomic, strong) NSArray *nonAllDayEvents;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
@@ -96,7 +96,6 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 @property (nonatomic, strong) UIView *fixedSelectedTimeBubble;
 @property (nonatomic, strong) UILabel *fixedSelectedTimeBubbleTime;
 @property (nonatomic, strong) NSDate *selectedDate;
-@property (nonatomic, strong) MSDayColumnHeader *dayColumnHeader;
 @property (nonatomic, assign) BOOL isDoneLoading;
 
 

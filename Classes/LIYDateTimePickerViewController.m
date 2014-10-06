@@ -33,6 +33,7 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 CGFloat const kLIYBottomTimeLineBufferForSelection = 177.0f;
 CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
+
 # pragma mark - LIYCollectionViewCalendarLayout
 
 // TODO submit pull request to MSCollectionViewCalendarLayout so we don't need this
@@ -97,6 +98,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 @property (nonatomic, strong) UILabel *fixedSelectedTimeBubbleTime;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, assign) BOOL isDoneLoading;
+@property (nonatomic, assign) BOOL isChangingTime;
 
 
 @end
@@ -109,10 +111,13 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     
     if (!date)
     {
-        date = [NSDate date];
+        vc.date = [NSDate date];
+    }else{
+        vc.date = date;
+        vc.selectedDate = date;
     }
         
-    vc.date = date;
+
     return vc;
 }
 
@@ -189,8 +194,6 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
     [self setupConstraints];
 
-
-
 }
 
 
@@ -205,7 +208,14 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [super viewDidAppear:animated];
 
     if (self.allowTimeSelection){
+        
         [self setupFixedTimeSelector];
+        
+        if (!self.selectedDate){
+            self.selectedDate = [self.date dateByAddingTimeInterval:60*90];
+        }
+        [self scrollToTime:self.selectedDate];
+        [self setSelectedTimeText];
 
         UIEdgeInsets edgeInsets = self.collectionView.contentInset;
         edgeInsets.top = kLIYTopTimeLineBufferForSelection;
@@ -229,9 +239,12 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 #pragma mark - Convenience
 
+-(void) setSelectedDateFromLocation{
+    self.selectedDate = [self dateFromYCoord:(12.0f + self.collectionView.contentOffset.y + (self.collectionView.frame.size.height / 2))];
+}
+
 -(void) setSelectedTimeText{
     
-    self.selectedDate = [self dateFromYCoord:(12.0f + self.collectionView.contentOffset.y + (self.collectionView.frame.size.height / 2))];
     self.fixedSelectedTimeBubbleTime.text = [self.fixedDateFormatter stringFromDate:self.selectedDate];
     
     if (self.allowTimeSelection){
@@ -284,29 +297,28 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
             self.fixedSelectedTimeBubbleTime.textColor = [UIColor colorWithHexString:@"59c7f1"];
             self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
             [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
+            
+            self.fixedSelectedTimeLine.frame = CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f);
+            self.fixedSelectedTimeBubble.frame = CGRectMake(0.0f, middleY, 120.0f, 30.0f);
+            self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
         }
         
-        self.fixedSelectedTimeLine.frame = CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f);
-        self.fixedSelectedTimeBubble.frame = CGRectMake(0.0f, middleY, 120.0f, 30.0f);
-        self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
-        
-        if (self.date){
-            [self scrollToTime:self.date];
-        }
-        
-        
-        [self setSelectedTimeText];
     }
     
 }
 
 -(void) scrollToTime:(NSDate *) dateTime{
+    self.isChangingTime = YES;
+    
     NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:dateTime];
     
     float minuteFactor = dateComponents.minute / 60.0f;
     float timeFactor = dateComponents.hour + minuteFactor;
-    CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection + 80.0f;
+    //CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection + 80.0f;
+    CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection;
     [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:YES];
+    
+    self.isChangingTime = NO;
 }
 
 
@@ -520,11 +532,10 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 #pragma mark - UIScrollViewDelegate
 -(void) scrollViewDidScroll:(UIScrollView *)scrollView{
 
-    if (self.isDoneLoading) {
+    if (self.allowTimeSelection && self.isDoneLoading && !self.isChangingTime) {
+        [self setSelectedDateFromLocation];
         [self setSelectedTimeText];
     }
-    
-
 }
 
 
@@ -546,7 +557,6 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     self.allDayEvents = [NSMutableArray array];
     [self.collectionViewCalendarLayout invalidateLayoutCache];
     [self.collectionView reloadData];
-    [self scrollToHour:6];
 }
 
 -(void) setVisibleCalendars:(NSArray *)visibleCalendars{
@@ -574,10 +584,13 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day
 {
+    NSDate *timeDate = self.date;
+    if (self.selectedDate){
+        timeDate = self.selectedDate;
+    }
 
-    self.date = [self combineDateAndTime:day.date timeDate:self.date];
-    
-    [self setupFixedTimeSelector];
+    self.date = [self combineDateAndTime:day.date timeDate:timeDate];
+    self.selectedDate = self.date;
     
     [self reloadEvents];
 }

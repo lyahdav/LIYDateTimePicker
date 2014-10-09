@@ -414,7 +414,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 - (NSDate *)dateFromYCoord:(CGFloat)y {
     
     if (self.allDayEvents.count > 0){
-        y = y + kLIYAllDayHeight * self.allDayEvents.count;
+        y = y + kLIYAllDayHeight;
     }
     
     NSCalendar *cal = [NSCalendar currentCalendar];
@@ -569,7 +569,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     
     if (allDayEvents.count > 0){
         UIEdgeInsets edgeInsets = self.collectionView.contentInset;
-        edgeInsets.bottom = kLIYBottomTimeLineBufferForSelection - kLIYAllDayHeight * allDayEvents.count;
+        edgeInsets.bottom = kLIYBottomTimeLineBufferForSelection - kLIYAllDayHeight;
         self.collectionView.contentInset = edgeInsets;
     }
 }

@@ -34,6 +34,7 @@
 @property (nonatomic, strong) NSString *dayTitlePrefix;
 @property (nonatomic, strong) MSDayColumnHeader *dayColumnHeader;
 @property (nonatomic, strong) MSCollectionViewCalendarLayout *collectionViewCalendarLayout;
+@property (nonatomic, strong) NSArray *calendarNamesToFilterForEdit;
 
 
 @end

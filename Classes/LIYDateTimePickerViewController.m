@@ -601,7 +601,15 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 #pragma mark - UICollectionViewDelegate
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     EKEventViewController *vc = [[EKEventViewController alloc] init];
-    vc.event = self.nonAllDayEvents[indexPath.row];
+    EKEvent *event = self.nonAllDayEvents[indexPath.row];
+    vc.event = event;
+ 
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF =[c] %@", event.calendar.title];
+    NSArray *matchingCalendars = [self.calendarNamesToFilterForEdit filteredArrayUsingPredicate:predicate];
+    if (matchingCalendars.count == 0){
+        [vc setAllowsEditing:YES];
+    }
+
     [self.navigationController pushViewController:vc animated:YES];
 }
 

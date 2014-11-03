@@ -469,7 +469,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 
 - (void)reloadEvents {
-    if (![self isViewLoaded]) {
+    if (![self isViewLoaded] || !self.visibleCalendars || self.visibleCalendars.count == 0) {
         return;
     }
 

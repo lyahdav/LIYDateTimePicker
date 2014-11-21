@@ -193,6 +193,14 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     }
 
     [self setupConstraints];
+    
+    if (!self.defaultColor1){
+        self.defaultColor1 = [UIColor colorWithHexString:@"59c7f1"];
+    }
+    
+    if (!self.defaultColor2){
+        self.defaultColor2 = [UIColor orangeColor];
+    }
 
 }
 
@@ -256,7 +264,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 -(void) setupSaveButton{
     UIButton *saveButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, self.view.frame.size.height - 44.0f, self.view.frame.size.width, 44.0f)];
     [saveButton addTarget:self action:@selector(saveButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    saveButton.backgroundColor = [UIColor orangeColor];
+    saveButton.backgroundColor = self.defaultColor2;
     [saveButton setTitle:@"Save" forState:UIControlStateNormal];
     saveButton.titleLabel.textColor = [UIColor whiteColor];
     
@@ -280,6 +288,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
             self.fixedSelectedTimeLine = [[UIView alloc] init]; //]WithFrame:CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f)];
             self.fixedSelectedTimeLine.backgroundColor = [UIColor colorWithRed:0.0f green:0.5f blue:1.0f alpha:.2f];
+            self.fixedSelectedTimeLine.backgroundColor = self.defaultColor1;
+
             [self.view addSubview:self.fixedSelectedTimeLine];
             
             self.fixedSelectedTimeBubble = [[UIView alloc] init];//WithFrame:CGRectMake(0.0f, middleY, 120.0f, 30.0f)];
@@ -294,7 +304,9 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
             
             self.fixedSelectedTimeBubbleTime = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 30.0f)];
             self.fixedSelectedTimeBubbleTime.textAlignment = NSTextAlignmentCenter;
-            self.fixedSelectedTimeBubbleTime.textColor = [UIColor colorWithHexString:@"59c7f1"];
+
+            self.fixedSelectedTimeBubbleTime.textColor = self.defaultColor1;
+
             self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
             [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
             
@@ -338,6 +350,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [self.dayPicker setStartDate:self.date endDate:[self endDate]]; // TODO create property for this value
     
     [self.dayPicker setCurrentDate:self.date animated:NO];
+    
+    self.dayPicker.currentDayHighlightColor = self.defaultColor1;
 }
 
 - (void)setupConstraints {

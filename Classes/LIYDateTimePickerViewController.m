@@ -265,6 +265,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     saveButton.backgroundColor = self.defaultColor2;
     [saveButton setTitle:@"Save" forState:UIControlStateNormal];
     saveButton.titleLabel.textColor = [UIColor whiteColor];
+    saveButton.titleLabel.font = [UIFont fontWithName:self.defaultFontFamilyName size:18.0f];
     
     [self.view addSubview:saveButton];
     

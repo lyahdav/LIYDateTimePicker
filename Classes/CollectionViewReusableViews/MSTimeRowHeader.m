@@ -20,6 +20,12 @@
         self.title = [UILabel new];
         self.title.backgroundColor = [UIColor clearColor];
         self.title.font = [UIFont systemFontOfSize:10.0];
+        
+        UIFont *preferredFont = [UIFont fontWithName:@"Lato-Regular" size:10.0f];
+        if (preferredFont){
+            self.title.font = preferredFont;
+        }
+        
         self.title.textColor = [UIColor colorWithHexString:@"808080"];
         [self addSubview:self.title];
         

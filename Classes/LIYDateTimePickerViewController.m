@@ -345,6 +345,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     
     self.dayPicker.dayNameLabelFontSize = 10.0f;
     self.dayPicker.dayLabelFontSize = 16.0f;
+    self.dayPicker.dayLabelFont = self.defaultFontFamilyName;
+    self.dayPicker.dayNameLabelFont = self.defaultFontFamilyName;
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"EE"];

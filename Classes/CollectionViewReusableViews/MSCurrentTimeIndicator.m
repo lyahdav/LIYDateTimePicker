@@ -28,6 +28,10 @@
         
         self.time = [UILabel new];
         self.time.font = [UIFont boldSystemFontOfSize:10.0];
+        UIFont *preferredFont = [UIFont fontWithName:@"Lato-Regular" size:10.0f];
+        if (preferredFont){
+            self.time.font = preferredFont;
+        }
         self.time.textColor = [UIColor colorWithHexString:@"75d6e0"];
 //        self.time.backgroundColor = [UIColor clearColor];
         [self addSubview:self.time];

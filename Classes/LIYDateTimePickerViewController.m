@@ -163,8 +163,6 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelTapped:)];
     }
     
-    
-    
     self.collectionViewCalendarLayout = [[LIYCollectionViewCalendarLayout alloc] init];
     self.collectionViewCalendarLayout.hourHeight = 50.0; //TODO const
     self.collectionViewCalendarLayout.sectionWidth = self.view.frame.size.width - 66.0f;
@@ -306,8 +304,12 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
             self.fixedSelectedTimeBubbleTime.textAlignment = NSTextAlignmentCenter;
 
             self.fixedSelectedTimeBubbleTime.textColor = self.defaultColor1;
-
+            
             self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
+            if (self.defaultFontFamilyName){
+                self.fixedSelectedTimeBubbleTime.font = [UIFont fontWithName:self.defaultFontFamilyName size:18.0f];
+            }
+
             [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
             
             self.fixedSelectedTimeLine.frame = CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f);
@@ -409,6 +411,9 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     self.dragLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.dragLabel.hidden = YES;
     self.dragLabel.font = [UIFont boldSystemFontOfSize:10.0];
+    if (self.defaultFontFamilyName){
+        self.dragLabel.font = [UIFont fontWithName:self.defaultFontFamilyName size:10.0f];
+    }
     self.dragLabel.textColor = [UIColor blueColor];
     self.dragLabel.textAlignment = NSTextAlignmentRight;
     [self.view addSubview:self.dragLabel];
@@ -639,6 +644,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     return self.nonAllDayEvents.count;
 }
 
+
  - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
      
 
@@ -658,6 +664,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     
     if (kind == MSCollectionElementKindDayColumnHeader) {
         self.dayColumnHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSDayColumnHeaderReuseIdentifier forIndexPath:indexPath];
+        self.dayColumnHeader.defaultFontFamilyName = self.defaultFontFamilyName;
+        
         NSDate *day = [self.collectionViewCalendarLayout dateForDayColumnHeaderAtIndexPath:indexPath];
         NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
 

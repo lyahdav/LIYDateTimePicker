@@ -31,6 +31,7 @@
         self.title.textAlignment = NSTextAlignmentLeft;
         self.title.backgroundColor = [UIColor clearColor];
         self.title.font = [UIFont boldSystemFontOfSize:14.0];
+
         [self addSubview:self.title];
         
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -58,7 +59,7 @@
             make.left.equalTo(@10);
         }];
         self.allDayLabel.font = [UIFont systemFontOfSize:10.0];
-        
+
         self.allDayEventsLabel = [UILabel new];
         self.allDayEventsLabel.textColor = [UIColor colorWithHexString:@"21729c"];
         [self.allDayView addSubview:self.allDayEventsLabel];
@@ -73,6 +74,14 @@
 //        [self addSubview:bottomBorder];
     }
     return self;
+}
+
+-(void) setDefaultFontFamilyName:(NSString *)defaultFontFamilyName{
+    _defaultFontFamilyName = defaultFontFamilyName;
+    
+    self.title.font = [UIFont fontWithName:defaultFontFamilyName size:14.0f];
+    self.allDayLabel.font = [UIFont fontWithName:defaultFontFamilyName size:10.0f];
+    self.allDayEventsLabel.font = [UIFont fontWithName:defaultFontFamilyName size:10.0f];
 }
 
 - (void)setDay:(NSDate *)day

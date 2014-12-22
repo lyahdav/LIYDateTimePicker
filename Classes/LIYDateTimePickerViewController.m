@@ -348,6 +348,9 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     self.dayPicker.dayLabelFontSize = 16.0f;
     self.dayPicker.dayLabelFont = self.defaultFontFamilyName;
     self.dayPicker.dayNameLabelFont = self.defaultFontFamilyName;
+    self.dayPicker.dayLabelFont = self.defaultFontFamilyName;
+    self.dayPicker.daySelectedFont = self.defaultSelectedFontFamilyName;
+    self.dayPicker.selectedDayColor = self.defaultColor1;
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"EE"];
@@ -356,7 +359,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     
     [self.dayPicker setCurrentDate:self.date animated:NO];
     
-    self.dayPicker.currentDayHighlightColor = self.defaultColor1;
+    self.dayPicker.currentDayHighlightColor = self.defaultColor2;
+    self.dayPicker.selectedDayColor = self.defaultColor1;
 }
 
 - (void)setupConstraints {

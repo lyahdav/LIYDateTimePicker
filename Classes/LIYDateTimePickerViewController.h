@@ -38,6 +38,8 @@
 @property (nonatomic, strong) UIColor *defaultColor1;
 @property (nonatomic, strong) UIColor *defaultColor2;
 @property (nonatomic, strong) NSString *defaultFontFamilyName;
+@property (nonatomic, strong) NSString *defaultSelectedFontFamilyName;
+
 
 
 @end

@@ -96,7 +96,6 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 @property (nonatomic, strong) UIView *fixedSelectedTimeLine;
 @property (nonatomic, strong) UIView *fixedSelectedTimeBubble;
 @property (nonatomic, strong) UILabel *fixedSelectedTimeBubbleTime;
-@property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, assign) BOOL isDoneLoading;
 @property (nonatomic, assign) BOOL isChangingTime;
 

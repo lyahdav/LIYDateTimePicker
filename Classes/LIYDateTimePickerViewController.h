@@ -39,6 +39,7 @@
 @property (nonatomic, strong) UIColor *defaultColor2;
 @property (nonatomic, strong) NSString *defaultFontFamilyName;
 @property (nonatomic, strong) NSString *defaultSelectedFontFamilyName;
+@property (nonatomic, strong) NSDate *selectedDate;
 
 
 

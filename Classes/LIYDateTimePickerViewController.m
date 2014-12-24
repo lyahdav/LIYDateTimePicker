@@ -23,15 +23,14 @@
 #import "MSCurrentTimeGridline.h"
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
-#import "NSDate+CupertinoYankee.h" 
+#import "NSDate+CupertinoYankee.h"
 #import "UIColor+HexString.h"
 
 NSString * const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString * const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
 NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
 CGFloat const kFixedTimeBuddleWidth = 120.0f;
-CGFloat const kLIYBottomTimeLineBufferForSelection = 177.0f;
-CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
+const NSInteger kLIYDayPickerHeight = 84;
 
 
 # pragma mark - LIYCollectionViewCalendarLayout
@@ -115,8 +114,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
         vc.date = date;
         vc.selectedDate = date;
     }
-        
-
+    
+    
     return vc;
 }
 
@@ -157,7 +156,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     if (self.showCancelButton) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelTapped:)];
     }
@@ -175,7 +174,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [self.collectionView registerClass:MSEventCell.class forCellWithReuseIdentifier:MSEventCellReuseIdentifier];
     [self.collectionView registerClass:MSDayColumnHeader.class forSupplementaryViewOfKind:MSCollectionElementKindDayColumnHeader withReuseIdentifier:MSDayColumnHeaderReuseIdentifier];
     [self.collectionView registerClass:MSTimeRowHeader.class forSupplementaryViewOfKind:MSCollectionElementKindTimeRowHeader withReuseIdentifier:MSTimeRowHeaderReuseIdentifier];
-
+    
     // These are optional. If you don't want any of the decoration views, just don't register a class for them.
     [self.collectionViewCalendarLayout registerClass:MSCurrentTimeIndicator.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeIndicator];
     [self.collectionViewCalendarLayout registerClass:MSCurrentTimeGridline.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeHorizontalGridline];
@@ -183,12 +182,12 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [self.collectionViewCalendarLayout registerClass:MSGridline.class forDecorationViewOfKind:MSCollectionElementKindHorizontalGridline];
     [self.collectionViewCalendarLayout registerClass:MSTimeRowHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindTimeRowHeaderBackground];
     [self.collectionViewCalendarLayout registerClass:MSDayColumnHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindDayColumnHeaderBackground];
-
+    
     if (self.showDayPicker) {
         self.automaticallyAdjustsScrollViewInsets = NO;
         [self createDayPicker];
     }
-
+    
     [self setupConstraints];
     
     if (!self.defaultColor1){
@@ -198,7 +197,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     if (!self.defaultColor2){
         self.defaultColor2 = [UIColor orangeColor];
     }
-
+    
 }
 
 
@@ -215,7 +214,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 -(void) viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-
+    
     if (self.allowTimeSelection){
         
         [self setupFixedTimeSelector];
@@ -226,19 +225,36 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
         [self scrollToTime:self.selectedDate];
         [self setSelectedTimeText];
 
-        UIEdgeInsets edgeInsets = self.collectionView.contentInset;
-        edgeInsets.top = kLIYTopTimeLineBufferForSelection;
-        edgeInsets.bottom = kLIYBottomTimeLineBufferForSelection;
-        self.collectionView.contentInset = edgeInsets;
-        
+        [self updateCollectionViewContentInset];
         [self setupSaveButton];
     }else{
         [self scrollToTime:[NSDate date]];
     }
-
+    
     
     self.isDoneLoading = YES;
     
+}
+
+// allows user to scroll to midnight at start and end of day
+- (void)updateCollectionViewContentInset {
+    UIEdgeInsets edgeInsets = self.collectionView.contentInset;
+    
+    CGFloat gapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
+    
+    CGFloat yForMidnight = kLIYDayPickerHeight + self.collectionViewCalendarLayout.dayColumnHeaderHeight + gapToMidnight;
+    if (self.allDayEvents.count > 0){
+        yForMidnight += kLIYAllDayHeight;
+    }
+    
+    edgeInsets.top = [self middleYForTimeLine] - yForMidnight;
+    
+    CGFloat endOfDayMidnightTop = kLIYDayPickerHeight + self.collectionView.frame.size.height - gapToMidnight;
+    if (self.allDayEvents.count > 0){
+        endOfDayMidnightTop += kLIYAllDayHeight;
+    }
+    edgeInsets.bottom = endOfDayMidnightTop - [self middleYForTimeLine];
+    self.collectionView.contentInset = edgeInsets;
 }
 
 #pragma mark - Actions
@@ -249,7 +265,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 #pragma mark - Convenience
 
 -(void) setSelectedDateFromLocation{
-    self.selectedDate = [self dateFromYCoord:(12.0f + self.collectionView.contentOffset.y + (self.collectionView.frame.size.height / 2))];
+    CGFloat buffer = 12.0f; // TODO what's this buffer for? give a better variable name
+    self.selectedDate = [self dateFromYCoord:(buffer + self.collectionView.contentOffset.y + (self.collectionView.frame.size.height / 2))];
 }
 
 -(void) setSelectedTimeText{
@@ -274,24 +291,29 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     
 }
 
+- (CGFloat)middleYForTimeLine {
+    CGFloat buffer = 40.0f; // TODO what is this buffer? give it a better name
+    return buffer + self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
+}
+
 -(void) setupFixedTimeSelector{
     
     if (self.allowTimeSelection){
-    
-        CGFloat middleY = 40.0f + self.collectionViewCalendarLayout.dayColumnHeaderHeight + (self.collectionView.frame.size.height / 2);
         
-
+        CGFloat middleY = [self middleYForTimeLine];
+        
+        
         if (!self.fixedDateFormatter)
         {
             // floating bubble and line
             self.fixedDateFormatter = [[NSDateFormatter alloc] init];
             [self.fixedDateFormatter setDateFormat:@"h:mm a"];
             
-
+            
             self.fixedSelectedTimeLine = [[UIView alloc] init]; //]WithFrame:CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f)];
             self.fixedSelectedTimeLine.backgroundColor = [UIColor colorWithRed:0.0f green:0.5f blue:1.0f alpha:.2f];
             self.fixedSelectedTimeLine.backgroundColor = self.defaultColor1;
-
+            
             [self.view addSubview:self.fixedSelectedTimeLine];
             
             self.fixedSelectedTimeBubble = [[UIView alloc] init];//WithFrame:CGRectMake(0.0f, middleY, 120.0f, 30.0f)];
@@ -306,14 +328,14 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
             
             self.fixedSelectedTimeBubbleTime = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 30.0f)];
             self.fixedSelectedTimeBubbleTime.textAlignment = NSTextAlignmentCenter;
-
+            
             self.fixedSelectedTimeBubbleTime.textColor = self.defaultColor1;
             
             self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
             if (self.defaultFontFamilyName){
                 self.fixedSelectedTimeBubbleTime.font = [UIFont fontWithName:self.defaultFontFamilyName size:18.0f];
             }
-
+            
             [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
             
             self.fixedSelectedTimeLine.frame = CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f);
@@ -332,8 +354,8 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     
     float minuteFactor = dateComponents.minute / 60.0f;
     float timeFactor = dateComponents.hour + minuteFactor;
-    //CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection + 80.0f;
-    CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - kLIYTopTimeLineBufferForSelection;
+    CGFloat topInset = self.collectionView.contentInset.top;
+    CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - topInset;
     [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:YES];
     
     self.isChangingTime = NO;
@@ -369,10 +391,10 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 - (void)setupConstraints {
     self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.dayPicker.translatesAutoresizingMaskIntoConstraints = NO;
-
+    
     NSObject *collectionView = self.collectionView, *dayPicker = self.dayPicker ?: [UIView new], *topLayoutGuide = self.topLayoutGuide;
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:self.showDayPicker ? @"V:[topLayoutGuide][dayPicker(84)][collectionView]|" : @"V:|[collectionView]|"
+                               constraintsWithVisualFormat:self.showDayPicker ? [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView]|", (long)kLIYDayPickerHeight] : @"V:|[collectionView]|"
                                options:0
                                metrics:nil
                                views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, collectionView)]];
@@ -441,11 +463,6 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 }
 
 - (NSDate *)dateFromYCoord:(CGFloat)y {
-    
-    if (self.allDayEvents.count > 0){
-        y = y + kLIYAllDayHeight;
-    }
-    
     NSCalendar *cal = [NSCalendar currentCalendar];
     NSDateComponents *dateComponents = [cal components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.date];
     CGFloat hour = round([self hourAtYCoord:y] * 4) / 4;
@@ -458,10 +475,10 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 - (IBAction)onLongPress:(UILongPressGestureRecognizer *)recognizer {
     self.dragViewY.constant = [recognizer locationInView:self.view].y;
     self.dragLabelY.constant = [recognizer locationInView:self.view].y;
-
+    
     NSDate *selectedDate = [self dateFromYCoord:[recognizer locationInView:self.collectionView].y];
     self.dragLabel.text = [self.dragDateFormatter stringFromDate:selectedDate];
-
+    
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         self.dragView.hidden = NO;
         self.dragLabel.hidden = NO;
@@ -501,7 +518,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     if (![self isViewLoaded] || !self.visibleCalendars || self.visibleCalendars.count == 0) {
         return;
     }
-
+    
     if (!self.eventStore) {
         self.eventStore = [[EKEventStore alloc] init];
     }
@@ -513,7 +530,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
         if (!granted) {
             return;
         }
-
+        
         NSPredicate *predicate = [strongEventStore predicateForEventsWithStartDate:[strongSelf.date beginningOfDay]
                                                                            endDate:[strongSelf nextDayForDate:[strongSelf.date beginningOfDay]]
                                                                          calendars:strongSelf.visibleCalendars];
@@ -533,7 +550,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
             [strongSelf.collectionViewCalendarLayout invalidateLayoutCache];
             [strongSelf.collectionView reloadData];
         });
-
+        
     }];
 }
 
@@ -560,7 +577,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 
 #pragma mark - UIScrollViewDelegate
 -(void) scrollViewDidScroll:(UIScrollView *)scrollView{
-
+    
     if (self.allowTimeSelection && self.isDoneLoading && !self.isChangingTime) {
         [self setSelectedDateFromLocation];
         [self setSelectedTimeText];
@@ -578,7 +595,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     {
         [self.dayPicker setStartDate:self.date endDate:[self endDate]];
         [self.dayPicker setCurrentDate:date animated:YES];
-
+        
     }
     
     // clear out events immediately because reloadEvents loads events asynchronously
@@ -595,12 +612,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 - (void)setAllDayEvents:(NSMutableArray *)allDayEvents {
     _allDayEvents = allDayEvents;
     self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == 0 ? 56.0f : 56.0f + kLIYAllDayHeight; // TODO don't hardcode
-    
-    if (allDayEvents.count > 0){
-        UIEdgeInsets edgeInsets = self.collectionView.contentInset;
-        edgeInsets.bottom = kLIYBottomTimeLineBufferForSelection - kLIYAllDayHeight;
-        self.collectionView.contentInset = edgeInsets;
-    }
+    [self updateCollectionViewContentInset];
 }
 
 #pragma mark - MZDayPickerDataSource
@@ -617,7 +629,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     if (self.selectedDate){
         timeDate = self.selectedDate;
     }
-
+    
     self.date = [self combineDateAndTime:day.date timeDate:timeDate];
     self.selectedDate = self.date;
     
@@ -632,13 +644,13 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     EKEventViewController *vc = [[EKEventViewController alloc] init];
     EKEvent *event = self.nonAllDayEvents[indexPath.row];
     vc.event = event;
- 
+    
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF =[c] %@", event.calendar.title];
     NSArray *matchingCalendars = [self.calendarNamesToFilterForEdit filteredArrayUsingPredicate:predicate];
     if (matchingCalendars.count == 0){
         [vc setAllowsEditing:YES];
     }
-
+    
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -655,17 +667,17 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
 }
 
 
- - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-     
-
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    
     MSEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MSEventCellReuseIdentifier forIndexPath:indexPath];
-     
-     // this is a safety check since we were seeing a crash here. not sure how this would happen.
+    
+    // this is a safety check since we were seeing a crash here. not sure how this would happen.
     if (indexPath.row < self.nonAllDayEvents.count){
-         cell.event = self.nonAllDayEvents[indexPath.row];
+        cell.event = self.nonAllDayEvents[indexPath.row];
     }
     
-     return cell;
+    return cell;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
@@ -678,13 +690,13 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
         
         NSDate *day = [self.collectionViewCalendarLayout dateForDayColumnHeaderAtIndexPath:indexPath];
         NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
-
+        
         self.dayColumnHeader.showTimeInHeader = self.allowTimeSelection;
         self.dayColumnHeader.day = [self combineDateAndTime:day timeDate:self.date];
         self.dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
         self.dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
-
-
+        
+        
         if (self.allDayEvents.count == 0) {
             self.dayColumnHeader.showAllDaySection = NO;
         } else {
@@ -694,7 +706,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
             }];
             self.dayColumnHeader.allDayEventsLabel.text = [allDayEventTitles componentsJoinedByString:@", "];
         }
-
+        
         view = self.dayColumnHeader;
     } else if (kind == MSCollectionElementKindTimeRowHeader) {
         MSTimeRowHeader *timeRowHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSTimeRowHeaderReuseIdentifier forIndexPath:indexPath];
@@ -722,7 +734,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     NSTimeInterval endDate = [event.endDate timeIntervalSince1970];
     endDate = fmin(endDate, [[self.date endOfDay] timeIntervalSince1970]);
     NSDate *startDate = [self collectionView:self.collectionView layout:self.collectionViewCalendarLayout startTimeForItemAtIndexPath:indexPath];
-
+    
     if (endDate - [startDate timeIntervalSince1970] < 15*60) {
         endDate = [startDate timeIntervalSince1970] + 15*60; // set to minimum 15 min gap
     }

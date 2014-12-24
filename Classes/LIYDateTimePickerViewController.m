@@ -206,6 +206,10 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     [super viewWillAppear:animated];
     [self reloadEvents];
     self.isDoneLoading = NO;
+    
+    if (!self.saveButtonText){
+        self.saveButtonText = @"Save";
+    }
 
 }
 
@@ -262,7 +266,7 @@ CGFloat const kLIYTopTimeLineBufferForSelection = 147.0f;
     UIButton *saveButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, self.view.frame.size.height - 44.0f, self.view.frame.size.width, 44.0f)];
     [saveButton addTarget:self action:@selector(saveButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     saveButton.backgroundColor = self.defaultColor2;
-    [saveButton setTitle:@"Save" forState:UIControlStateNormal];
+    [saveButton setTitle:self.saveButtonText forState:UIControlStateNormal];
     saveButton.titleLabel.textColor = [UIColor whiteColor];
     saveButton.titleLabel.font = [UIFont fontWithName:self.defaultFontFamilyName size:18.0f];
     

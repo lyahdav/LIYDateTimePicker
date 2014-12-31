@@ -31,6 +31,8 @@ NSString * const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIden
 NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
 CGFloat const kFixedTimeBuddleWidth = 120.0f;
 const NSInteger kLIYDayPickerHeight = 84;
+CGFloat const kLIYDefaultHeaderHeight = 56.0f;
+CGFloat const kLIYDefaultSmallHeaderHeight = 0.0f;
 
 
 # pragma mark - LIYCollectionViewCalendarLayout
@@ -157,6 +159,8 @@ const NSInteger kLIYDayPickerHeight = 84;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+
+    
     if (self.showCancelButton) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelTapped:)];
     }
@@ -168,7 +172,7 @@ const NSInteger kLIYDayPickerHeight = 84;
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.collectionViewCalendarLayout];
     self.collectionView.dataSource = self;
     self.collectionView.delegate = self;
-    self.collectionView.backgroundColor = [UIColor colorWithRed:234.0f/255.0f green:234.0f/255.0f blue:234.0f/255.0f alpha:1.0];
+    self.collectionView.backgroundColor = [UIColor colorWithHexString:@"#ededed"];
     [self.view addSubview:self.collectionView];
     
     [self.collectionView registerClass:MSEventCell.class forCellWithReuseIdentifier:MSEventCellReuseIdentifier];
@@ -238,6 +242,11 @@ const NSInteger kLIYDayPickerHeight = 84;
 
 // allows user to scroll to midnight at start and end of day
 - (void)updateCollectionViewContentInset {
+    
+    if (!self.allowTimeSelection){
+        return;
+    }
+    
     UIEdgeInsets edgeInsets = self.collectionView.contentInset;
     
     CGFloat gapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
@@ -611,7 +620,15 @@ const NSInteger kLIYDayPickerHeight = 84;
 
 - (void)setAllDayEvents:(NSMutableArray *)allDayEvents {
     _allDayEvents = allDayEvents;
-    self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == 0 ? 56.0f : 56.0f + kLIYAllDayHeight; // TODO don't hardcode
+    
+    if (self.allowTimeSelection){
+        self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == 0.0f ? kLIYDefaultHeaderHeight : kLIYDefaultHeaderHeight + kLIYAllDayHeight;
+    }else{
+        self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == kLIYDefaultSmallHeaderHeight ? kLIYDefaultSmallHeaderHeight : kLIYAllDayHeight;
+    }
+    
+    self.dayColumnHeader.heightForHeader = self.collectionViewCalendarLayout.dayColumnHeaderHeight;
+    
     [self updateCollectionViewContentInset];
 }
 
@@ -656,8 +673,6 @@ const NSInteger kLIYDayPickerHeight = 84;
 
 #pragma mark - UICollectionViewDataSource
 
-
-
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
@@ -682,37 +697,47 @@ const NSInteger kLIYDayPickerHeight = 84;
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     UICollectionReusableView *view;
-    
-    
-    if (kind == MSCollectionElementKindDayColumnHeader) {
-        self.dayColumnHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSDayColumnHeaderReuseIdentifier forIndexPath:indexPath];
-        self.dayColumnHeader.defaultFontFamilyName = self.defaultFontFamilyName;
-        
-        NSDate *day = [self.collectionViewCalendarLayout dateForDayColumnHeaderAtIndexPath:indexPath];
-        NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
-        
-        self.dayColumnHeader.showTimeInHeader = self.allowTimeSelection;
-        self.dayColumnHeader.day = [self combineDateAndTime:day timeDate:self.date];
-        self.dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
-        self.dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
+
+        if (kind == MSCollectionElementKindDayColumnHeader) {
+            
+            self.dayColumnHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSDayColumnHeaderReuseIdentifier forIndexPath:indexPath];
         
         
-        if (self.allDayEvents.count == 0) {
-            self.dayColumnHeader.showAllDaySection = NO;
-        } else {
-            self.dayColumnHeader.showAllDaySection = YES;
-            NSArray *allDayEventTitles = [self.allDayEvents map:^id(EKEvent *event) { // TODO: compute once
-                return event.title;
-            }];
-            self.dayColumnHeader.allDayEventsLabel.text = [allDayEventTitles componentsJoinedByString:@", "];
+            if (self.allowTimeSelection)
+            {
+                self.dayColumnHeader.defaultFontFamilyName = self.defaultFontFamilyName;
+                
+                NSDate *day = [self.collectionViewCalendarLayout dateForDayColumnHeaderAtIndexPath:indexPath];
+                NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
+                
+                self.dayColumnHeader.showTimeInHeader = self.allowTimeSelection;
+                self.dayColumnHeader.day = [self combineDateAndTime:day timeDate:self.date];
+                self.dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
+                self.dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
+            }
+
+            if (self.allDayEvents.count == 0) {
+                self.dayColumnHeader.showAllDaySection = NO;
+            } else {
+                self.dayColumnHeader.showAllDaySection = YES;
+                NSArray *allDayEventTitles = [self.allDayEvents map:^id(EKEvent *event) { // TODO: compute once
+                    return event.title;
+                }];
+                self.dayColumnHeader.allDayEventsLabel.text = [allDayEventTitles componentsJoinedByString:@", "];
+            }
+            
+            view = self.dayColumnHeader;
+
+            
+        } else if (kind == MSCollectionElementKindTimeRowHeader) {
+            
+            MSTimeRowHeader *timeRowHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSTimeRowHeaderReuseIdentifier forIndexPath:indexPath];
+            timeRowHeader.time = [self.collectionViewCalendarLayout dateForTimeRowHeaderAtIndexPath:indexPath];
+            view = timeRowHeader;
+            
         }
-        
-        view = self.dayColumnHeader;
-    } else if (kind == MSCollectionElementKindTimeRowHeader) {
-        MSTimeRowHeader *timeRowHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSTimeRowHeaderReuseIdentifier forIndexPath:indexPath];
-        timeRowHeader.time = [self.collectionViewCalendarLayout dateForTimeRowHeaderAtIndexPath:indexPath];
-        view = timeRowHeader;
-    }
+
+
     return view;
 }
 

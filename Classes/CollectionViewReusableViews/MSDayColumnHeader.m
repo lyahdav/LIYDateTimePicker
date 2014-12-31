@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UIView *titleBackground;
 @property (nonatomic, strong) UIView *allDayView;
 @property (nonatomic, strong) UILabel *allDayLabel;
+@property (nonatomic, strong) UIView *bottomBorder;
 
 @end
 
@@ -69,12 +70,10 @@
         }];
         self.allDayEventsLabel.font = [UIFont boldSystemFontOfSize:10.0];
         
-//        UIView *bottomBorder = [[UIView alloc] initWithFrame:CGRectMake(0.0f, self.frame.size.height, self.frame.size.width, 1.0f)];
-//        bottomBorder.backgroundColor = [UIColor colorWithHexString:@"d0d0d0"];
-//        [self addSubview:bottomBorder];
     }
     return self;
 }
+
 
 -(void) setDefaultFontFamilyName:(NSString *)defaultFontFamilyName{
     _defaultFontFamilyName = defaultFontFamilyName;
@@ -82,6 +81,20 @@
     self.title.font = [UIFont fontWithName:defaultFontFamilyName size:14.0f];
     self.allDayLabel.font = [UIFont fontWithName:defaultFontFamilyName size:10.0f];
     self.allDayEventsLabel.font = [UIFont fontWithName:defaultFontFamilyName size:10.0f];
+}
+
+-(void) setHeightForHeader:(CGFloat) heightForHeader{
+    
+    _heightForHeader = heightForHeader;
+    
+    if (self.bottomBorder){
+        [self.bottomBorder removeFromSuperview];
+    }
+    
+    self.bottomBorder = [[UIView alloc] initWithFrame:CGRectMake(0.0f, heightForHeader, self.frame.size.width, .5f)];
+    self.bottomBorder.backgroundColor = [UIColor colorWithHexString:@"d0d0d0"];
+    [self addSubview:self.bottomBorder];
+    
 }
 
 - (void)setDay:(NSDate *)day

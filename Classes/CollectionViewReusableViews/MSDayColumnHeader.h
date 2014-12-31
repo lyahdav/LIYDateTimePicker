@@ -19,5 +19,6 @@ static const NSInteger kLIYAllDayHeight = 20;
 @property (nonatomic, strong) NSString *dayTitlePrefix;
 @property (nonatomic, assign) BOOL showTimeInHeader;
 @property (nonatomic, strong) NSString *defaultFontFamilyName;
+@property (nonatomic, assign) CGFloat heightForHeader;
 
 @end

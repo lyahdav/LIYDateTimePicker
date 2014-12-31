@@ -43,6 +43,7 @@
         self.title = [UILabel new];
         self.title.numberOfLines = 0;
         self.title.backgroundColor = [UIColor clearColor];
+//        self.title.bounds = CGRectInset(self.title.frame, 0.0f, 0.0f);
         [self.contentView addSubview:self.title];
         
         self.location = [UILabel new];
@@ -50,11 +51,13 @@
         self.location.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.location];
         
+
+        
         [self updateColors];
         
-        CGFloat borderWidth = 2.0;
+        CGFloat borderWidth = 6.0;
         CGFloat contentMargin = 2.0;
-        UIEdgeInsets contentPadding = UIEdgeInsetsMake(1.0, (borderWidth + 4.0), 1.0, 4.0);
+        UIEdgeInsets contentPadding = UIEdgeInsetsMake(5.0, (borderWidth + 4.0), 1.0, 4.0);
         
         [self.borderView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.height.equalTo(self.mas_height);

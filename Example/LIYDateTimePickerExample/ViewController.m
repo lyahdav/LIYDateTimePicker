@@ -11,7 +11,7 @@ static NSString *const kLIYCalendarCellIdentifier = @"calendarCell";
 @property(nonatomic, weak) IBOutlet UITableView *tableView;
 @property(nonatomic, strong) EKEventStore *eventStore;
 @property(nonatomic, strong) NSArray *calendars;
-@property(nonatomic, strong) NSArray *visibleCalendarTitles;
+@property(nonatomic, strong) NSArray *visibleCalendars;
 
 @end
 
@@ -41,7 +41,7 @@ static NSString *const kLIYCalendarCellIdentifier = @"calendarCell";
 
 - (IBAction)onPickTimeTap:(id)sender {
     LIYDateTimePickerViewController *vc = [LIYDateTimePickerViewController timePickerForDate:[NSDate date] delegate:self];
-//    vc.visibleCalendarTitles = self.visibleCalendarTitles;
+    vc.visibleCalendars = self.visibleCalendars;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -52,20 +52,20 @@ static NSString *const kLIYCalendarCellIdentifier = @"calendarCell";
 
 - (IBAction)showCalendarTap:(UIButton *)sender {
     LIYDateTimePickerViewController *vc = [LIYDateTimePickerViewController timePickerForDate:[NSDate date] delegate:self];
-//    vc.visibleCalendarTitles = self.visibleCalendarTitles;
+    vc.visibleCalendars = self.visibleCalendars;
     vc.showDayPicker = NO;
     vc.allowTimeSelection = NO;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-- (NSArray *)visibleCalendarTitles {
+- (NSArray *)visibleCalendars {
     if (self.tableView.indexPathsForSelectedRows.count == 0) {
         return nil;
     }
 
     return [self.tableView.indexPathsForSelectedRows map:^id(NSIndexPath *indexPath) {
         EKCalendar *calendar = self.calendars[indexPath.row];
-        return calendar.title;
+        return calendar;
     }];
 }
 

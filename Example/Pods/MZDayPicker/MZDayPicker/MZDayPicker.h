@@ -54,6 +54,8 @@
  */
 @property (nonatomic, strong) UIColor *activeDayColor;
 @property (nonatomic, strong) UIColor *activeDayNameColor;
+@property (nonatomic, strong) UIColor *currentDayNameColor;
+@property (nonatomic, strong) UIColor *currentDayHighlightColor;
 @property (nonatomic, strong) UIColor *inactiveDayColor;
 @property (nonatomic, strong) UIColor *selectedDayColor;
 @property (nonatomic, strong) UIColor *selectedDayNameColor;
@@ -70,6 +72,7 @@
 @property (nonatomic, strong) UIColor *bottomBorderColorToday;
 
 /* Day number and name font size (optional) */
+@property (nonatomic, assign) NSString *daySelectedFont;
 @property (nonatomic, assign) NSString *dayLabelFont;
 @property (nonatomic, assign) NSString *dayNameLabelFont;
 @property (nonatomic, assign) CGFloat dayLabelFontSize;

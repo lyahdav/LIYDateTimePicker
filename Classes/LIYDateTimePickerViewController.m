@@ -24,7 +24,6 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 const NSInteger kLIYDayPickerHeight = 84;
 CGFloat const kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
 CGFloat const kLIYDefaultHeaderHeight = 56.0f;
-CGFloat const kLIYDefaultSmallHeaderHeight = 0.0f;
 CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 # pragma mark - LIYCollectionViewCalendarLayout
@@ -560,11 +559,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (void)setAllDayEvents:(NSMutableArray *)allDayEvents {
     _allDayEvents = allDayEvents;
-    if (self.allowTimeSelection) {
-        self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == 0.0f ? kLIYDefaultHeaderHeight : kLIYDefaultHeaderHeight + kLIYAllDayHeight;
-    } else {
-        self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == kLIYDefaultSmallHeaderHeight ? kLIYDefaultSmallHeaderHeight : kLIYAllDayHeight;
-    }
+    self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == 0 ? kLIYDefaultHeaderHeight : kLIYDefaultHeaderHeight + kLIYAllDayHeight;
     
     self.dayColumnHeader.heightForHeader = self.collectionViewCalendarLayout.dayColumnHeaderHeight;
     

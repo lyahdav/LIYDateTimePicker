@@ -25,6 +25,7 @@ const NSInteger kLIYDayPickerHeight = 84;
 CGFloat const kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
 CGFloat const kLIYDefaultHeaderHeight = 56.0f;
 CGFloat const kLIYDefaultSmallHeaderHeight = 0.0f;
+CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
@@ -293,11 +294,11 @@ CGFloat const kLIYDefaultSmallHeaderHeight = 0.0f;
 }
 
 - (CGFloat)statusBarHeight {
-    return 20.0f; // we have to use 20 always here regardless of if status bar height changes in call. Probably could fix if we use autolayout instead of frames.
+    return self.navigationController.navigationBar.translucent ? 20.0f : 0.0f; // we have to use 20 always here regardless of if status bar height changes in call. Probably could fix if we use autolayout instead of frames.
 }
 
 - (CGFloat)navBarHeight {
-    return 44.0f; // TODO can we get this programmatically?
+    return self.navigationController.navigationBar.translucent ? 44.0f : 0.0f; // TODO can we get this programmatically?
 }
 
 -(void) setupFixedTimeSelector{
@@ -341,15 +342,18 @@ CGFloat const kLIYDefaultSmallHeaderHeight = 0.0f;
 
 - (void)positionTimeLine {
     CGFloat middleY = [self middleYForTimeLine];
-    self.fixedSelectedTimeLine.frame = CGRectMake(0.0f,  middleY, self.collectionView.frame.size.width, 1.0f);
+    self.fixedSelectedTimeLine.frame = CGRectMake(0.0f, middleY, self.collectionView.frame.size.width, 1.0f);
     self.fixedSelectedTimeBubble.frame = CGRectMake(0.0f, middleY, 120.0f, 30.0f);
     self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
 }
 
--(void) scrollToTime:(NSDate *) dateTime{
+- (void)scrollToTime:(NSDate *)dateTime {
     self.isChangingTime = YES;
     
-    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:dateTime];
+    NSTimeInterval seconds = ceil([dateTime timeIntervalSinceReferenceDate]/kLIYScrollIntervalSeconds)*kLIYScrollIntervalSeconds;
+    NSDate *roundDateTime = [NSDate dateWithTimeIntervalSinceReferenceDate:seconds];
+    
+    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:roundDateTime];
     
     float minuteFactor = dateComponents.minute / 60.0f;
     float timeFactor = dateComponents.hour + minuteFactor;
@@ -359,7 +363,6 @@ CGFloat const kLIYDefaultSmallHeaderHeight = 0.0f;
     
     self.isChangingTime = NO;
 }
-
 
 - (void)createDayPicker {
     self.dayPicker = [[MZDayPicker alloc] initWithFrame:CGRectZero month:9 year:2013];
@@ -524,17 +527,13 @@ CGFloat const kLIYDefaultSmallHeaderHeight = 0.0f;
     return hour;
 }
 
-
-
 #pragma mark - UIScrollViewDelegate
--(void) scrollViewDidScroll:(UIScrollView *)scrollView{
-    
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.allowTimeSelection && self.isDoneLoading && !self.isChangingTime) {
         [self setSelectedDateFromLocation];
     }
 }
-
-
 
 # pragma mark - properties
 

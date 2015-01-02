@@ -23,6 +23,7 @@
 
 + (instancetype)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate;
 - (void)reloadEvents;
+- (CGFloat)middleYForTimeLine;
 
 @property (nonatomic) BOOL allowTimeSelection;
 @property (nonatomic) BOOL showCancelButton;

@@ -1,7 +1,6 @@
 PODS:
   - CupertinoYankee (0.1.1)
   - Masonry (0.5.3)
-  - MNCalendarView (0.0.2)
   - MSCollectionViewCalendarLayout (0.1.3):
     - CupertinoYankee (~> 0.1)
   - MZDayPicker (0.0.1)
@@ -10,7 +9,6 @@ PODS:
 
 DEPENDENCIES:
   - Masonry
-  - MNCalendarView (from `https://github.com/joefrank99/MNCalendarView.git`, commit `b4986021a88ea0afcfa01f0aa2f0b8a192994ead`)
   - MSCollectionViewCalendarLayout
   - MZDayPicker
   - MZDayPicker (from `https://github.com/joefrank99/MZDayPicker.git`, commit `883626917ea02099c51dc13719c29823febd7441`)
@@ -18,9 +16,6 @@ DEPENDENCIES:
   - UIColor-HexString
 
 EXTERNAL SOURCES:
-  MNCalendarView:
-    :commit: b4986021a88ea0afcfa01f0aa2f0b8a192994ead
-    :git: https://github.com/joefrank99/MNCalendarView.git
   MZDayPicker:
     :commit: 883626917ea02099c51dc13719c29823febd7441
     :git: https://github.com/joefrank99/MZDayPicker.git
@@ -28,7 +23,6 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   CupertinoYankee: b07873e724c2c5c1a249c555a5bd3d508c04e0de
   Masonry: 35368c2ca9577ca87722c12fc52c4bad9b1c1516
-  MNCalendarView: 5f1247bf6d68fd63ec40e06c0ac5f64cbf9e4472
   MSCollectionViewCalendarLayout: 10ca29578b0dd9b8586b1beed3ab479a3788b4b5
   MZDayPicker: 94f265c68d72c6665a2324b1284a61708d2d7e3d
   ObjectiveSugar: f48793f5902c77cfc02a4ce46d2e8ecddcad4dc2

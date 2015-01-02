@@ -12,12 +12,6 @@
 #define COCOAPODS_VERSION_MINOR_CupertinoYankee 1
 #define COCOAPODS_VERSION_PATCH_CupertinoYankee 1
 
-// MNCalendarView
-#define COCOAPODS_POD_AVAILABLE_MNCalendarView
-#define COCOAPODS_VERSION_MAJOR_MNCalendarView 0
-#define COCOAPODS_VERSION_MINOR_MNCalendarView 0
-#define COCOAPODS_VERSION_PATCH_MNCalendarView 2
-
 // MSCollectionViewCalendarLayout
 #define COCOAPODS_POD_AVAILABLE_MSCollectionViewCalendarLayout
 #define COCOAPODS_VERSION_MAJOR_MSCollectionViewCalendarLayout 0

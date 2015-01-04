@@ -24,7 +24,7 @@ CGFloat const kFixedTimeBuddleWidth = 120.0f;
 const NSInteger kLIYDayPickerHeight = 84;
 CGFloat const kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
 CGFloat const kLIYDefaultHeaderHeight = 56.0f;
-CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
+NSInteger const kLIYScrollIntervalSeconds = 5 * 60;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
@@ -78,6 +78,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 @property (nonatomic, strong) MZDayPicker *dayPicker;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDateFormatter *fixedDateFormatter;
+@property (nonatomic, strong) NSDateFormatter *dragEventDateFormatter;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) EKEventStore *eventStore;
 @property (nonatomic, strong) UIView *fixedSelectedTimeLine;
@@ -85,7 +86,10 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 @property (nonatomic, strong) UILabel *fixedSelectedTimeBubbleTime;
 @property (nonatomic, assign) BOOL isDoneLoading;
 @property (nonatomic, assign) BOOL isChangingTime;
-
+@property (nonatomic, assign) BOOL isDraggingToSetEventStartDate;
+@property (nonatomic, assign) BOOL isDraggingToSetEventEndDate;
+@property (nonatomic, assign) BOOL needToSetEventEndDate;
+@property (nonatomic, strong) EKEvent *eventToCreate;
 
 @end
 
@@ -181,6 +185,10 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     if (self.allowTimeSelection) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarFrame) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
     }
+    
+    if (self.allowEventCreation) {
+        [self setUpEventCreation];
+    }
 }
 
 - (void)dealloc {
@@ -252,6 +260,69 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 }
 
 #pragma mark - Convenience
+
+- (void)setUpEventCreation {
+    UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onLongPress:)];
+    [self.collectionView addGestureRecognizer:longPressRecognizer];
+}
+
+- (IBAction)onLongPress:(UILongPressGestureRecognizer *)recognizer {
+    CGFloat y = [recognizer locationInView:self.collectionView].y;
+    // adjust y per interface of dateFromYCoord:
+    y = y - self.collectionView.contentOffset.y - self.collectionViewCalendarLayout.dayColumnHeaderHeight;
+    NSDate *dateAtDrag = [self dateFromYCoord:y];
+    
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        if (self.needToSetEventEndDate) {
+            self.isDraggingToSetEventEndDate = YES;
+        } else {
+            self.isDraggingToSetEventStartDate = YES;
+            self.eventToCreate = [EKEvent eventWithEventStore:self.eventStore];
+            self.eventToCreate.calendar = self.eventStore.defaultCalendarForNewEvents;
+            self.eventToCreate.startDate = dateAtDrag;
+            self.eventToCreate.endDate = [dateAtDrag dateByAddingTimeInterval:60*60];
+            self.eventToCreate.title = [self titleForDragEvent];
+            [self.collectionViewCalendarLayout invalidateLayoutCache];
+            [self.collectionView reloadData];
+        }
+    } else if (recognizer.state == UIGestureRecognizerStateEnded) {
+        if (self.needToSetEventEndDate) {
+            self.isDraggingToSetEventEndDate = NO;
+            self.needToSetEventEndDate = NO;
+            NSError *error = nil;
+            [self.eventStore saveEvent:self.eventToCreate span:EKSpanThisEvent error:&error];
+            NSAssert(error == nil, @"Error saving event: %@", error);
+            [self reloadEvents];
+        } else {
+            self.isDraggingToSetEventStartDate = NO;
+            self.needToSetEventEndDate = YES;
+            [self.collectionViewCalendarLayout invalidateLayoutCache];
+            [self.collectionView reloadData];
+        }
+    } else {
+        if (self.isDraggingToSetEventStartDate) {
+            self.eventToCreate.startDate = dateAtDrag;
+            self.eventToCreate.endDate = [dateAtDrag dateByAddingTimeInterval:60*60];
+            self.eventToCreate.title = [self titleForDragEvent];
+            [self.collectionViewCalendarLayout invalidateLayoutCache];
+            [self.collectionView reloadData];
+        } else {
+            NSAssert(self.isDraggingToSetEventEndDate, @"expected to be dragging to set end date");
+            self.eventToCreate.endDate = dateAtDrag;
+            self.eventToCreate.title = [self titleForDragEvent];
+            [self.collectionViewCalendarLayout invalidateLayoutCache];
+            [self.collectionView reloadData];
+        }
+    }
+}
+
+- (NSString *)titleForDragEvent {
+    NSTimeInterval interval = [self.eventToCreate.endDate timeIntervalSinceDate:self.eventToCreate.startDate];
+    NSInteger minutes = interval / 60;
+    NSInteger remainingMinutes = minutes % 60;
+    NSInteger hours = interval / 3600;
+    return [NSString stringWithFormat:@"New Event: %@ - %@ (%02ld:%02ld)", [self.dragEventDateFormatter stringFromDate:self.eventToCreate.startDate], [self.dragEventDateFormatter stringFromDate:self.eventToCreate.endDate], hours, remainingMinutes];
+}
 
 - (void)setSelectedDateFromLocation {
     CGFloat topOfViewControllerToStartOfGrid = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + self.collectionViewCalendarLayout.dayColumnHeaderHeight;
@@ -432,7 +503,9 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 /// y is measured where 0 is the top of the collection view (after day column header and optionally all day event view)
 - (NSDate *)dateFromYCoord:(CGFloat)y {
-    CGFloat hour = round([self hourAtYCoord:y] * 4) / 4;
+    NSInteger secondsInHour = 60*60;
+    NSInteger intervalsPerHour = secondsInHour / kLIYScrollIntervalSeconds;
+    CGFloat hour = round([self hourAtYCoord:y] * intervalsPerHour) / intervalsPerHour;
     NSCalendar *cal = [NSCalendar currentCalendar];
     NSDateComponents *dateComponents = [cal components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.date];
     dateComponents.hour = trunc(hour);
@@ -569,6 +642,15 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     }
 }
 
+- (NSDateFormatter *)dragEventDateFormatter {
+    if (_dragEventDateFormatter == nil) {
+        _dragEventDateFormatter = [NSDateFormatter new];
+        _dragEventDateFormatter.dateFormat = @"h:mm aaa";
+    }
+    
+    return _dragEventDateFormatter;
+}
+
 #pragma mark - MZDayPickerDataSource
 
 - (NSString *)dayPicker:(MZDayPicker *)dayPicker titleForCellDayNameLabelInDay:(MZDay *)day {
@@ -617,18 +699,19 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.nonAllDayEvents.count;
+    NSInteger countForCreateEventDrag = (NSInteger)self.isDraggingToSetEventStartDate + (NSInteger)self.needToSetEventEndDate;
+    return self.nonAllDayEvents.count + countForCreateEventDrag;
 }
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    
     MSEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MSEventCellReuseIdentifier forIndexPath:indexPath];
     
-    // this is a safety check since we were seeing a crash here. not sure how this would happen.
-    if (indexPath.row < self.nonAllDayEvents.count){
+    if (indexPath.row < self.nonAllDayEvents.count) {
         cell.event = self.nonAllDayEvents[indexPath.row];
+    } else {
+        NSAssert(self.isDraggingToSetEventStartDate || self.needToSetEventEndDate, @"Must be dragging to create an event");
+        cell.event = self.eventToCreate;
     }
     
     return cell;
@@ -676,13 +759,21 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 }
 
 - (NSDate *)collectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout startTimeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    if ((self.isDraggingToSetEventStartDate || self.needToSetEventEndDate) && indexPath.item >= self.nonAllDayEvents.count) {
+        return self.eventToCreate.startDate;
+    }
+
     EKEvent *event = self.nonAllDayEvents[indexPath.item];
     NSTimeInterval startDate = [event.startDate timeIntervalSince1970];
-    startDate = fmax(startDate, [[self.date beginningOfDay] timeIntervalSince1970]);
+    startDate = fmax(startDate, [[self.date beginningOfDay] timeIntervalSince1970]); // show events that start before midnight as starting at midnight
     return [NSDate dateWithTimeIntervalSince1970:startDate];
 }
 
 - (NSDate *)collectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout endTimeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    if ((self.isDraggingToSetEventStartDate || self.needToSetEventEndDate) && indexPath.item >= self.nonAllDayEvents.count) {
+        return self.eventToCreate.endDate;
+    }
+
     EKEvent *event = self.nonAllDayEvents[indexPath.item];
     NSTimeInterval endDate = [event.endDate timeIntervalSince1970];
     endDate = fmin(endDate, [[self.date endOfDay] timeIntervalSince1970]);

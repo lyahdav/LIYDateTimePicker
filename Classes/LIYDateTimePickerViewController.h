@@ -28,6 +28,7 @@
 @property (nonatomic) BOOL allowTimeSelection;
 @property (nonatomic) BOOL showCancelButton;
 @property (nonatomic) BOOL showDayPicker;
+@property (nonatomic) BOOL allowEventCreation;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, weak) id<LIYDateTimePickerDelegate> delegate;
 @property (nonatomic, strong) NSArray *visibleCalendars;
@@ -42,7 +43,5 @@
 @property (nonatomic, strong) NSString *defaultSelectedFontFamilyName;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) NSString *saveButtonText;
-
-
 
 @end

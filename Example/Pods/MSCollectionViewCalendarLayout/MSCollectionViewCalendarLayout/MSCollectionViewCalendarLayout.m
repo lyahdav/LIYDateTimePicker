@@ -35,6 +35,7 @@ NSString * const MSCollectionElementKindTimeRowHeaderBackground = @"MSCollection
 NSString * const MSCollectionElementKindDayColumnHeaderBackground = @"MSCollectionElementKindDayColumnHeaderBackground";
 NSString * const MSCollectionElementKindCurrentTimeIndicator = @"MSCollectionElementKindCurrentTimeIndicator";
 NSString * const MSCollectionElementKindCurrentTimeHorizontalGridline = @"MSCollectionElementKindCurrentTimeHorizontalGridline";
+NSString * const MSCollectionElementKindNewEventTimeIndicator = @"MSCollectionElementKindNewEventTimeIndicator";
 NSString * const MSCollectionElementKindVerticalGridline = @"MSCollectionElementKindVerticalGridline";
 NSString * const MSCollectionElementKindHorizontalGridline = @"MSCollectionElementKindHorizontalGridline";
 
@@ -77,9 +78,6 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
 // Minute Timer
 @property (nonatomic, strong) NSTimer *minuteTimer;
 
-// Minute Height
-@property (nonatomic, readonly) CGFloat minuteHeight;
-
 // Caches
 @property (nonatomic, assign) BOOL needsToPopulateAttributesForAllSections;
 @property (nonatomic, strong) NSCache *cachedDayDateComponents;
@@ -113,7 +111,6 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
 - (void)minuteTick:(id)sender;
 // Layout
 - (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewAtIndexPath:(NSIndexPath *)indexPath ofKind:(NSString *)kind withItemCache:(NSMutableDictionary *)itemCache;
-- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewAtIndexPath:(NSIndexPath *)indexPath ofKind:(NSString *)kind withItemCache:(NSMutableDictionary *)itemCache;
 - (UICollectionViewLayoutAttributes *)layoutAttributesForCellAtIndexPath:(NSIndexPath *)indexPath withItemCache:(NSMutableDictionary *)itemCache;
 // Scrolling
 - (NSInteger)closestSectionToCurrentTime;
@@ -128,7 +125,6 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
 - (CGFloat)zIndexForElementKind:(NSString *)elementKind;
 - (CGFloat)zIndexForElementKind:(NSString *)elementKind floating:(BOOL)floating;
 // Hours
-- (NSInteger)earliestHour;
 - (NSInteger)latestHour;
 - (NSInteger)earliestHourForSection:(NSInteger)section;
 - (NSInteger)latestHourForSection:(NSInteger)section;
@@ -220,6 +216,7 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
         [self.allAttributes addObjectsFromArray:[self.horizontalGridlineAttributes allValues]];
         [self.allAttributes addObjectsFromArray:[self.itemAttributes allValues]];
         [self.allAttributes addObjectsFromArray:[self.currentTimeIndicatorAttributes allValues]];
+        [self.allAttributes addObjectsFromArray:[self.draggingEventTimeIndicatorAttributes allValues]];
         [self.allAttributes addObjectsFromArray:[self.currentTimeHorizontalGridlineAttributes allValues]];
     }
 }
@@ -397,6 +394,12 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
     }
 }
 
+- (void)prepareVerticalTileSectionLayoutForNewEventTimeIndicator {
+    NSIndexPath *newEventTimeIndicatorIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    UICollectionViewLayoutAttributes *draggingEventTimeIndicatorAttributes = [self layoutAttributesForSupplementaryViewAtIndexPath:newEventTimeIndicatorIndexPath ofKind:MSCollectionElementKindNewEventTimeIndicator withItemCache:self.draggingEventTimeIndicatorAttributes];
+    draggingEventTimeIndicatorAttributes.zIndex = [self zIndexForElementKind:MSCollectionElementKindCurrentTimeIndicator];
+}
+
 - (void)prepareVerticalTileSectionLayoutForSections:(NSIndexSet *)sectionIndexes
 {
     if (self.collectionView.numberOfSections == 0) {
@@ -406,6 +409,9 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
     // Current Time Indicator
     NSIndexPath *currentTimeIndicatorIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     UICollectionViewLayoutAttributes *currentTimeIndicatorAttributes = [self layoutAttributesForDecorationViewAtIndexPath:currentTimeIndicatorIndexPath ofKind:MSCollectionElementKindCurrentTimeIndicator withItemCache:self.currentTimeIndicatorAttributes];
+    
+    // new event time indicator
+    [self prepareVerticalTileSectionLayoutForNewEventTimeIndicator];
     
     // Current Time Horizontal Gridline
     NSIndexPath *currentTimeHorizontalGridlineIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
@@ -653,6 +659,8 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
     }
     else if (kind == MSCollectionElementKindTimeRowHeader) {
         return self.timeRowHeaderAttributes[indexPath];
+    } else if (kind == MSCollectionElementKindNewEventTimeIndicator) {
+        return self.draggingEventTimeIndicatorAttributes[indexPath];
     }
     return nil;
 }
@@ -732,6 +740,7 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
     self.verticalGridlineAttributes = [NSMutableDictionary new];
     self.horizontalGridlineAttributes = [NSMutableDictionary new];
     self.currentTimeIndicatorAttributes = [NSMutableDictionary new];
+    self.draggingEventTimeIndicatorAttributes = [NSMutableDictionary new];
     self.currentTimeHorizontalGridlineAttributes = [NSMutableDictionary new];
     
     self.hourHeight = ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? 80.0 : 80.0);
@@ -1054,6 +1063,9 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
             else if (elementKind == MSCollectionElementKindHorizontalGridline) {
                 return MSCollectionMinBackgroundZ;
             }
+            else if (elementKind == MSCollectionElementKindNewEventTimeIndicator) {
+                return (MSCollectionMinBackgroundZ + 2.0);
+            }
         }
         case MSSectionLayoutTypeVerticalTile: {
             // Day Column Header
@@ -1066,6 +1078,10 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
             }
             // Current Time Indicator
             else if (elementKind == MSCollectionElementKindCurrentTimeIndicator) {
+                return (MSCollectionMinOverlayZ + 2.0);
+            }
+            // new event time indicator
+            else if (elementKind == MSCollectionElementKindNewEventTimeIndicator) {
                 return (MSCollectionMinOverlayZ + 2.0);
             }
             // Time Row Header

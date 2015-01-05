@@ -12,6 +12,7 @@
 #import "MSTimeRowHeader.h"
 #import "MSCurrentTimeIndicator.h"
 #import "MSCurrentTimeGridline.h"
+#import "MSGenericTimeLabel.h"
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
 #import "NSDate+CupertinoYankee.h"
@@ -20,6 +21,7 @@
 NSString * const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString * const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
 NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
+NSString * const MSNewEventTimeLabelReuseIdentifier = @"MSNewEventTimeLabelReuseIdentifier";
 CGFloat const kFixedTimeBuddleWidth = 120.0f;
 const NSInteger kLIYDayPickerHeight = 84;
 CGFloat const kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
@@ -162,6 +164,7 @@ NSInteger const kLIYScrollIntervalSeconds = 5 * 60;
     [self.collectionView registerClass:MSEventCell.class forCellWithReuseIdentifier:MSEventCellReuseIdentifier];
     [self.collectionView registerClass:MSDayColumnHeader.class forSupplementaryViewOfKind:MSCollectionElementKindDayColumnHeader withReuseIdentifier:MSDayColumnHeaderReuseIdentifier];
     [self.collectionView registerClass:MSTimeRowHeader.class forSupplementaryViewOfKind:MSCollectionElementKindTimeRowHeader withReuseIdentifier:MSTimeRowHeaderReuseIdentifier];
+    [self.collectionView registerClass:MSGenericTimeLabel.class forSupplementaryViewOfKind:MSCollectionElementKindNewEventTimeIndicator withReuseIdentifier:MSNewEventTimeLabelReuseIdentifier];
     
     // These are optional. If you don't want any of the decoration views, just don't register a class for them.
     [self.collectionViewCalendarLayout registerClass:MSCurrentTimeIndicator.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeIndicator];
@@ -747,9 +750,35 @@ NSInteger const kLIYScrollIntervalSeconds = 5 * 60;
         MSTimeRowHeader *timeRowHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSTimeRowHeaderReuseIdentifier forIndexPath:indexPath];
         timeRowHeader.time = [self.collectionViewCalendarLayout dateForTimeRowHeaderAtIndexPath:indexPath];
         view = timeRowHeader;
+    } else if (kind == MSCollectionElementKindNewEventTimeIndicator) {
+        MSGenericTimeLabel *timeLabel = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSNewEventTimeLabelReuseIdentifier forIndexPath:indexPath];
+        timeLabel.time = [NSDate dateWithTimeIntervalSinceNow:60*60];
+        timeLabel.title.textColor = [UIColor redColor];
+        [self setFrame];
+        view = timeLabel;
     }
     
     return view;
+}
+
+// TODO rename
+- (void)setFrame {
+    if (self.eventToCreate == nil) {
+        return;
+    }
+    NSIndexPath *newEventTimeIndicatorIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    UICollectionViewLayoutAttributes *draggingEventTimeIndicatorAttributes = [self.collectionViewCalendarLayout layoutAttributesForSupplementaryViewAtIndexPath:newEventTimeIndicatorIndexPath ofKind:MSCollectionElementKindNewEventTimeIndicator withItemCache:self.collectionViewCalendarLayout.draggingEventTimeIndicatorAttributes];
+    
+    NSDate *newEventStartDate = self.eventToCreate.startDate;
+    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:(NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:newEventStartDate];
+    
+    CGFloat calendarGridMinY = (self.collectionViewCalendarLayout.dayColumnHeaderHeight + self.collectionViewCalendarLayout.contentMargin.top);
+    // The y value of the event we're dragging
+    CGFloat timeY = (calendarGridMinY + nearbyintf(((dateComponents.hour - [self.collectionViewCalendarLayout earliestHour]) * self.collectionViewCalendarLayout.hourHeight) + (dateComponents.minute * self.collectionViewCalendarLayout.minuteHeight)));
+    
+    CGFloat currentTimeIndicatorMinY = (timeY - nearbyintf(self.collectionViewCalendarLayout.currentTimeIndicatorSize.height / 2.0));
+    CGFloat currentTimeIndicatorMinX = (self.collectionViewCalendarLayout.timeRowHeaderWidth - self.collectionViewCalendarLayout.currentTimeIndicatorSize.width);
+    draggingEventTimeIndicatorAttributes.frame = (CGRect){{currentTimeIndicatorMinX, currentTimeIndicatorMinY}, self.collectionViewCalendarLayout.currentTimeIndicatorSize};
 }
 
 #pragma mark - MSCollectionViewCalendarLayout

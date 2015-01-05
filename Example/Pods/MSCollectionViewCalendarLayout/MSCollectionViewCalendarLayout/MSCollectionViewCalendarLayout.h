@@ -34,6 +34,7 @@ extern NSString *const MSCollectionElementKindTimeRowHeaderBackground;
 extern NSString *const MSCollectionElementKindDayColumnHeaderBackground;
 extern NSString *const MSCollectionElementKindCurrentTimeIndicator;
 extern NSString *const MSCollectionElementKindCurrentTimeHorizontalGridline;
+extern NSString *const MSCollectionElementKindNewEventTimeIndicator;
 extern NSString *const MSCollectionElementKindVerticalGridline;
 extern NSString *const MSCollectionElementKindHorizontalGridline;
 
@@ -73,6 +74,15 @@ typedef NS_ENUM(NSUInteger, MSHeaderLayoutType) {
 - (NSDate *)dateForDayColumnHeaderAtIndexPath:(NSIndexPath *)indexPath;
 
 - (void)scrollCollectionViewToClosetSectionToCurrentTimeAnimated:(BOOL)animated;
+
+
+// exposed for new event time label
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewAtIndexPath:(NSIndexPath *)indexPath ofKind:(NSString *)kind withItemCache:(NSMutableDictionary *)itemCache;
+- (NSInteger)earliestHour;
+@property (nonatomic, strong) NSMutableDictionary *draggingEventTimeIndicatorAttributes;
+@property (nonatomic, readonly) CGFloat minuteHeight;
+
+
 
 // Since a "reloadData" on the UICollectionView doesn't call "prepareForCollectionViewUpdates:", this method must be called first to flush the internal caches
 - (void)invalidateLayoutCache;

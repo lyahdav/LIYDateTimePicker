@@ -28,6 +28,7 @@
 @property (nonatomic) BOOL allowTimeSelection;
 @property (nonatomic) BOOL showCancelButton;
 @property (nonatomic) BOOL showDayPicker;
+@property (nonatomic) BOOL showDayColumnHeader;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, weak) id<LIYDateTimePickerDelegate> delegate;
 @property (nonatomic, strong) NSArray *visibleCalendars;

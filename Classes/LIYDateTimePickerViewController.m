@@ -128,6 +128,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     _saveButtonText = @"Save";
     _fixedDateFormatter = [[NSDateFormatter alloc] init];
     [_fixedDateFormatter setDateFormat:@"h:mm a"];
+    _showDayColumnHeader = YES;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -559,14 +560,20 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (void)setAllDayEvents:(NSMutableArray *)allDayEvents {
     _allDayEvents = allDayEvents;
-    self.collectionViewCalendarLayout.dayColumnHeaderHeight = _allDayEvents.count == 0 ? kLIYDefaultHeaderHeight : kLIYDefaultHeaderHeight + kLIYAllDayHeight;
-    
-    self.dayColumnHeader.heightForHeader = self.collectionViewCalendarLayout.dayColumnHeaderHeight;
-    
-    [self updateCollectionViewContentInset];
+    [self updateDayColumnHeaderHeight];
     if (self.selectedDate && self.allowTimeSelection) {
         [self scrollToTime:self.selectedDate]; // it's possible the scroll changed when all day now shows
     }
+}
+
+- (void)updateDayColumnHeaderHeight {
+    if (self.showDayColumnHeader) {
+        self.collectionViewCalendarLayout.dayColumnHeaderHeight = self.allDayEvents.count == 0 ? kLIYDefaultHeaderHeight : kLIYDefaultHeaderHeight + kLIYAllDayHeight;
+    } else {
+        self.collectionViewCalendarLayout.dayColumnHeaderHeight = self.allDayEvents.count == 0 ? 0.0f : kLIYAllDayHeight;
+    }
+    self.dayColumnHeader.heightForHeader = self.collectionViewCalendarLayout.dayColumnHeaderHeight;
+    [self updateCollectionViewContentInset];
 }
 
 #pragma mark - MZDayPickerDataSource
@@ -639,15 +646,18 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     
     if (kind == MSCollectionElementKindDayColumnHeader) {
         self.dayColumnHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSDayColumnHeaderReuseIdentifier forIndexPath:indexPath];
-        self.dayColumnHeader.defaultFontFamilyName = self.defaultFontFamilyName;
-        
-        NSDate *day = [self.collectionViewCalendarLayout dateForDayColumnHeaderAtIndexPath:indexPath];
-        NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
-        
-        self.dayColumnHeader.showTimeInHeader = self.allowTimeSelection;
-        self.dayColumnHeader.day = [self combineDateAndTime:day timeDate:self.date];
-        self.dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
-        self.dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
+
+        if (self.showDayColumnHeader) { // TODO: this is a little misleading, the dayColumnHeader also shows the all day events, so if showDayColumnHeader = NO, we still show it, just at a different height
+            self.dayColumnHeader.defaultFontFamilyName = self.defaultFontFamilyName;
+            
+            NSDate *day = [self.collectionViewCalendarLayout dateForDayColumnHeaderAtIndexPath:indexPath];
+            NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
+            
+            self.dayColumnHeader.showTimeInHeader = self.allowTimeSelection;
+            self.dayColumnHeader.day = [self combineDateAndTime:day timeDate:self.date];
+            self.dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
+            self.dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
+        }
         
         if (self.allDayEvents.count == 0) {
             self.dayColumnHeader.showAllDaySection = NO;

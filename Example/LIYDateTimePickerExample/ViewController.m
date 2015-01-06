@@ -52,8 +52,8 @@ static NSString *const kLIYCalendarCellIdentifier = @"calendarCell";
 
 - (IBAction)showCalendarTap:(UIButton *)sender {
     LIYDateTimePickerViewController *vc = [LIYDateTimePickerViewController timePickerForDate:[NSDate date] delegate:self];
+    vc.showDayColumnHeader = NO;
     vc.visibleCalendars = self.visibleCalendars;
-    vc.showDayPicker = NO;
     vc.allowTimeSelection = NO;
     [self.navigationController pushViewController:vc animated:YES];
 }

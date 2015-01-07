@@ -36,9 +36,8 @@
         [self addSubview:self.title];
         
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.centerX.equalTo(self);
             make.top.equalTo(@(kLIYAllDayHeight));
-            make.left.equalTo(@16.0f);
+            make.left.equalTo(@26.0f);
         }];
         
         self.allDayView = [UIView new];
@@ -69,6 +68,25 @@
             make.leading.equalTo(self.allDayLabel.mas_trailing).with.offset(15);
         }];
         self.allDayEventsLabel.font = [UIFont boldSystemFontOfSize:10.0];
+        
+        UIView *outline = [[UIView alloc] init];
+        outline.layer.borderColor = [UIColor colorWithHexString:@"#d0d0d0"].CGColor;
+        outline.layer.borderWidth = 1.0f;
+        outline.layer.cornerRadius = 5.0f;
+        
+        [self addSubview:outline];
+        
+        [outline mas_makeConstraints:^(MASConstraintMaker *maker) {
+            
+            CGFloat bottom = self.bounds.size.height - 62.0f;
+            CGFloat height = self.bounds.size.height - 20.0f;
+
+            maker.bottom.equalTo(@(bottom));
+            maker.height.equalTo(@(height));
+            maker.leading.equalTo(@16);
+            maker.trailing.equalTo(@-16);
+        }];
+
         
     }
     return self;
@@ -101,21 +119,8 @@
 {
     _day = day;
     
-
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        
-    if (self.showTimeInHeader){
-        dateFormatter.dateFormat = @"EEEE, MMM d, hh:mm a";
-    }else{
-        dateFormatter.dateFormat = @"EEEE, MMMM d";
-    }
+    [self formatTitle];
     
-    if (!self.dayTitlePrefix){
-        self.title.text = [dateFormatter stringFromDate:day];
-    }else{
-        self.title.text = [NSString stringWithFormat:@"%@ %@", self.dayTitlePrefix, [dateFormatter stringFromDate:day]];
-    }
-
     [self setNeedsLayout];
 }
 
@@ -131,6 +136,43 @@
             make.height.equalTo(@0);
         }];
     }
+}
+
+#pragma mark - Convenience
+-(void) formatTitle{
+    
+    if (self.day){
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        NSDateFormatter *timeFormatter = [NSDateFormatter new];
+        timeFormatter.dateFormat = @"h:mm a";
+        dateFormatter.dateFormat = @"EEEE, MMM d";
+        
+        
+        NSString *dateBase;
+        if (!self.dayTitlePrefix){
+            dateBase = [dateFormatter stringFromDate:self.day];
+        }else{
+            dateBase = [NSString stringWithFormat:@"%@ %@", self.dayTitlePrefix, [dateFormatter stringFromDate:self.day]];
+        }
+        
+        NSMutableAttributedString *dateString = [[NSMutableAttributedString alloc] initWithString:dateBase];
+        
+        if (self.showTimeInHeader){
+            NSMutableAttributedString *time = [[NSMutableAttributedString alloc] initWithString:[timeFormatter stringFromDate:self.day]];
+            [time addAttribute:NSFontAttributeName value:[UIFont fontWithName:self.defaultBoldFontFamilyName size:14.0f] range:NSMakeRange(0, time.length)];
+            
+            [dateString appendAttributedString:[[NSAttributedString alloc] initWithString:@", "]];
+            
+            NSInteger dateLength = dateString.length;
+            
+            [dateString appendAttributedString:time];
+            
+            [dateString addAttribute:NSForegroundColorAttributeName value:self.timeHighlightColor range:NSMakeRange(dateLength, time.length)];
+        }
+        
+        self.title.attributedText = dateString;
+    }
+
 }
 
 @end

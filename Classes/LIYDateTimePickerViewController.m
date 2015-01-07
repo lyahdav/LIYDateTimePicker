@@ -308,7 +308,6 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
         {
             // floating bubble and line
             self.fixedSelectedTimeLine = [[UIView alloc] init];
-            self.fixedSelectedTimeLine.backgroundColor = [UIColor colorWithRed:0.0f green:0.5f blue:1.0f alpha:.2f];
             self.fixedSelectedTimeLine.backgroundColor = self.defaultColor1;
             
             [self.view addSubview:self.fixedSelectedTimeLine];
@@ -317,19 +316,19 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
             self.fixedSelectedTimeBubble.backgroundColor = [UIColor redColor];
             self.fixedSelectedTimeBubble.layer.cornerRadius = 15.0f;
             [self.fixedSelectedTimeBubble.layer masksToBounds];
-            self.fixedSelectedTimeBubble.layer.borderColor = [UIColor colorWithHexString:@"353535"].CGColor;
+            self.fixedSelectedTimeBubble.layer.borderColor = self.defaultColor1.CGColor;
             self.fixedSelectedTimeBubble.layer.borderWidth = 1.0f;
             self.fixedSelectedTimeBubble.backgroundColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
             [self.view addSubview:self.fixedSelectedTimeBubble];
             
             self.fixedSelectedTimeBubbleTime = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 30.0f)];
             self.fixedSelectedTimeBubbleTime.textAlignment = NSTextAlignmentCenter;
-            self.fixedSelectedTimeBubbleTime.textColor = self.defaultColor1;
+            self.fixedSelectedTimeBubbleTime.textColor = [UIColor colorWithHexString:@"353535"];
             [self setSelectedTimeText];
             
             self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
-            if (self.defaultFontFamilyName){
-                self.fixedSelectedTimeBubbleTime.font = [UIFont fontWithName:self.defaultFontFamilyName size:18.0f];
+            if (self.defaultSelectedFontFamilyName){
+                self.fixedSelectedTimeBubbleTime.font = [UIFont fontWithName:self.defaultSelectedFontFamilyName size:18.0f];
             }
             
             [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
@@ -649,6 +648,8 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
         if (self.showDayColumnHeader) { // TODO: this is a little misleading, the dayColumnHeader also shows the all day events, so if showDayColumnHeader = NO, we still show it, just at a different height
             self.dayColumnHeader.defaultFontFamilyName = self.defaultFontFamilyName;
+            self.dayColumnHeader.defaultBoldFontFamilyName = self.defaultSelectedFontFamilyName;
+            self.dayColumnHeader.timeHighlightColor = self.defaultColor1;
             
             NSDate *day = [self.collectionViewCalendarLayout dateForDayColumnHeaderAtIndexPath:indexPath];
             NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];

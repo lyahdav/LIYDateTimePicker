@@ -17,6 +17,7 @@
 @property (nonatomic, strong) UIView *allDayView;
 @property (nonatomic, strong) UILabel *allDayLabel;
 @property (nonatomic, strong) UIView *bottomBorder;
+@property (nonatomic, strong) UIView *backgroundOutline;
 
 @end
 
@@ -69,25 +70,6 @@
         }];
         self.allDayEventsLabel.font = [UIFont boldSystemFontOfSize:10.0];
         
-        UIView *outline = [[UIView alloc] init];
-        outline.layer.borderColor = [UIColor colorWithHexString:@"#d0d0d0"].CGColor;
-        outline.layer.borderWidth = 1.0f;
-        outline.layer.cornerRadius = 5.0f;
-        
-        [self addSubview:outline];
-        
-        [outline mas_makeConstraints:^(MASConstraintMaker *maker) {
-            
-            CGFloat bottom = self.bounds.size.height - 62.0f;
-            CGFloat height = self.bounds.size.height - 20.0f;
-
-            maker.bottom.equalTo(@(bottom));
-            maker.height.equalTo(@(height));
-            maker.leading.equalTo(@16);
-            maker.trailing.equalTo(@-16);
-        }];
-
-        
     }
     return self;
 }
@@ -138,6 +120,12 @@
     }
 }
 
+-(void) setShowTimeInHeader:(BOOL)showTimeInHeader{
+    _showTimeInHeader = showTimeInHeader;
+    
+    [self addBackgroundOutline];
+}
+
 #pragma mark - Convenience
 -(void) formatTitle{
     
@@ -168,11 +156,35 @@
             [dateString appendAttributedString:time];
             
             [dateString addAttribute:NSForegroundColorAttributeName value:self.timeHighlightColor range:NSMakeRange(dateLength, time.length)];
+            
         }
         
         self.title.attributedText = dateString;
     }
 
+}
+
+-(void) addBackgroundOutline{
+    
+    if (!self.backgroundOutline){
+        self.backgroundOutline = [[UIView alloc] init];
+        self.backgroundOutline.layer.borderColor = [UIColor colorWithHexString:@"#d0d0d0"].CGColor;
+        self.backgroundOutline.layer.borderWidth = 1.0f;
+        self.backgroundOutline.layer.cornerRadius = 5.0f;
+        
+        [self addSubview:self.backgroundOutline];
+        
+        [self.backgroundOutline mas_makeConstraints:^(MASConstraintMaker *maker) {
+            
+            CGFloat bottom = self.bounds.size.height - 62.0f;
+            CGFloat height = self.bounds.size.height - 20.0f;
+            
+            maker.bottom.equalTo(@(bottom));
+            maker.height.equalTo(@(height));
+            maker.leading.equalTo(@16);
+            maker.trailing.equalTo(@-16);
+        }];
+    }
 }
 
 @end

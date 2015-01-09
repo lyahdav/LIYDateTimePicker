@@ -147,6 +147,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     
     self.collectionViewCalendarLayout = [[LIYCollectionViewCalendarLayout alloc] init];
     self.collectionViewCalendarLayout.hourHeight = 50.0; //TODO const
+
     self.collectionViewCalendarLayout.sectionWidth = self.view.frame.size.width - 66.0f;
     self.collectionViewCalendarLayout.delegate = self;
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.collectionViewCalendarLayout];
@@ -177,9 +178,12 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     }
     
     [self setupConstraints];
-    
+
+
     if (self.allowTimeSelection) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarFrame) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+    }else{
+        self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0.0f;        
     }
 }
 
@@ -643,6 +647,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     UICollectionReusableView *view;
     
     if (kind == MSCollectionElementKindDayColumnHeader) {
+        
         self.dayColumnHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSDayColumnHeaderReuseIdentifier forIndexPath:indexPath];
 
         if (self.showDayColumnHeader) { // TODO: this is a little misleading, the dayColumnHeader also shows the all day events, so if showDayColumnHeader = NO, we still show it, just at a different height

@@ -74,7 +74,6 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 
 @property (nonatomic, strong) NSArray *allDayEvents;
-@property (nonatomic, strong) NSArray *nonAllDayEvents;
 @property (nonatomic, strong) MZDayPicker *dayPicker;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDateFormatter *fixedDateFormatter;

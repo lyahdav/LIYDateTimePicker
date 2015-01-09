@@ -14,7 +14,7 @@
 
 @protocol LIYDateTimePickerDelegate <NSObject>
 
-@required
+@optional
 - (void)dateTimePicker:(LIYDateTimePickerViewController *)dateTimePickerViewController didSelectDate:(NSDate *)selectedDate;
 
 @end
@@ -43,6 +43,10 @@
 @property (nonatomic, strong) NSString *defaultSelectedFontFamilyName;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) NSString *saveButtonText;
+@property (nonatomic, strong) NSArray *nonAllDayEvents;
+
+
+-(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
 
 
 

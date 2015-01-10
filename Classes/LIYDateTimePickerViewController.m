@@ -659,7 +659,13 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
             NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
             
             self.dayColumnHeader.showTimeInHeader = self.allowTimeSelection;
-            self.dayColumnHeader.day = [self combineDateAndTime:day timeDate:self.date];
+            
+            if (self.selectedDate){
+                self.dayColumnHeader.day = [self combineDateAndTime:day timeDate:self.selectedDate];
+            }else{
+                self.dayColumnHeader.day = day;
+            }
+
             self.dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
             self.dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
         }

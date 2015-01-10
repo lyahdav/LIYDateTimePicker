@@ -118,6 +118,12 @@
             make.height.equalTo(@0);
         }];
     }
+    
+    if (self.showTimeInHeader){
+        [self.backgroundOutline removeFromSuperview];
+        self.backgroundOutline = nil;
+        [self addBackgroundOutline];
+    }
 }
 
 -(void) setShowTimeInHeader:(BOOL)showTimeInHeader{
@@ -176,13 +182,14 @@
         
         [self.backgroundOutline mas_makeConstraints:^(MASConstraintMaker *maker) {
             
-            CGFloat bottom = self.bounds.size.height - 62.0f;
-            CGFloat height = self.bounds.size.height - 20.0f;
+            CGFloat top = 10.0f;
+            CGFloat height = 36.0f;
             
-            maker.bottom.equalTo(@(bottom));
+            maker.top.equalTo(@(top));
             maker.height.equalTo(@(height));
             maker.leading.equalTo(@16);
             maker.trailing.equalTo(@-16);
+
         }];
     }
 }

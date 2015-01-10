@@ -361,6 +361,8 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     float timeFactor = dateComponents.hour + minuteFactor;
     CGFloat topInset = self.collectionView.contentInset.top;
     CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - topInset;
+    CGFloat maxYOffset = self.collectionView.contentSize.height - self.collectionView.bounds.size.height;
+    timeY = fmin(maxYOffset, timeY);
     [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:YES];
     
     self.isChangingTime = NO;
@@ -507,18 +509,6 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
         });
         
     }];
-}
-
-- (void)scrollToHour:(NSInteger)hour {
-    NSDate *now = [NSDate date];
-    BOOL todaySelected = [[now beginningOfDay] isSameDayAsDate:self.date];
-    if (todaySelected) {
-        NSCalendar *cal = [NSCalendar currentCalendar];
-        NSDateComponents *dateComponents = [cal components:NSCalendarUnitHour fromDate:now];
-        hour = dateComponents.hour;
-    }
-    CGFloat timeY = hour * self.collectionViewCalendarLayout.hourHeight;
-    [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:NO];
 }
 
 /// y is measured where 0 is the top of the collection view (after day column header and optionally all day event view)

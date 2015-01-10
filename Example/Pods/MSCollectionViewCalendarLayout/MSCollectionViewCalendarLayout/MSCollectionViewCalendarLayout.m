@@ -1082,7 +1082,7 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
             }
             // Current Time Horizontal Gridline
             else if (elementKind == MSCollectionElementKindCurrentTimeHorizontalGridline) {
-                return (MSCollectionMinBackgroundZ + 1.0);
+                return (MSCollectionMinCellZ + 1.0);
             }
             // Horizontal Gridline
             else if (elementKind == MSCollectionElementKindHorizontalGridline) {

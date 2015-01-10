@@ -41,16 +41,15 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
         self.title = [UILabel new];
         self.title.numberOfLines = 0;
         self.title.backgroundColor = [UIColor clearColor];
+        [self.title setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
+        [self.title setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh + 1 forAxis:UILayoutConstraintAxisHorizontal];
         [self.contentView addSubview:self.title];
         
         self.eventTimeLabel = [UILabel new];
-        self.eventTimeLabel.numberOfLines = 0;
         self.eventTimeLabel.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.eventTimeLabel];
         
         [self updateColors];
-        
-        UIEdgeInsets contentPadding = [self contentPadding];
         
         [self.borderView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.height.equalTo(self.mas_height);
@@ -65,18 +64,15 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
             make.right.equalTo(self.mas_right);
         }];
         
+        UIEdgeInsets contentPadding = [self contentPadding];
+        
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.mas_top).offset(contentPadding.top);
             make.left.equalTo(self.mas_left).offset(contentPadding.left);
         }];
 
-        self.eventTimeLabelConstraints = [self.eventTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.title.mas_bottom).offset(kLIYContentMargin);
-            make.left.equalTo(self.mas_left).offset(contentPadding.left);
-            make.right.equalTo(self.mas_right).offset(-contentPadding.right);
-            make.bottom.lessThanOrEqualTo(self.mas_bottom).offset(-contentPadding.bottom);
-        }];
-        self.eventTimeLabelIsAtTop = NO;
+        self.eventTimeLabelIsAtTop = YES; // pretend it's at top so next line works
+        [self moveEventTimeLabelDown];
     }
     return self;
 }
@@ -94,11 +90,36 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
         [constraint uninstall];
     }
     
-    [self.eventTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+    self.eventTimeLabel.numberOfLines = 1;
+    UIEdgeInsets contentPadding = [self contentPadding];
+
+    self.eventTimeLabelConstraints = [self.eventTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.baseline.equalTo(self.title.mas_baseline);
+        make.right.equalTo(self.mas_right).offset(-contentPadding.right);
         make.left.equalTo(self.title.mas_right).offset(5.0);
     }];
     self.eventTimeLabelIsAtTop = YES;
+}
+
+- (void)moveEventTimeLabelDown {
+    if (!self.eventTimeLabelIsAtTop) {
+        return;
+    }
+   
+    for (MASConstraint *constraint in self.eventTimeLabelConstraints) {
+        [constraint uninstall];
+    }
+
+    self.eventTimeLabel.numberOfLines = 0;
+    UIEdgeInsets contentPadding = [self contentPadding];
+    
+    self.eventTimeLabelConstraints = [self.eventTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.title.mas_bottom).offset(kLIYContentMargin);
+        make.left.equalTo(self.mas_left).offset(contentPadding.left);
+        make.right.equalTo(self.mas_right).offset(-contentPadding.right);
+        make.bottom.lessThanOrEqualTo(self.mas_bottom).offset(-contentPadding.bottom);
+    }];
+    self.eventTimeLabelIsAtTop = NO;
 }
 
 - (void)layoutSubviews {
@@ -133,12 +154,17 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
 
 - (void)updateEventTimesLabel {
     if (self.showEventTimes) {
-        self.eventTimeLabel.attributedText = [[NSAttributedString alloc] initWithString:[self eventTimesString] attributes:[self eventTimesLabelAttributesHighlighted:self.selected]];
+        self.eventTimeLabel.text = [self eventTimesString];
+        CGFloat fontSize = [self eventDurationMinutes] > kLIYEventMinutesToShrinkFontSize ? 9.0 : 7.0;
+        self.eventTimeLabel.font = [UIFont systemFontOfSize:fontSize];
+
         if ([self eventDurationMinutes] <= kLIYEventMinutesToMoveEventTimeLabelToTop) {
             [self moveEventTimeLabelToTop];
+        } else {
+            [self moveEventTimeLabelDown];
         }
     } else {
-        self.eventTimeLabel.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:[self eventTimesLabelAttributesHighlighted:self.selected]];
+        self.eventTimeLabel.text = @"";
     }
 }
 

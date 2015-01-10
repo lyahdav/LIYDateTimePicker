@@ -28,7 +28,13 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
-// TODO submit pull request to MSCollectionViewCalendarLayout so we don't need this
+// TODO submit pull request to MSCollectionViewCalendarLayout so we don't need to subclass
+
+@interface MSCollectionViewCalendarLayout (LIYExposedPrivateMethods)
+
+- (CGFloat)zIndexForElementKind:(NSString *)elementKind floating:(BOOL)floating;
+
+@end
 
 @interface LIYCollectionViewCalendarLayout : MSCollectionViewCalendarLayout
 
@@ -42,6 +48,15 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (NSInteger)latestHourForSection:(NSInteger)section {
     return 24;
+}
+
+- (CGFloat)zIndexForElementKind:(NSString *)elementKind floating:(BOOL)floating {
+    if (elementKind == MSCollectionElementKindCurrentTimeHorizontalGridline) {
+        NSUInteger MSCollectionMinCellZ = 100.0; // from MSCollecitonViewCalendarLayout.m
+        return (MSCollectionMinCellZ + 10.0);
+    } else {
+        return [super zIndexForElementKind:elementKind floating:floating];
+    }
 }
 
 @end

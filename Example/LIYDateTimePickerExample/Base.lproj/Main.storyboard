@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sjs-h0-bRY">
-                                <rect key="frame" x="128" y="365" width="64" height="30"/>
+                                <rect key="frame" x="128" y="384" width="64" height="30"/>
                                 <state key="normal" title="Pick time">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -26,17 +26,17 @@
                                     <action selector="onPickTimeTap:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="7HM-bH-P0l"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected time" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XSe-30-IGH" userLabel="SelectedTime">
-                                <rect key="frame" x="20" y="405" width="280" height="39"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected time" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="XSe-30-IGH" userLabel="SelectedTime">
+                                <rect key="frame" x="20" y="424" width="280" height="20"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="39" id="fXg-Xz-mpc"/>
+                                    <constraint firstAttribute="height" constant="20" id="fXg-Xz-mpc"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="LKd-mq-gmp">
-                                <rect key="frame" x="20" y="49" width="280" height="308"/>
+                                <rect key="frame" x="20" y="49" width="280" height="327"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="dataSource" destination="vXZ-lx-hvc" id="7pK-Ed-lOc"/>

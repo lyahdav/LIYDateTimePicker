@@ -15,6 +15,7 @@
 @protocol LIYDateTimePickerDelegate <NSObject>
 
 @optional
+
 - (void)dateTimePicker:(LIYDateTimePickerViewController *)dateTimePickerViewController didSelectDate:(NSDate *)selectedDate;
 
 @end
@@ -22,15 +23,15 @@
 @interface LIYDateTimePickerViewController : UIViewController
 
 + (instancetype)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate;
-- (void)reloadEvents;
-- (CGFloat)middleYForTimeLine;
 
-@property (nonatomic) BOOL allowTimeSelection;
-@property (nonatomic) BOOL showCancelButton;
-@property (nonatomic) BOOL showDayPicker;
-@property (nonatomic) BOOL showDayColumnHeader;
-@property (nonatomic, strong) NSDate *date;
+@property (nonatomic, assign) BOOL allowTimeSelection;
+@property (nonatomic, assign) BOOL showCancelButton;
+@property (nonatomic, assign) BOOL showDayPicker;
+@property (nonatomic, assign) BOOL showDayColumnHeader;
+@property (nonatomic, assign) BOOL showEventTimes;
 @property (nonatomic, weak) id<LIYDateTimePickerDelegate> delegate;
+@property (nonatomic, strong) NSDate *date;
+@property (nonatomic, strong) NSDate *selectedDate; // TODO: a bit odd there's a date and selectedDate. Combine the two? Or give them better names.
 @property (nonatomic, strong) NSArray *visibleCalendars;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSString *dayTitlePrefix;
@@ -41,13 +42,11 @@
 @property (nonatomic, strong) UIColor *defaultColor2;
 @property (nonatomic, strong) NSString *defaultFontFamilyName;
 @property (nonatomic, strong) NSString *defaultSelectedFontFamilyName;
-@property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) NSString *saveButtonText;
 @property (nonatomic, strong) NSArray *nonAllDayEvents;
 
-
--(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
-
-
+- (void)reloadEvents;
+- (CGFloat)middleYForTimeLine;
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

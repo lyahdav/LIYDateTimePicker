@@ -710,7 +710,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     NSDate *startDate = [self collectionView:self.collectionView layout:self.collectionViewCalendarLayout startTimeForItemAtIndexPath:indexPath];
     
     if (endDate - [startDate timeIntervalSince1970] < 15*60) {
-        endDate = [startDate timeIntervalSince1970] + 15*60; // set to minimum 15 min gap
+        endDate = [startDate timeIntervalSince1970] + 30*60; // set to minimum 30 min gap
     }
     return [NSDate dateWithTimeIntervalSince1970:endDate];
 }

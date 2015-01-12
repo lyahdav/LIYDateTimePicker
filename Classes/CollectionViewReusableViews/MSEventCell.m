@@ -1,20 +1,20 @@
-//
-//  MSEventCell.m
-//  Example
-//
-//  Created by Eric Horacek on 2/26/13.
-//  Copyright (c) 2013 Monospace Ltd. All rights reserved.
-//
-
 #import "MSEventCell.h"
 #import <EventKit/EventKit.h>
 #import "Masonry.h"
 #import "UIColor+HexString.h"
 
+const CGFloat kLIYContentMargin = 2.0;
+const CGFloat kLIYBorderWidth = 6.0;
+const NSInteger kLIYEventMinutesToMoveEventTimeLabelToTop = 30;
+const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
+
 @interface MSEventCell ()
 
 @property (nonatomic, strong) UIView *borderView;
 @property (nonatomic, strong) UIView *bottomBorderView;
+@property (nonatomic, strong) UILabel *eventTimeLabel;
+@property (nonatomic, strong) NSArray *eventTimeLabelConstraints;
+@property (nonatomic, assign) BOOL eventTimeLabelIsAtTop;
 
 @end
 
@@ -22,11 +22,9 @@
 
 #pragma mark - UIView
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        
         self.layer.rasterizationScale = [[UIScreen mainScreen] scale];
         self.layer.shouldRasterize = YES;
         
@@ -43,52 +41,88 @@
         self.title = [UILabel new];
         self.title.numberOfLines = 0;
         self.title.backgroundColor = [UIColor clearColor];
-//        self.title.bounds = CGRectInset(self.title.frame, 0.0f, 0.0f);
+        [self.title setContentHuggingPriority:UILayoutPriorityDefaultHigh forAxis:UILayoutConstraintAxisHorizontal];
+        [self.title setContentCompressionResistancePriority:UILayoutPriorityDefaultHigh + 1 forAxis:UILayoutConstraintAxisHorizontal];
         [self.contentView addSubview:self.title];
         
-        self.location = [UILabel new];
-        self.location.numberOfLines = 0;
-        self.location.backgroundColor = [UIColor clearColor];
-        [self.contentView addSubview:self.location];
-        
-
+        self.eventTimeLabel = [UILabel new];
+        self.eventTimeLabel.backgroundColor = [UIColor clearColor];
+        [self.contentView addSubview:self.eventTimeLabel];
         
         [self updateColors];
         
-        CGFloat borderWidth = 6.0;
-        CGFloat contentMargin = 2.0;
-        UIEdgeInsets contentPadding = UIEdgeInsetsMake(5.0, (borderWidth + 4.0), 1.0, 4.0);
-        
         [self.borderView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.height.equalTo(self.mas_height);
-            make.width.equalTo(@(borderWidth));
+            make.width.equalTo(@(kLIYBorderWidth));
             make.left.equalTo(self.mas_left);
             make.top.equalTo(self.mas_top);
         }];
         
         [self.bottomBorderView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.equalTo(@(borderWidth));
+            make.height.equalTo(@(kLIYBorderWidth));
             make.left.equalTo(self.mas_left);
             make.right.equalTo(self.mas_right);
         }];
         
+        UIEdgeInsets contentPadding = [self contentPadding];
+        
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.mas_top).offset(contentPadding.top);
             make.left.equalTo(self.mas_left).offset(contentPadding.left);
-            make.right.equalTo(self.mas_right).offset(-contentPadding.right);
         }];
-        
-        [self.location mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.title.mas_bottom).offset(contentMargin);
-            make.left.equalTo(self.mas_left).offset(contentPadding.left);
-            make.right.equalTo(self.mas_right).offset(-contentPadding.right);
-            make.bottom.lessThanOrEqualTo(self.mas_bottom).offset(-contentPadding.bottom);
-        }];
+
+        self.eventTimeLabelIsAtTop = YES; // pretend it's at top so next line works
+        [self moveEventTimeLabelDown];
     }
     return self;
 }
 
--(void) layoutSubviews{
+- (UIEdgeInsets)contentPadding {
+    return UIEdgeInsetsMake(5.0, (kLIYBorderWidth + 4.0), 1.0, 4.0);
+}
+
+- (void)moveEventTimeLabelToTop {
+    if (self.eventTimeLabelIsAtTop) {
+        return;
+    }
+    
+    for (MASConstraint *constraint in self.eventTimeLabelConstraints) {
+        [constraint uninstall];
+    }
+    
+    self.eventTimeLabel.numberOfLines = 1;
+    UIEdgeInsets contentPadding = [self contentPadding];
+
+    self.eventTimeLabelConstraints = [self.eventTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.baseline.equalTo(self.title.mas_baseline);
+        make.right.equalTo(self.mas_right).offset(-contentPadding.right);
+        make.left.equalTo(self.title.mas_right).offset(5.0);
+    }];
+    self.eventTimeLabelIsAtTop = YES;
+}
+
+- (void)moveEventTimeLabelDown {
+    if (!self.eventTimeLabelIsAtTop) {
+        return;
+    }
+   
+    for (MASConstraint *constraint in self.eventTimeLabelConstraints) {
+        [constraint uninstall];
+    }
+
+    self.eventTimeLabel.numberOfLines = 0;
+    UIEdgeInsets contentPadding = [self contentPadding];
+    
+    self.eventTimeLabelConstraints = [self.eventTimeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.title.mas_bottom).offset(kLIYContentMargin);
+        make.left.equalTo(self.mas_left).offset(contentPadding.left);
+        make.right.equalTo(self.mas_right).offset(-contentPadding.right);
+        make.bottom.lessThanOrEqualTo(self.mas_bottom).offset(-contentPadding.bottom);
+    }];
+    self.eventTimeLabelIsAtTop = NO;
+}
+
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     [self updateColors];
@@ -96,70 +130,130 @@
 
 #pragma mark - UICollectionViewCell
 
-- (void)setSelected:(BOOL)selected
-{
-
+- (void)setSelected:(BOOL)selected {
     [super setSelected:selected]; // Must be here for animation to fire
-
 }
 
 #pragma mark - MSEventCell
 
-- (void)setEvent:(EKEvent *)event
-{
+- (void)setEvent:(EKEvent *)event {
     _event = event;
-    self.title.attributedText = [[NSAttributedString alloc] initWithString:event.title attributes:[self titleAttributesHighlighted:self.selected]];
-    self.location.attributedText = [[NSAttributedString alloc] initWithString:event.location ?: @"" attributes:[self subtitleAttributesHighlighted:self.selected]];
-
+    self.title.attributedText = [[NSAttributedString alloc] initWithString:self.event.title attributes:[self titleAttributesHighlighted:self.selected]];
+    [self updateEventTimesLabel];
 }
 
-- (void)updateColors
-{
+- (void)setShowEventTimes:(BOOL)showEventTimes {
+    _showEventTimes = showEventTimes;
+    [self updateEventTimesLabel];
+}
+
+- (NSInteger)eventDurationMinutes {
+    NSTimeInterval interval = [self eventTimeInterval];
+    return (NSInteger)interval / 60;
+}
+
+- (void)updateEventTimesLabel {
+    if (self.showEventTimes) {
+        self.eventTimeLabel.text = [self eventTimesString];
+        CGFloat fontSize = [self eventDurationMinutes] > kLIYEventMinutesToShrinkFontSize ? 9.0 : 7.0;
+        self.eventTimeLabel.font = [UIFont systemFontOfSize:fontSize];
+
+        if ([self eventDurationMinutes] <= kLIYEventMinutesToMoveEventTimeLabelToTop) {
+            [self moveEventTimeLabelToTop];
+        } else {
+            [self moveEventTimeLabelDown];
+        }
+    } else {
+        self.eventTimeLabel.text = @"";
+    }
+}
+
+- (NSString *)eventTimesString {
+    NSString *startDateString = [self shortStringFromDate:self.event.startDate];
+    NSString *endDateString = [self shortStringFromDate:self.event.endDate];
+    return [NSString stringWithFormat:@"%@ - %@ (%@)", startDateString, endDateString, [self durationString]];
+}
+
+- (NSString *)shortStringFromDate:(NSDate *)date {
+    static NSDateFormatter *dateFormatter = nil;
+    if (dateFormatter == nil) {
+        dateFormatter = [NSDateFormatter new];
+        [dateFormatter setDateFormat:@"h:mm aa"];
+    }
+    static NSDateFormatter *shortDateFormatter = nil;
+    if (shortDateFormatter == nil) {
+        shortDateFormatter = [NSDateFormatter new];
+        [shortDateFormatter setDateFormat:@"h aa"];
+    }
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    NSDateComponents* components = [calendar components:NSMinuteCalendarUnit fromDate:date];
+    if (components.minute == 0) {
+        return [shortDateFormatter stringFromDate:date];
+    } else {
+        return [dateFormatter stringFromDate:date];
+    }
+}
+
+- (NSTimeInterval)eventTimeInterval {
+    return [self.event.endDate timeIntervalSinceDate:self.event.startDate];
+}
+
+- (NSString *)durationString {
+    NSTimeInterval interval = [self eventTimeInterval];
+    NSInteger remainingMinutes = (NSInteger)(interval / 60) % 60;
+    NSInteger hours = interval / 3600;
+    if (hours < 1) {
+        return [NSString stringWithFormat:@"%ld minutes", remainingMinutes];
+    } else if (remainingMinutes > 0) {
+        return [NSString stringWithFormat:@"%ld:%02ld hours", hours, remainingMinutes];
+    } else {
+        return [NSString stringWithFormat:@"%ld hours", hours];
+    }
+}
+
+- (void)updateColors {
     self.contentView.backgroundColor = [self backgroundColorHighlighted:self.selected];
     self.borderView.backgroundColor = [self borderColor];
     self.bottomBorderView.backgroundColor = [UIColor colorWithHexString:@"eaeaea"];
     self.title.textColor = [self textColorHighlighted:self.selected];
-    self.location.textColor = [self textColorHighlighted:self.selected];
 }
 
-- (NSDictionary *)titleAttributesHighlighted:(BOOL)highlighted
-{
+- (NSDictionary *)titleAttributesHighlighted:(BOOL)highlighted {
+    CGFloat fontSize = [self eventDurationMinutes] > kLIYEventMinutesToShrinkFontSize ? 12.0 : 7.0;
+    return [self highlightAttributes:highlighted fontSize:fontSize bold:YES];
+}
+
+- (NSDictionary *)eventTimesLabelAttributesHighlighted:(BOOL)highlighted {
+    CGFloat fontSize = [self eventDurationMinutes] > kLIYEventMinutesToShrinkFontSize ? 9.0 : 7.0;
+    return [self highlightAttributes:highlighted fontSize:fontSize bold:NO];
+}
+
+- (NSDictionary *)subtitleAttributesHighlighted:(BOOL)highlighted {
+    return [self highlightAttributes:highlighted fontSize:12.0 bold:NO];
+}
+
+- (NSDictionary *)highlightAttributes:(BOOL)isHighlighted fontSize:(CGFloat)fontSize bold:(BOOL)bold {
     NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
     paragraphStyle.alignment = NSTextAlignmentLeft;
     paragraphStyle.hyphenationFactor = 1.0;
     paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    UIFont *font = bold ? [UIFont boldSystemFontOfSize:fontSize] : [UIFont systemFontOfSize:fontSize];
     return @{
-        NSFontAttributeName : [UIFont boldSystemFontOfSize:12.0],
-        NSForegroundColorAttributeName : [self textColorHighlighted:highlighted],
-        NSParagraphStyleAttributeName : paragraphStyle
-    };
+             NSFontAttributeName : font,
+             NSForegroundColorAttributeName : [self textColorHighlighted:isHighlighted],
+             NSParagraphStyleAttributeName : paragraphStyle
+             };
 }
 
-- (NSDictionary *)subtitleAttributesHighlighted:(BOOL)highlighted
-{
-    NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
-    paragraphStyle.alignment = NSTextAlignmentLeft;
-    paragraphStyle.hyphenationFactor = 1.0;
-    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-    return @{
-        NSFontAttributeName : [UIFont systemFontOfSize:12.0],
-        NSForegroundColorAttributeName : [self textColorHighlighted:highlighted],
-        NSParagraphStyleAttributeName : paragraphStyle
-    };
-}
-
-- (UIColor *)backgroundColorHighlighted:(BOOL)selected
-{
+- (UIColor *)backgroundColorHighlighted:(BOOL)selected {
     return selected ? [UIColor colorWithHexString:@"ffffff"] : [[UIColor colorWithHexString:@"ffffff"] colorWithAlphaComponent:1.0];
 }
 
-- (UIColor *)textColorHighlighted:(BOOL)selected
-{
+- (UIColor *)textColorHighlighted:(BOOL)selected {
     return selected ? [UIColor whiteColor] : [UIColor colorWithHexString:@"353535"];
 }
 
-- (UIColor *)borderColor
-{
+- (UIColor *)borderColor {
     return [UIColor colorWithCGColor: self.event.calendar.CGColor];
 }
 

@@ -14,11 +14,11 @@
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="64" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sjs-h0-bRY">
-                                <rect key="frame" x="128" y="423" width="64" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sjs-h0-bRY">
+                                <rect key="frame" x="128" y="384" width="64" height="30"/>
                                 <state key="normal" title="Pick time">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -26,14 +26,31 @@
                                     <action selector="onPickTimeTap:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="7HM-bH-P0l"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Selected time" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XSe-30-IGH" userLabel="SelectedTime">
-                                <rect key="frame" x="20" y="453" width="280" height="39"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected time" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="XSe-30-IGH" userLabel="SelectedTime">
+                                <rect key="frame" x="20" y="424" width="280" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="fXg-Xz-mpc"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mQL-lN-Nln">
-                                <rect key="frame" x="108" y="518" width="105" height="30"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="LKd-mq-gmp">
+                                <rect key="frame" x="20" y="49" width="280" height="327"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="vXZ-lx-hvc" id="7pK-Ed-lOc"/>
+                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="THH-R4-JkT"/>
+                                </connections>
+                            </tableView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Calendars" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jts-VY-O4I">
+                                <rect key="frame" x="20" y="20" width="280" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mQL-lN-Nln">
+                                <rect key="frame" x="108" y="454" width="105" height="30"/>
                                 <state key="normal" title="Show Calendar">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -41,23 +58,25 @@
                                     <action selector="showCalendarTap:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="H08-F9-zOa"/>
                                 </connections>
                             </button>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="LKd-mq-gmp">
-                                <rect key="frame" x="20" y="110" width="280" height="250"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="vXZ-lx-hvc" id="7pK-Ed-lOc"/>
-                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="THH-R4-JkT"/>
-                                </connections>
-                            </tableView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Select Calendars" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jts-VY-O4I">
-                                <rect key="frame" x="20" y="81" width="280" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="jts-VY-O4I" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="E1L-yW-b5G"/>
+                            <constraint firstItem="XSe-30-IGH" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="OUa-BI-o7r"/>
+                            <constraint firstItem="LKd-mq-gmp" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="S5B-JZ-jeE"/>
+                            <constraint firstAttribute="trailing" secondItem="jts-VY-O4I" secondAttribute="trailing" constant="20" id="UPL-jt-nFQ"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="mQL-lN-Nln" secondAttribute="bottom" constant="20" id="V6e-3I-Bnc"/>
+                            <constraint firstAttribute="centerX" secondItem="mQL-lN-Nln" secondAttribute="centerX" id="VgV-dS-F8R"/>
+                            <constraint firstAttribute="centerX" secondItem="Sjs-h0-bRY" secondAttribute="centerX" id="Yx8-7y-Sum"/>
+                            <constraint firstAttribute="trailing" secondItem="XSe-30-IGH" secondAttribute="trailing" constant="20" id="co2-BQ-kgS"/>
+                            <constraint firstItem="mQL-lN-Nln" firstAttribute="top" secondItem="XSe-30-IGH" secondAttribute="bottom" constant="10" id="eGo-dS-tpu"/>
+                            <constraint firstAttribute="trailing" secondItem="LKd-mq-gmp" secondAttribute="trailing" constant="20" id="iYD-K5-DGB"/>
+                            <constraint firstItem="jts-VY-O4I" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="20" id="l5g-Mf-fmP"/>
+                            <constraint firstItem="XSe-30-IGH" firstAttribute="top" secondItem="Sjs-h0-bRY" secondAttribute="bottom" constant="10" id="mfX-XA-BKl"/>
+                            <constraint firstItem="Sjs-h0-bRY" firstAttribute="top" secondItem="LKd-mq-gmp" secondAttribute="bottom" constant="8" id="pXZ-Pg-eW3"/>
+                            <constraint firstItem="LKd-mq-gmp" firstAttribute="top" secondItem="jts-VY-O4I" secondAttribute="bottom" constant="8.5" id="z9m-Ih-tbB"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="aUA-6L-Cum"/>
                     <connections>
@@ -74,7 +93,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="6xy-yc-j5L" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="obX-Rc-wdn">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="obX-Rc-wdn">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

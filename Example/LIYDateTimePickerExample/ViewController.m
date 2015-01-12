@@ -35,12 +35,14 @@ static NSString *const kLIYCalendarCellIdentifier = @"calendarCell";
         weakSelf.calendars = [weakEventStore calendarsForEntityType:EKEntityTypeEvent];
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.tableView reloadData];
+            [weakSelf.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UITableViewScrollPositionNone];
         });
     }];
 }
 
 - (IBAction)onPickTimeTap:(id)sender {
     LIYDateTimePickerViewController *vc = [LIYDateTimePickerViewController timePickerForDate:[NSDate date] delegate:self];
+    vc.showEventTimes = YES;
     vc.visibleCalendars = self.visibleCalendars;
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -52,6 +54,7 @@ static NSString *const kLIYCalendarCellIdentifier = @"calendarCell";
 
 - (IBAction)showCalendarTap:(UIButton *)sender {
     LIYDateTimePickerViewController *vc = [LIYDateTimePickerViewController timePickerForDate:[NSDate date] delegate:self];
+    vc.showEventTimes = YES;
     vc.showDayColumnHeader = NO;
     vc.visibleCalendars = self.visibleCalendars;
     vc.allowTimeSelection = NO;

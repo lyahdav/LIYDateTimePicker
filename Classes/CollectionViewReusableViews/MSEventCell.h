@@ -12,10 +12,8 @@
 
 @interface MSEventCell : UICollectionViewCell
 
+@property (nonatomic, assign) BOOL showEventTimes;
 @property (nonatomic, weak) EKEvent *event;
-
 @property (nonatomic, strong) UILabel *title;
-@property (nonatomic, strong) UILabel *location;
-
 
 @end

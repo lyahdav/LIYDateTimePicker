@@ -28,7 +28,13 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
-// TODO submit pull request to MSCollectionViewCalendarLayout so we don't need this
+// TODO submit pull request to MSCollectionViewCalendarLayout so we don't need to subclass
+
+@interface MSCollectionViewCalendarLayout (LIYExposedPrivateMethods)
+
+- (CGFloat)zIndexForElementKind:(NSString *)elementKind floating:(BOOL)floating;
+
+@end
 
 @interface LIYCollectionViewCalendarLayout : MSCollectionViewCalendarLayout
 
@@ -42,6 +48,15 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (NSInteger)latestHourForSection:(NSInteger)section {
     return 24;
+}
+
+- (CGFloat)zIndexForElementKind:(NSString *)elementKind floating:(BOOL)floating {
+    if (elementKind == MSCollectionElementKindCurrentTimeHorizontalGridline) {
+        NSUInteger MSCollectionMinCellZ = 100.0; // from MSCollecitonViewCalendarLayout.m
+        return (MSCollectionMinCellZ + 10.0);
+    } else {
+        return [super zIndexForElementKind:elementKind floating:floating];
+    }
 }
 
 @end
@@ -361,6 +376,8 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     float timeFactor = dateComponents.hour + minuteFactor;
     CGFloat topInset = self.collectionView.contentInset.top;
     CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - topInset;
+    CGFloat maxYOffset = self.collectionView.contentSize.height - self.collectionView.bounds.size.height;
+    timeY = fmin(maxYOffset, timeY);
     [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:YES];
     
     self.isChangingTime = NO;
@@ -509,18 +526,6 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     }];
 }
 
-- (void)scrollToHour:(NSInteger)hour {
-    NSDate *now = [NSDate date];
-    BOOL todaySelected = [[now beginningOfDay] isSameDayAsDate:self.date];
-    if (todaySelected) {
-        NSCalendar *cal = [NSCalendar currentCalendar];
-        NSDateComponents *dateComponents = [cal components:NSCalendarUnitHour fromDate:now];
-        hour = dateComponents.hour;
-    }
-    CGFloat timeY = hour * self.collectionViewCalendarLayout.hourHeight;
-    [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:NO];
-}
-
 /// y is measured where 0 is the top of the collection view (after day column header and optionally all day event view)
 - (CGFloat)hourAtYCoord:(CGFloat)y {
     CGFloat hour = (y + self.collectionView.contentOffset.y - kLIYGapToMidnight) / self.collectionViewCalendarLayout.hourHeight;
@@ -638,6 +643,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     // this is a safety check since we were seeing a crash here. not sure how this would happen.
     if (indexPath.row < self.nonAllDayEvents.count){
         cell.event = self.nonAllDayEvents[indexPath.row];
+        cell.showEventTimes = self.showEventTimes;
     }
     
     return cell;

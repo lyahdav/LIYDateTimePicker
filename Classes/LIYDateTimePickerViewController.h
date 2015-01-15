@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MSDayColumnHeader.h"
 #import "MSCollectionViewCalendarLayout.h"
+#import "MZDayPicker.h"
 
 @class LIYDateTimePickerViewController;
 
@@ -48,5 +49,6 @@
 - (void)reloadEvents;
 - (CGFloat)middleYForTimeLine;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
+- (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day;
 
 @end

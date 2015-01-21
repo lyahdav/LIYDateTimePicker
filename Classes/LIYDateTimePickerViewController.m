@@ -135,6 +135,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (void)setDefaults {
     _date = [NSDate date];
+    _selectedDate = [NSDate date];
     _showDayPicker = YES;
     _allowTimeSelection = YES;
     _defaultColor1 = [UIColor colorWithHexString:@"59c7f1"];

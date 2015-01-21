@@ -266,7 +266,8 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 }
 
 #pragma mark - Actions
--(void) saveButtonTapped{
+
+- (void)saveButtonTapped {
     [self.delegate dateTimePicker:self didSelectDate:self.selectedDate];
 }
 
@@ -481,6 +482,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     return [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:date options:0];
 }
 
+// TODO: give this method a better name and fix the magic numbers below
 -(NSDate *) endDate{
     return [self.date dateByAddingTimeInterval:60*60*24*14];
 }
@@ -591,8 +593,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 #pragma mark - MZDayPickerDelegate
 
-- (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day
-{
+- (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day {
     NSDate *timeDate = self.date;
     if (self.selectedDate){
         timeDate = self.selectedDate;
@@ -604,10 +605,8 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     [self reloadEvents];
 }
 
-
-
-
 #pragma mark - UICollectionViewDelegate
+
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     EKEventViewController *vc = [[EKEventViewController alloc] init];
     EKEvent *event = self.nonAllDayEvents[indexPath.row];
@@ -625,7 +624,6 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 #pragma mark - UICollectionViewDataSource
 
 
-
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
@@ -634,14 +632,12 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     return self.nonAllDayEvents.count;
 }
 
-
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    
     MSEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MSEventCellReuseIdentifier forIndexPath:indexPath];
     
     // this is a safety check since we were seeing a crash here. not sure how this would happen.
-    if (indexPath.row < self.nonAllDayEvents.count){
+    if (indexPath.row < self.nonAllDayEvents.count) {
+        cell.selectedDate = self.selectedDate;
         cell.event = self.nonAllDayEvents[indexPath.row];
         cell.showEventTimes = self.showEventTimes;
     }

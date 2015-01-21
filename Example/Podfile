@@ -3,3 +3,7 @@ platform :ios, '7.0'
 
 pod 'MZDayPicker',    :git => 'https://github.com/joefrank99/MZDayPicker.git', :commit => '883626917ea02099c51dc13719c29823febd7441'
 podspec :path => "../LIYDateTimePicker.podspec"
+
+target :LIYDateTimePickerExampleTests, :exclusive => true do
+    pod 'Kiwi'
+end

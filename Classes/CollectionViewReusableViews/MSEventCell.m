@@ -2,6 +2,7 @@
 #import <EventKit/EventKit.h>
 #import "Masonry.h"
 #import "UIColor+HexString.h"
+#import "NSDate+LIYUtilities.h"
 
 const CGFloat kLIYContentMargin = 2.0;
 const CGFloat kLIYBorderWidth = 6.0;
@@ -136,6 +137,11 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
 
 #pragma mark - MSEventCell
 
+- (NSDate *)selectedDate {
+    NSAssert(_selectedDate != nil, @"selectedDate was never set on MSEventCell");
+    return _selectedDate;
+}
+
 - (void)setEvent:(EKEvent *)event {
     _event = event;
     self.title.attributedText = [[NSAttributedString alloc] initWithString:self.event.title attributes:[self titleAttributesHighlighted:self.selected]];
@@ -147,18 +153,21 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
     [self updateEventTimesLabel];
 }
 
-- (NSInteger)eventDurationMinutes {
-    NSTimeInterval interval = [self eventTimeInterval];
+/** Returns the event's duration in minutes in the current day.
+ For example, an event from 11:30pm today to 1:00am tomorrow will return 30 minutes if you're looking at today.
+*/
+- (NSInteger)eventDurationMinutesInSelectedDay {
+    NSTimeInterval interval = [self eventTimeIntervalInSelectedDay];
     return (NSInteger)interval / 60;
 }
 
 - (void)updateEventTimesLabel {
     if (self.showEventTimes) {
         self.eventTimeLabel.text = [self eventTimesString];
-        CGFloat fontSize = [self eventDurationMinutes] > kLIYEventMinutesToShrinkFontSize ? 9.0 : 7.0;
+        CGFloat fontSize = [self eventDurationMinutesInSelectedDay] > kLIYEventMinutesToShrinkFontSize ? 9.0 : 7.0;
         self.eventTimeLabel.font = [UIFont systemFontOfSize:fontSize];
 
-        if ([self eventDurationMinutes] <= kLIYEventMinutesToMoveEventTimeLabelToTop) {
+        if ([self eventDurationMinutesInSelectedDay] <= kLIYEventMinutesToMoveEventTimeLabelToTop) {
             [self moveEventTimeLabelToTop];
         } else {
             [self moveEventTimeLabelDown];
@@ -198,6 +207,19 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
     return [self.event.endDate timeIntervalSinceDate:self.event.startDate];
 }
 
+- (NSTimeInterval)eventTimeIntervalInSelectedDay {
+    NSDate *startDateInSelectedDay = self.event.startDate;
+    if (![startDateInSelectedDay isSameDayAsDate:self.selectedDate]) {
+        startDateInSelectedDay = [self.selectedDate dateAtHour:0 minute:0];
+    }
+    NSDate *endDateInSelectedDay = self.event.endDate;
+    if (![endDateInSelectedDay isSameDayAsDate:self.selectedDate]) {
+        endDateInSelectedDay = [[NSDate date] dateAtHour:24 minute:0];
+    }
+    
+    return [endDateInSelectedDay timeIntervalSinceDate:startDateInSelectedDay];
+}
+
 - (NSString *)durationString {
     NSTimeInterval interval = [self eventTimeInterval];
     NSInteger remainingMinutes = (NSInteger)(interval / 60) % 60;
@@ -219,12 +241,12 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
 }
 
 - (NSDictionary *)titleAttributesHighlighted:(BOOL)highlighted {
-    CGFloat fontSize = [self eventDurationMinutes] > kLIYEventMinutesToShrinkFontSize ? 12.0 : 7.0;
+    CGFloat fontSize = [self eventDurationMinutesInSelectedDay] > kLIYEventMinutesToShrinkFontSize ? 12.0 : 7.0;
     return [self highlightAttributes:highlighted fontSize:fontSize bold:YES];
 }
 
 - (NSDictionary *)eventTimesLabelAttributesHighlighted:(BOOL)highlighted {
-    CGFloat fontSize = [self eventDurationMinutes] > kLIYEventMinutesToShrinkFontSize ? 9.0 : 7.0;
+    CGFloat fontSize = [self eventDurationMinutesInSelectedDay] > kLIYEventMinutesToShrinkFontSize ? 9.0 : 7.0;
     return [self highlightAttributes:highlighted fontSize:fontSize bold:NO];
 }
 

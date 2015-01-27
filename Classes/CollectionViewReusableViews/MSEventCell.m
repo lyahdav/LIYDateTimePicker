@@ -144,7 +144,16 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
 
 - (void)setEvent:(EKEvent *)event {
     _event = event;
-    self.title.attributedText = [[NSAttributedString alloc] initWithString:self.event.title attributes:[self titleAttributesHighlighted:self.selected]];
+    
+    NSString *title = @"[no title]";
+
+    if (self.event.title) {
+        title = self.event.title;
+    }
+
+    self.title.attributedText = [[NSAttributedString alloc] initWithString:title attributes:[self titleAttributesHighlighted:self.selected]];
+    
+    
     [self updateEventTimesLabel];
 }
 

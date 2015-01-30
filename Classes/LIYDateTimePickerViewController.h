@@ -38,6 +38,7 @@
 @property (nonatomic, strong) NSString *dayTitlePrefix;
 @property (nonatomic, strong) MSDayColumnHeader *dayColumnHeader;
 @property (nonatomic, strong) MSCollectionViewCalendarLayout *collectionViewCalendarLayout;
+@property (nonatomic, strong) MZDayPicker *dayPicker;
 @property (nonatomic, strong) NSArray *calendarNamesToFilterForEdit;
 @property (nonatomic, strong) UIColor *defaultColor1;
 @property (nonatomic, strong) UIColor *defaultColor2;

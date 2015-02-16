@@ -48,4 +48,4 @@ LIYDateTimePicker is available under the MIT license. See the LICENSE file for m
 ## Attribution
 
 Thanks to Icons8 for the <a
-href="http://icons8.com/web-app/23/Calendar">Calendar icon</a>
+href="http://icons8.com/web-app/3979/Checklist">Checklist icon</a>

@@ -45,3 +45,7 @@ Liron Yahdav
 
 LIYDateTimePicker is available under the MIT license. See the LICENSE file for more info.
 
+## Attribution
+
+Thanks to Icons8 for the <a
+href="http://icons8.com/web-app/23/Calendar">Calendar icon</a>

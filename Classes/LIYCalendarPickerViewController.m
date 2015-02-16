@@ -2,6 +2,8 @@
 #import <EventKit/EventKit.h>
 #import <ObjectiveSugar/ObjectiveSugar.h>
 
+static NSString *LIYSelectedCalendarIdentifiersKey = @"LIYSelectedCalendarIdentifiers";
+
 @interface LIYEventSourceWithCalendars : NSObject
 
 @property (nonatomic, strong) NSString *eventSourceName;
@@ -29,6 +31,26 @@
     calendarPickerViewController.completionBlock = completion;
     calendarPickerViewController.initialSelectedCalendarIdentifiers = selectedCalendarIdentifiers;
     return calendarPickerViewController;
+}
+
++ (instancetype)calendarPickerWithCalendarsFromUserDefaultsWithEventStore:(EKEventStore *)eventStore completion:(void (^)(NSArray *))completion {
+    LIYCalendarPickerViewController *calendarPickerViewController = [LIYCalendarPickerViewController new];
+    calendarPickerViewController.eventStore = eventStore;
+    calendarPickerViewController.completionBlock = ^(NSArray *selectedCalendarIdentifiers) {
+        [self setSelectedCalendarIdenfiersInUserDefaults:selectedCalendarIdentifiers];
+        completion(selectedCalendarIdentifiers);
+    };
+    calendarPickerViewController.initialSelectedCalendarIdentifiers = [self selectedCalendarIdentifiersFromUserDefaultsForEventStore:eventStore];
+    return calendarPickerViewController;
+}
+
++ (NSArray *)selectedCalendarIdentifiersFromUserDefaultsForEventStore:(EKEventStore *)eventStore {
+    NSArray *selectedCalendarIdentifiers = [[NSUserDefaults standardUserDefaults] arrayForKey:LIYSelectedCalendarIdentifiersKey];
+    return selectedCalendarIdentifiers ?: @[eventStore.defaultCalendarForNewEvents.calendarIdentifier];
+}
+
++ (void)setSelectedCalendarIdenfiersInUserDefaults:(NSArray *)calendarIdentifiers {
+    [[NSUserDefaults standardUserDefaults] setObject:calendarIdentifiers forKey:LIYSelectedCalendarIdentifiersKey];
 }
 
 #pragma mark - UIViewController
@@ -102,10 +124,14 @@
 #pragma mark - properties
 
 - (NSArray *)selectedCalendarIdentifiers {
-    return [self.tableView.indexPathsForSelectedRows map:^id(NSIndexPath *indexPath) {
-        EKCalendar *calendar = [self calendarForIndexPath:indexPath];
-        return calendar.calendarIdentifier;
-    }];
+    if (self.tableView.indexPathsForSelectedRows == nil) {
+        return @[];
+    } else {
+        return [self.tableView.indexPathsForSelectedRows map:^id(NSIndexPath *indexPath) {
+            EKCalendar *calendar = [self calendarForIndexPath:indexPath];
+            return calendar.calendarIdentifier;
+        }];
+    }
 }
 
 #pragma mark - UITableViewDataSource

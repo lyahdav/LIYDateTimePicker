@@ -2,6 +2,7 @@
 #import "MSCollectionViewCalendarLayout.h"
 #import "MZDayPicker.h"
 #import "ObjectiveSugar.h"
+#import "LIYCalendarPickerViewController.h"
 
 // Collection View Reusable Views
 #import "MSGridline.h"
@@ -201,6 +202,10 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     }else{
         self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0.0f;        
     }
+    
+    if (self.showCalendarPickerButton) {
+        [self addCalendarPickerButton];
+    }
 }
 
 - (void)dealloc {
@@ -270,6 +275,18 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (void)saveButtonTapped {
     [self.delegate dateTimePicker:self didSelectDate:self.selectedDate];
+}
+
+- (void)calendarPickerButtonTapped {
+    typeof(self) __weak weakSelf = self;
+    LIYCalendarPickerViewController *calendarPickerViewController =
+    [LIYCalendarPickerViewController calendarPickerWithCalendarsFromUserDefaultsWithEventStore:self.eventStore completion:^(NSArray *newSelectedCalendarIdentifiers) {
+        weakSelf.visibleCalendars = [newSelectedCalendarIdentifiers map:^id(NSString *calendarIdentifier) {
+            return [weakSelf.eventStore calendarWithIdentifier:calendarIdentifier];
+        }];
+    }];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:calendarPickerViewController];
+    [self presentViewController:navigationController animated:YES completion:nil];
 }
 
 #pragma mark - Convenience
@@ -491,12 +508,13 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (void)reloadEvents {
     if (![self isViewLoaded] || !self.visibleCalendars || self.visibleCalendars.count == 0) {
+        self.nonAllDayEvents = @[];
+        self.allDayEvents = @[];
+        [self.collectionViewCalendarLayout invalidateLayoutCache];
+        [self.collectionView reloadData];
         return;
     }
     
-    if (!self.eventStore) {
-        self.eventStore = [[EKEventStore alloc] init];
-    }
     EKEventStore *__weak weakEventStore = self.eventStore;
     typeof(self) __weak weakSelf = self;
     [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
@@ -529,12 +547,27 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     }];
 }
 
+- (void)setVisibleCalendarsFromUserDefaults {
+    NSArray *calendarIdentifiers = [LIYCalendarPickerViewController selectedCalendarIdentifiersFromUserDefaultsForEventStore:self.eventStore];
+    self.visibleCalendars = [calendarIdentifiers map:^id(NSString *calendarIdentifier) {
+        return [self.eventStore calendarWithIdentifier:calendarIdentifier];
+    }];
+}
+
 /// y is measured where 0 is the top of the collection view (after day column header and optionally all day event view)
 - (CGFloat)hourAtYCoord:(CGFloat)y {
     CGFloat hour = (y + self.collectionView.contentOffset.y - kLIYGapToMidnight) / self.collectionViewCalendarLayout.hourHeight;
     hour = fmax(hour, 0);
     hour = fmin(hour, 24);
     return hour;
+}
+
+- (void)addCalendarPickerButton {
+    if (!self.navigationController) {
+        return;
+    }
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"checklist"] style:UIBarButtonItemStylePlain target:self action:@selector(calendarPickerButtonTapped)];
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -546,6 +579,13 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 }
 
 # pragma mark - properties
+
+- (EKEventStore *)eventStore {
+    if (_eventStore == nil) {
+        _eventStore = [[EKEventStore alloc] init];
+    }
+    return _eventStore;
+}
 
 - (void)setDate:(NSDate *)date {
     _date = date;

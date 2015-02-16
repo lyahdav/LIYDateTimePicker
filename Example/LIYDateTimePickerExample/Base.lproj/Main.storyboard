@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sjs-h0-bRY">
-                                <rect key="frame" x="128" y="384" width="64" height="30"/>
+                                <rect key="frame" x="128" y="32" width="64" height="30"/>
                                 <state key="normal" title="Pick time">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -27,7 +27,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected time" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="XSe-30-IGH" userLabel="SelectedTime">
-                                <rect key="frame" x="20" y="424" width="280" height="20"/>
+                                <rect key="frame" x="20" y="94" width="280" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="fXg-Xz-mpc"/>
                                 </constraints>
@@ -35,16 +35,8 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="LKd-mq-gmp">
-                                <rect key="frame" x="20" y="86" width="280" height="290"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="vXZ-lx-hvc" id="7pK-Ed-lOc"/>
-                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="THH-R4-JkT"/>
-                                </connections>
-                            </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mQL-lN-Nln">
-                                <rect key="frame" x="108" y="454" width="105" height="30"/>
+                                <rect key="frame" x="108" y="146" width="105" height="30"/>
                                 <state key="normal" title="Show Calendar">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -52,49 +44,22 @@
                                     <action selector="showCalendarTap:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="H08-F9-zOa"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MRp-mu-4SK">
-                                <rect key="frame" x="102" y="8" width="117" height="30"/>
-                                <state key="normal" title="Select Calendars">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="selectCalendarsButtonTapped:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="xY1-bl-Zy2"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected Calendars" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jts-VY-O4I">
-                                <rect key="frame" x="85" y="46" width="150" height="32"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="32" id="90e-4u-GyC"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="MRp-mu-4SK" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="6Yq-i4-DIA"/>
-                            <constraint firstItem="jts-VY-O4I" firstAttribute="top" secondItem="MRp-mu-4SK" secondAttribute="bottom" constant="8" id="Aee-Hm-7Ss"/>
                             <constraint firstItem="XSe-30-IGH" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="OUa-BI-o7r"/>
-                            <constraint firstItem="LKd-mq-gmp" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="S5B-JZ-jeE"/>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="mQL-lN-Nln" secondAttribute="bottom" constant="20" id="V6e-3I-Bnc"/>
                             <constraint firstAttribute="centerX" secondItem="mQL-lN-Nln" secondAttribute="centerX" id="VgV-dS-F8R"/>
-                            <constraint firstItem="jts-VY-O4I" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="VuW-We-0Zc"/>
-                            <constraint firstItem="LKd-mq-gmp" firstAttribute="top" secondItem="jts-VY-O4I" secondAttribute="bottom" constant="8" id="X87-AR-N3o"/>
                             <constraint firstAttribute="centerX" secondItem="Sjs-h0-bRY" secondAttribute="centerX" id="Yx8-7y-Sum"/>
                             <constraint firstAttribute="trailing" secondItem="XSe-30-IGH" secondAttribute="trailing" constant="20" id="co2-BQ-kgS"/>
-                            <constraint firstItem="mQL-lN-Nln" firstAttribute="top" secondItem="XSe-30-IGH" secondAttribute="bottom" constant="10" id="eGo-dS-tpu"/>
-                            <constraint firstAttribute="trailing" secondItem="LKd-mq-gmp" secondAttribute="trailing" constant="20" id="iYD-K5-DGB"/>
-                            <constraint firstItem="XSe-30-IGH" firstAttribute="top" secondItem="Sjs-h0-bRY" secondAttribute="bottom" constant="10" id="mfX-XA-BKl"/>
-                            <constraint firstItem="Sjs-h0-bRY" firstAttribute="top" secondItem="LKd-mq-gmp" secondAttribute="bottom" constant="8" id="pXZ-Pg-eW3"/>
-                            <constraint firstItem="MRp-mu-4SK" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" constant="8" id="urV-gO-wVA"/>
+                            <constraint firstItem="Sjs-h0-bRY" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="32" id="hKZ-yW-g5g"/>
+                            <constraint firstItem="mQL-lN-Nln" firstAttribute="top" secondItem="XSe-30-IGH" secondAttribute="bottom" constant="32" id="tDy-nO-JRz"/>
+                            <constraint firstItem="XSe-30-IGH" firstAttribute="top" secondItem="Sjs-h0-bRY" secondAttribute="bottom" constant="32" id="xZR-Kp-fxt"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="aUA-6L-Cum"/>
                     <connections>
                         <outlet property="selectedTimeLabel" destination="XSe-30-IGH" id="UtY-GC-w9u"/>
-                        <outlet property="tableView" destination="LKd-mq-gmp" id="SpJ-sQ-iQm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

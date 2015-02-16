@@ -30,6 +30,7 @@
 @property (nonatomic, assign) BOOL showDayPicker;
 @property (nonatomic, assign) BOOL showDayColumnHeader;
 @property (nonatomic, assign) BOOL showEventTimes;
+@property (nonatomic, assign) BOOL showCalendarPickerButton;
 @property (nonatomic, weak) id<LIYDateTimePickerDelegate> delegate;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) NSDate *selectedDate; // TODO: a bit odd there's a date and selectedDate. Combine the two? Or give them better names.
@@ -51,5 +52,6 @@
 - (CGFloat)middleYForTimeLine;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
 - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day;
+- (void)setVisibleCalendarsFromUserDefaults;
 
 @end

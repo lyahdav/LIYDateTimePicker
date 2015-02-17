@@ -548,9 +548,15 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 }
 
 - (void)setVisibleCalendarsFromUserDefaults {
-    NSArray *calendarIdentifiers = [LIYCalendarPickerViewController selectedCalendarIdentifiersFromUserDefaultsForEventStore:self.eventStore];
-    self.visibleCalendars = [calendarIdentifiers map:^id(NSString *calendarIdentifier) {
-        return [self.eventStore calendarWithIdentifier:calendarIdentifier];
+    typeof(self) __weak weakSelf = self;
+    [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+        if (!granted) {
+            return;
+        }
+        NSArray *calendarIdentifiers = [LIYCalendarPickerViewController selectedCalendarIdentifiersFromUserDefaultsForEventStore:weakSelf.eventStore];
+        weakSelf.visibleCalendars = [calendarIdentifiers map:^id(NSString *calendarIdentifier) {
+            return [weakSelf.eventStore calendarWithIdentifier:calendarIdentifier];
+        }];
     }];
 }
 
@@ -606,6 +612,9 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 -(void) setVisibleCalendars:(NSArray *)visibleCalendars{
     _visibleCalendars = visibleCalendars;
+    if (self.isViewLoaded) {
+        [self reloadEvents];
+    }
 }
 
 - (void)setAllDayEvents:(NSMutableArray *)allDayEvents {

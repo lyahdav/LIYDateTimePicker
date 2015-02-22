@@ -34,6 +34,7 @@
 		FE7AE16A19536C6C0096E350 /* MSTimeRowHeaderBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE16019536C6C0096E350 /* MSTimeRowHeaderBackground.m */; };
 		FE7AE16B19536C6C0096E350 /* LIYDateTimePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE16219536C6C0096E350 /* LIYDateTimePickerViewController.m */; };
 		FEBFD30E1A6CE43D002B1DE3 /* NSDate+LIYUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FEBFD30D1A6CE43D002B1DE3 /* NSDate+LIYUtilities.m */; };
+		FECEB50D1A997C50005D065F /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FECEB50C1A997C50005D065F /* Media.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 		FE7AE16219536C6C0096E350 /* LIYDateTimePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYDateTimePickerViewController.m; sourceTree = "<group>"; };
 		FEBFD30C1A6CE43D002B1DE3 /* NSDate+LIYUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+LIYUtilities.h"; sourceTree = "<group>"; };
 		FEBFD30D1A6CE43D002B1DE3 /* NSDate+LIYUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+LIYUtilities.m"; sourceTree = "<group>"; };
+		FECEB50C1A997C50005D065F /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +139,7 @@
 		FE697C5C193AD37400D84E6C = {
 			isa = PBXGroup;
 			children = (
+				FECEB5091A997C36005D065F /* Resources */,
 				FE7AE14F19536C6C0096E350 /* Classes */,
 				FE697C6E193AD37400D84E6C /* LIYDateTimePickerExample */,
 				FE697C8D193AD37400D84E6C /* LIYDateTimePickerExampleTests */,
@@ -250,6 +253,15 @@
 			path = CollectionViewReusableViews;
 			sourceTree = "<group>";
 		};
+		FECEB5091A997C36005D065F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FECEB50C1A997C50005D065F /* Media.xcassets */,
+			);
+			name = Resources;
+			path = ../Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -330,6 +342,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FECEB50D1A997C50005D065F /* Media.xcassets in Resources */,
 				FE697C81193AD37400D84E6C /* Images.xcassets in Resources */,
 				FE697C73193AD37400D84E6C /* InfoPlist.strings in Resources */,
 				FE697C7C193AD37400D84E6C /* Main.storyboard in Resources */,

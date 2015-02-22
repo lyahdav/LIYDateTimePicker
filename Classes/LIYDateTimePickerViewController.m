@@ -574,7 +574,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
         return;
     }
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"LIYChecklist"] style:UIBarButtonItemStylePlain target:self action:@selector(calendarPickerButtonTapped)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Calendars" style:UIBarButtonItemStylePlain target:self action:@selector(calendarPickerButtonTapped)];
 }
 
 #pragma mark - UIScrollViewDelegate

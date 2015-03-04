@@ -139,6 +139,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     _selectedDate = [NSDate date];
     _showDayPicker = YES;
     _allowTimeSelection = YES;
+    _allowEventEditing = YES;
     _defaultColor1 = [UIColor colorWithHexString:@"59c7f1"];
     _defaultColor2 = [UIColor orangeColor];
     _saveButtonText = @"Save";
@@ -658,17 +659,15 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 #pragma mark - UICollectionViewDelegate
 
--(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     EKEventViewController *vc = [[EKEventViewController alloc] init];
     EKEvent *event = self.nonAllDayEvents[indexPath.row];
     vc.event = event;
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF =[c] %@", event.calendar.title];
     NSArray *matchingCalendars = [self.calendarNamesToFilterForEdit filteredArrayUsingPredicate:predicate];
-    if (matchingCalendars.count == 0){
-        [vc setAllowsEditing:YES];
-    }
-    
+    vc.allowsEditing = matchingCalendars.count == 0 && self.allowEventEditing;
+
     [self.navigationController pushViewController:vc animated:YES];
 }
 

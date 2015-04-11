@@ -88,12 +88,11 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 @interface LIYDateTimePickerViewController () <MZDayPickerDelegate, MZDayPickerDataSource, MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate>
 
-
 @property (nonatomic, strong) NSArray *allDayEvents;
-
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDateFormatter *fixedDateFormatter;
 @property (nonatomic, strong) UIButton *saveButton;
+@property (nonatomic, strong) UIView *relativeTimeButtons;
 @property (nonatomic, strong) EKEventStore *eventStore;
 @property (nonatomic, strong) UIView *fixedSelectedTimeLine;
 @property (nonatomic, strong) UIView *fixedSelectedTimeBubble;
@@ -192,6 +191,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     }
     
     if (self.allowTimeSelection) {
+        [self addRelativeTimeButtons];
         [self setupSaveButton];
     }
     
@@ -279,6 +279,12 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     [self.delegate dateTimePicker:self didSelectDate:self.selectedDate];
 }
 
+- (void)relativeTimeButtonTapped:(UIButton *)sender {
+    NSInteger minutes = sender.tag;
+    NSDate *newDate = [NSDate dateWithTimeIntervalSinceNow:minutes * 60];
+    [self.delegate dateTimePicker:self didSelectDate:newDate];
+}
+
 - (void)calendarPickerButtonTapped {
     typeof(self) __weak weakSelf = self;
     LIYCalendarPickerViewController *calendarPickerViewController =
@@ -321,9 +327,39 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     self.saveButton.titleLabel.textColor = [UIColor whiteColor];
     self.saveButton.titleLabel.font = [UIFont fontWithName:self.defaultFontFamilyName size:18.0f];
     self.saveButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.saveButton.accessibilityIdentifier = self.saveButtonText;
     
     [self.view addSubview:self.saveButton];
     
+}
+
+- (void)addRelativeTimeButtons {
+    self.relativeTimeButtons = [[UIView alloc] initWithFrame:CGRectZero];
+    self.relativeTimeButtons.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSArray *relativeTimeButtonInfos =
+    @[
+      @{@"minutes" : @(15), @"title" : @"15m"},
+      @{@"minutes" : @(60), @"title" : @"1h"},
+      @{@"minutes" : @(1440), @"title" : @"1d"},
+      ];
+    for (NSDictionary *relativeTimeButtonInfo in relativeTimeButtonInfos) {
+        NSInteger minutes = ((NSNumber *)relativeTimeButtonInfo[@"minutes"]).integerValue;
+        NSString *title = relativeTimeButtonInfo[@"title"];
+        UIButton *button = [self relativeTimeButtonWithTitle:title minutes:minutes];
+        [self.relativeTimeButtons addSubview:button];
+    }
+    [self.view addSubview:self.relativeTimeButtons];
+}
+
+- (UIButton *)relativeTimeButtonWithTitle:(NSString *)title minutes:(NSInteger)minutes {
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectZero];
+    [button setTitle:title forState:UIControlStateNormal];
+    button.tag = minutes;
+    button.backgroundColor = self.defaultColor2;
+    button.accessibilityIdentifier = title;
+    [button addTarget:self action:@selector(relativeTimeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    return button;
 }
 
 // From the top of the view controller (top of screen because it goes under status bar) to the line for the selected time
@@ -434,21 +470,23 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.dayPicker.translatesAutoresizingMaskIntoConstraints = NO;
     
-    NSObject *collectionView = self.collectionView, *dayPicker = self.dayPicker ?: [UIView new], *topLayoutGuide = self.topLayoutGuide, *bottomLayoutGuide = self.bottomLayoutGuide, *saveButton = self.saveButton ?: [UIView new];
+    NSObject *collectionView = self.collectionView, *dayPicker = self.dayPicker ?: [UIView new], *topLayoutGuide = self.topLayoutGuide, *bottomLayoutGuide = self.bottomLayoutGuide, *saveButton = self.saveButton ?: [UIView new], *relativeTimeButtons = self.relativeTimeButtons ?: [UIView new];
     CGFloat saveButtonHeight = 44.0f;
+    CGFloat relativeTimeButtonsHeight = saveButtonHeight;
+
     // [showDayPicker, showSaveButton]
-    NSDictionary *constraints =
-    @{
-      @[@YES, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView][saveButton(%f)][bottomLayoutGuide]", (long)kLIYDayPickerHeight, saveButtonHeight],
+    NSDictionary *constraints = @{
+      @[@YES, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView][relativeTimeButtons(%f)][saveButton(%f)][bottomLayoutGuide]", (long)kLIYDayPickerHeight, relativeTimeButtonsHeight, saveButtonHeight],
       @[@YES, @NO] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView][bottomLayoutGuide]", (long)kLIYDayPickerHeight],
-      @[@NO, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][collectionView][saveButton(%f)][bottomLayoutGuide]", saveButtonHeight],
+      @[@NO, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][collectionView][relativeTimeButtons(%f)][saveButton(%f)][bottomLayoutGuide]", relativeTimeButtonsHeight, saveButtonHeight],
       @[@NO, @NO] : @"V:[topLayoutGuide][collectionView][bottomLayoutGuide]"
-      };
+    };
+    
     [self.view addConstraints:[NSLayoutConstraint
                                constraintsWithVisualFormat:constraints[@[@(self.showDayPicker), @(self.saveButton != nil)]]
                                options:0
                                metrics:nil
-                               views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, collectionView, saveButton, bottomLayoutGuide)]];
+                               views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, collectionView, relativeTimeButtons, saveButton, bottomLayoutGuide)]];
     [self.view addConstraints:[NSLayoutConstraint
                                constraintsWithVisualFormat:@"H:|[collectionView]|"
                                options:0
@@ -461,6 +499,16 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
                                    metrics:nil
                                    views:NSDictionaryOfVariableBindings(dayPicker)]];
     }
+
+    if (self.relativeTimeButtons) {
+        [self.view addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"H:|[relativeTimeButtons]|"
+                                   options:0
+                                   metrics:nil
+                                   views:NSDictionaryOfVariableBindings(relativeTimeButtons)]];
+        [self.relativeTimeButtons layoutIfNeeded];
+        [self layoutRelativeTimeButtons];
+    }
     
     if (self.saveButton) {
         [self.view addConstraints:[NSLayoutConstraint
@@ -468,6 +516,28 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
                                    options:0
                                    metrics:nil
                                    views:NSDictionaryOfVariableBindings(saveButton)]];
+    }
+}
+
+- (void)layoutRelativeTimeButtons {
+    CGFloat relativeTimeButtonsWidth = self.relativeTimeButtons.frame.size.width;
+    CGFloat nextButtonLeft = 0;
+    NSInteger buttonCount = self.relativeTimeButtons.subviews.count;
+    CGFloat buttonWidth = relativeTimeButtonsWidth / buttonCount;
+    for (UIView *button in self.relativeTimeButtons.subviews) {
+        button.frame = CGRectMake(nextButtonLeft, 0, buttonWidth, self.relativeTimeButtons.frame.size.height);
+        
+        UIView *bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0, button.frame.size.height - 1, button.frame.size.width, 1)];
+        bottomLineView.backgroundColor = [UIColor blackColor];
+        [button addSubview:bottomLineView];
+        
+        if (nextButtonLeft != 0) {
+            UIView *leftLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, button.frame.size.height)];
+            leftLineView.backgroundColor = [UIColor blackColor];
+            [button addSubview:leftLineView];
+        }
+        
+        nextButtonLeft += buttonWidth;
     }
 }
 

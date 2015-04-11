@@ -54,7 +54,12 @@
 #pragma mark - LIYDateTimePickerDelegate
 
 - (void)dateTimePicker:(LIYDateTimePickerViewController *)dateTimePickerViewController didSelectDate:(NSDate *)selectedDate {
-    self.selectedTimeLabel.text = [selectedDate description];
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+    [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+    
+    self.selectedTimeLabel.text = [dateFormatter stringFromDate:selectedDate];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

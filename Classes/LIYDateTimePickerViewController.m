@@ -1,6 +1,4 @@
 #import "LIYDateTimePickerViewController.h"
-#import "MSCollectionViewCalendarLayout.h"
-#import "MZDayPicker.h"
 #import "ObjectiveSugar.h"
 #import "LIYCalendarPickerViewController.h"
 
@@ -9,7 +7,6 @@
 #import "MSTimeRowHeaderBackground.h"
 #import "MSDayColumnHeaderBackground.h"
 #import "MSEventCell.h"
-#import "MSDayColumnHeader.h"
 #import "MSTimeRowHeader.h"
 #import "MSCurrentTimeIndicator.h"
 #import "MSCurrentTimeGridline.h"
@@ -17,11 +14,11 @@
 #import <EventKitUI/EventKitUI.h>
 #import "NSDate+CupertinoYankee.h"
 #import "UIColor+HexString.h"
+#import "LIYTimeDisplayLine.h"
 
-NSString * const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
-NSString * const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
-NSString * const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
-CGFloat const kFixedTimeBuddleWidth = 120.0f;
+NSString *const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
+NSString *const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
+NSString *const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
 const NSInteger kLIYDayPickerHeight = 84;
 CGFloat const kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
 CGFloat const kLIYDefaultHeaderHeight = 56.0f;
@@ -43,6 +40,11 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 @implementation LIYCollectionViewCalendarLayout
 
+#pragma mark - MSCollectionViewCalendarLayout
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedMethodInspection"
+
 - (NSInteger)earliestHourForSection:(NSInteger)section {
     return 0;
 }
@@ -51,10 +53,12 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     return 24;
 }
 
+#pragma clang diagnostic pop
+
 - (CGFloat)zIndexForElementKind:(NSString *)elementKind floating:(BOOL)floating {
     if (elementKind == MSCollectionElementKindCurrentTimeHorizontalGridline) {
-        NSUInteger MSCollectionMinCellZ = 100.0; // from MSCollecitonViewCalendarLayout.m
-        return (MSCollectionMinCellZ + 10.0);
+        CGFloat MSCollectionMinCellZ = 100.0f; // from MSCollectionViewCalendarLayout.m
+        return (MSCollectionMinCellZ + 10.0f);
     } else {
         return [super zIndexForElementKind:elementKind floating:floating];
     }
@@ -66,23 +70,19 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 // TODO: this shouldn't be necessary as it's defined in MZDayPicker.h, but it's required for `pod lib lint` to succeed. Figure out how to fix that.
 @implementation NSDate (LIYAdditional)
-- (BOOL)isSameDayAsDate:(NSDate*)date
-{
-    NSCalendar* calendar = [NSCalendar currentCalendar];
-    
-    unsigned unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit;
-    NSDateComponents* comp1 = [calendar components:unitFlags fromDate:self];
-    NSDateComponents* comp2 = [calendar components:unitFlags fromDate:date];
-    
+
+- (BOOL)isSameDayAsDate:(NSDate *)date {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+
+    NSCalendarUnit unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit;
+    NSDateComponents *comp1 = [calendar components:unitFlags fromDate:self];
+    NSDateComponents *comp2 = [calendar components:unitFlags fromDate:date];
+
     return [comp1 day] == [comp2 day] &&
-    [comp1 month] == [comp2 month] &&
-    [comp1 year]  == [comp2 year];
+            [comp1 month] == [comp2 month] &&
+            [comp1 year] == [comp2 year];
 }
 @end
-
-
-
-
 
 #pragma mark - LIYDateTimePickerViewController
 
@@ -90,13 +90,10 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 @property (nonatomic, strong) NSArray *allDayEvents;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
-@property (nonatomic, strong) NSDateFormatter *fixedDateFormatter;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) UIView *relativeTimeButtons;
 @property (nonatomic, strong) EKEventStore *eventStore;
-@property (nonatomic, strong) UIView *fixedSelectedTimeLine;
-@property (nonatomic, strong) UIView *fixedSelectedTimeBubble;
-@property (nonatomic, strong) UILabel *fixedSelectedTimeBubbleTime;
+@property (nonatomic, strong) LIYTimeDisplayLine *timeDisplayLine;
 @property (nonatomic, assign) BOOL isDoneLoading;
 @property (nonatomic, assign) BOOL isChangingTime;
 
@@ -105,63 +102,47 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 @implementation LIYDateTimePickerViewController
 
-+ (instancetype)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate {
+#pragma mark - class methods
+
++ (instancetype)timePickerForDate:(NSDate *)date delegate:(id <LIYDateTimePickerDelegate>)delegate {
     LIYDateTimePickerViewController *vc = [self new];
     vc.delegate = delegate;
-    
-    if (!date)
-    {
+
+    if (!date) {
         vc.date = [NSDate date];
-    }else{
+    } else {
         vc.date = date;
         vc.selectedDate = date;
     }
-    
-    
+
     return vc;
 }
 
-- (void)cancelTapped:(id)sender {
-    [self.delegate dateTimePicker:self didSelectDate:nil];
-}
+#pragma mark - UIViewController
 
 - (instancetype)init {
     self = [super init];
     if (self) {
-        [self setDefaults];
+        [self commonInit];
     }
     return self;
-}
-
-- (void)setDefaults {
-    _date = [NSDate date];
-    _selectedDate = [NSDate date];
-    _showDayPicker = YES;
-    _allowTimeSelection = YES;
-    _allowEventEditing = YES;
-    _defaultColor1 = [UIColor colorWithHexString:@"59c7f1"];
-    _defaultColor2 = [UIColor orangeColor];
-    _saveButtonText = @"Save";
-    _fixedDateFormatter = [[NSDateFormatter alloc] init];
-    [_fixedDateFormatter setDateFormat:@"h:mm a"];
-    _showDayColumnHeader = YES;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self setDefaults];
+        [self commonInit];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     if (self.showCancelButton) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelTapped:)];
     }
-    
+
     self.collectionViewCalendarLayout = [[LIYCollectionViewCalendarLayout alloc] init];
     self.collectionViewCalendarLayout.hourHeight = 50.0; //TODO const
 
@@ -172,11 +153,11 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     self.collectionView.delegate = self;
     self.collectionView.backgroundColor = [UIColor colorWithHexString:@"#ededed"];
     [self.view addSubview:self.collectionView];
-    
+
     [self.collectionView registerClass:MSEventCell.class forCellWithReuseIdentifier:MSEventCellReuseIdentifier];
     [self.collectionView registerClass:MSDayColumnHeader.class forSupplementaryViewOfKind:MSCollectionElementKindDayColumnHeader withReuseIdentifier:MSDayColumnHeaderReuseIdentifier];
     [self.collectionView registerClass:MSTimeRowHeader.class forSupplementaryViewOfKind:MSCollectionElementKindTimeRowHeader withReuseIdentifier:MSTimeRowHeaderReuseIdentifier];
-    
+
     // These are optional. If you don't want any of the decoration views, just don't register a class for them.
     [self.collectionViewCalendarLayout registerClass:MSCurrentTimeIndicator.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeIndicator];
     [self.collectionViewCalendarLayout registerClass:MSCurrentTimeGridline.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeHorizontalGridline];
@@ -184,43 +165,24 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     [self.collectionViewCalendarLayout registerClass:MSGridline.class forDecorationViewOfKind:MSCollectionElementKindHorizontalGridline];
     [self.collectionViewCalendarLayout registerClass:MSTimeRowHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindTimeRowHeaderBackground];
     [self.collectionViewCalendarLayout registerClass:MSDayColumnHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindDayColumnHeaderBackground];
-    
+
     if (self.showDayPicker) {
         self.automaticallyAdjustsScrollViewInsets = NO;
         [self createDayPicker];
     }
-    
+
     if (self.allowTimeSelection) {
-        [self addRelativeTimeButtons];
-        [self setupSaveButton];
+        [self setupTimeSelection];
     }
-    
+
     [self setupConstraints];
 
-
-    if (self.allowTimeSelection) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarFrame) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
-    }else{
-        self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0.0f;        
-    }
-    
-}
-
-- (void)dealloc {
-    if (self.allowTimeSelection) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
+    if (!self.allowTimeSelection) {
+        self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0.0f;
     }
 }
 
-- (void)didChangeStatusBarFrame {
-    [self updateCollectionViewContentInset];
-    [self positionTimeLine];
-    if (self.selectedDate) {
-        [self scrollToTime:self.selectedDate];
-    }
-}
-
--(void) viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self reloadEvents];
     self.isDoneLoading = NO;
@@ -230,47 +192,22 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     }
 }
 
--(void) viewDidAppear:(BOOL)animated{
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    if (self.allowTimeSelection){
-        
-        [self setupFixedTimeSelector];
-        
-        if (!self.selectedDate){
-            self.selectedDate = [self.date dateByAddingTimeInterval:60*90];
+
+    if (self.allowTimeSelection) {
+        if (!self.selectedDate) {
+            self.selectedDate = [self.date dateByAddingTimeInterval:60 * 90];
         }
-        
+
         [self updateCollectionViewContentInset];
-        
+
         [self scrollToTime:self.selectedDate];
-    }else{
+    } else {
         [self scrollToTime:[NSDate date]];
     }
-    
-    
-    self.isDoneLoading = YES;
-    
-}
 
-// allows user to scroll to midnight at start and end of day
-- (void)updateCollectionViewContentInset {
-    if (!self.allowTimeSelection) {
-        return;
-    }
-    if (self.collectionView == nil) {
-        return;
-    }
-    
-    UIEdgeInsets edgeInsets = self.collectionView.contentInset;
-    
-    CGFloat viewControllerTopToMidnightBeginningOfDay = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + self.collectionViewCalendarLayout.dayColumnHeaderHeight + kLIYGapToMidnight;
-    
-    edgeInsets.top = [self middleYForTimeLine] - viewControllerTopToMidnightBeginningOfDay;
-    
-    CGFloat viewControllerTopToEndOfDayMidnightTop = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + self.collectionView.frame.size.height - kLIYGapToMidnight;
-    edgeInsets.bottom = viewControllerTopToEndOfDayMidnightTop - [self middleYForTimeLine];
-    self.collectionView.contentInset = edgeInsets;
+    self.isDoneLoading = YES;
 }
 
 #pragma mark - Actions
@@ -288,16 +225,59 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 - (void)calendarPickerButtonTapped {
     typeof(self) __weak weakSelf = self;
     LIYCalendarPickerViewController *calendarPickerViewController =
-    [LIYCalendarPickerViewController calendarPickerWithCalendarsFromUserDefaultsWithEventStore:self.eventStore completion:^(NSArray *newSelectedCalendarIdentifiers) {
-        weakSelf.visibleCalendars = [newSelectedCalendarIdentifiers map:^id(NSString *calendarIdentifier) {
-            return [weakSelf.eventStore calendarWithIdentifier:calendarIdentifier];
-        }];
-    }];
+            [LIYCalendarPickerViewController calendarPickerWithCalendarsFromUserDefaultsWithEventStore:self.eventStore completion:^(NSArray *newSelectedCalendarIdentifiers) {
+                weakSelf.visibleCalendars = [newSelectedCalendarIdentifiers map:^id(NSString *calendarIdentifier) {
+                    return [weakSelf.eventStore calendarWithIdentifier:calendarIdentifier];
+                }];
+            }];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:calendarPickerViewController];
     [self presentViewController:navigationController animated:YES completion:nil];
 }
 
 #pragma mark - Convenience
+
+- (void)commonInit {
+    _date = [NSDate date];
+    _selectedDate = [NSDate date];
+    _showDayPicker = YES;
+    _allowTimeSelection = YES;
+    _allowEventEditing = YES;
+    _defaultColor1 = [UIColor colorWithHexString:@"59c7f1"];
+    _defaultColor2 = [UIColor orangeColor];
+    _saveButtonText = @"Save";
+    _showDayColumnHeader = YES;
+}
+
+// allows user to scroll to midnight at start and end of day
+- (void)updateCollectionViewContentInset {
+    if (!self.allowTimeSelection) {
+        return;
+    }
+    if (self.collectionView == nil) {
+        return;
+    }
+
+    UIEdgeInsets edgeInsets = self.collectionView.contentInset;
+
+    CGFloat viewControllerTopToMidnightBeginningOfDay = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + self.collectionViewCalendarLayout.dayColumnHeaderHeight + kLIYGapToMidnight;
+
+    edgeInsets.top = [self middleYForTimeLine] - viewControllerTopToMidnightBeginningOfDay;
+
+    CGFloat viewControllerTopToEndOfDayMidnightTop = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + self.collectionView.frame.size.height - kLIYGapToMidnight;
+    edgeInsets.bottom = viewControllerTopToEndOfDayMidnightTop - [self middleYForTimeLine];
+    self.collectionView.contentInset = edgeInsets;
+}
+
+- (void)setupTimeSelection {
+    self.timeDisplayLine = [LIYTimeDisplayLine timeDisplayLineInView:self.view withBorderColor:self.defaultColor1 fontName:self.defaultSelectedFontFamilyName
+                                                         initialDate:self.selectedDate];
+    [self addRelativeTimeButtons];
+    [self setupSaveButton];
+}
+
+- (void)cancelTapped:(id)sender {
+    [self.delegate dateTimePicker:self didSelectDate:nil];
+}
 
 - (void)setSelectedDateFromLocation {
     CGFloat topOfViewControllerToStartOfGrid = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + self.collectionViewCalendarLayout.dayColumnHeaderHeight;
@@ -309,12 +289,10 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     [self setSelectedTimeText];
 }
 
--(void) setSelectedTimeText{
-    NSString *dateString = [self.fixedDateFormatter stringFromDate:self.selectedDate];
-    self.fixedSelectedTimeBubbleTime.text = dateString;
-    
-    if (self.allowTimeSelection){
-        
+- (void)setSelectedTimeText {
+    [self.timeDisplayLine updateLabelFromDate:self.selectedDate];
+
+    if (self.allowTimeSelection) {
         [self.dayColumnHeader setDay:self.selectedDate];
     }
 }
@@ -328,22 +306,20 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     self.saveButton.titleLabel.font = [UIFont fontWithName:self.defaultFontFamilyName size:18.0f];
     self.saveButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.saveButton.accessibilityIdentifier = self.saveButtonText;
-    
+
     [self.view addSubview:self.saveButton];
-    
 }
 
 - (void)addRelativeTimeButtons {
     self.relativeTimeButtons = [[UIView alloc] initWithFrame:CGRectZero];
     self.relativeTimeButtons.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    NSArray *relativeTimeButtonInfos =
-    @[
-      @{@"minutes" : @(15), @"title" : @"15m"},
-      @{@"minutes" : @(60), @"title" : @"1h"},
-      @{@"minutes" : @(1440), @"title" : @"1d"},
-      ];
-    for (NSDictionary *relativeTimeButtonInfo in relativeTimeButtonInfos) {
+
+    NSArray *relativeTimeButtonData = @[
+            @{@"minutes" : @(15), @"title" : @"15m"},
+            @{@"minutes" : @(60), @"title" : @"1h"},
+            @{@"minutes" : @(1440), @"title" : @"1d"},
+    ];
+    for (NSDictionary *relativeTimeButtonInfo in relativeTimeButtonData) {
         NSInteger minutes = ((NSNumber *)relativeTimeButtonInfo[@"minutes"]).integerValue;
         NSString *title = relativeTimeButtonInfo[@"title"];
         UIButton *button = [self relativeTimeButtonWithTitle:title minutes:minutes];
@@ -376,77 +352,32 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     return self.navigationController.navigationBar.translucent ? 44.0f : 0.0f; // TODO can we get this programmatically?
 }
 
--(void) setupFixedTimeSelector{
-    
-    if (self.allowTimeSelection){
-        if (!self.fixedSelectedTimeLine)
-        {
-            // floating bubble and line
-            self.fixedSelectedTimeLine = [[UIView alloc] init];
-            self.fixedSelectedTimeLine.backgroundColor = self.defaultColor1;
-            
-            [self.view addSubview:self.fixedSelectedTimeLine];
-            
-            self.fixedSelectedTimeBubble = [[UIView alloc] init];
-            self.fixedSelectedTimeBubble.backgroundColor = [UIColor redColor];
-            self.fixedSelectedTimeBubble.layer.cornerRadius = 15.0f;
-            [self.fixedSelectedTimeBubble.layer masksToBounds];
-            self.fixedSelectedTimeBubble.layer.borderColor = self.defaultColor1.CGColor;
-            self.fixedSelectedTimeBubble.layer.borderWidth = 1.0f;
-            self.fixedSelectedTimeBubble.backgroundColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
-            [self.view addSubview:self.fixedSelectedTimeBubble];
-            
-            self.fixedSelectedTimeBubbleTime = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 30.0f)];
-            self.fixedSelectedTimeBubbleTime.textAlignment = NSTextAlignmentCenter;
-            self.fixedSelectedTimeBubbleTime.textColor = [UIColor colorWithHexString:@"353535"];
-            [self setSelectedTimeText];
-            
-            self.fixedSelectedTimeBubbleTime.font = [UIFont boldSystemFontOfSize:18.0f];
-            if (self.defaultSelectedFontFamilyName){
-                self.fixedSelectedTimeBubbleTime.font = [UIFont fontWithName:self.defaultSelectedFontFamilyName size:18.0f];
-            }
-            
-            [self.fixedSelectedTimeBubble addSubview:self.fixedSelectedTimeBubbleTime];
-            
-            [self positionTimeLine];
-        }
-    }
-    
-}
-
-- (void)positionTimeLine {
-    CGFloat middleY = [self middleYForTimeLine];
-    self.fixedSelectedTimeLine.frame = CGRectMake(0.0f, middleY, self.collectionView.frame.size.width, 1.0f);
-    self.fixedSelectedTimeBubble.frame = CGRectMake(0.0f, middleY, 120.0f, 30.0f);
-    self.fixedSelectedTimeBubble.center = CGPointMake(self.view.frame.size.width / 2, middleY);
-}
-
 - (void)scrollToTime:(NSDate *)dateTime {
     self.isChangingTime = YES;
-    
-    NSTimeInterval seconds = ceil([dateTime timeIntervalSinceReferenceDate]/kLIYScrollIntervalSeconds)*kLIYScrollIntervalSeconds;
+
+    NSTimeInterval seconds = ceil([dateTime timeIntervalSinceReferenceDate] / kLIYScrollIntervalSeconds) * kLIYScrollIntervalSeconds;
     NSDate *roundDateTime = [NSDate dateWithTimeIntervalSinceReferenceDate:seconds];
-    
+
     NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:roundDateTime];
-    
+
     float minuteFactor = dateComponents.minute / 60.0f;
     float timeFactor = dateComponents.hour + minuteFactor;
     CGFloat topInset = self.collectionView.contentInset.top;
     CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - topInset;
     CGFloat maxYOffset = self.collectionView.contentSize.height - self.collectionView.bounds.size.height;
-    timeY = fmin(maxYOffset, timeY);
+    timeY = (CGFloat)fmin(maxYOffset, timeY);
     [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:YES];
-    
+
     self.isChangingTime = NO;
 }
 
 - (void)createDayPicker {
     self.dayPicker = [[MZDayPicker alloc] initWithFrame:CGRectZero month:9 year:2013];
     [self.view addSubview:self.dayPicker];
-    
+
     self.dayPicker.delegate = self;
     self.dayPicker.dataSource = self;
-    
+
     self.dayPicker.dayNameLabelFontSize = 10.0f;
     self.dayPicker.dayLabelFontSize = 16.0f;
     self.dayPicker.dayLabelFont = self.defaultFontFamilyName;
@@ -454,14 +385,14 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     self.dayPicker.dayLabelFont = self.defaultFontFamilyName;
     self.dayPicker.daySelectedFont = self.defaultSelectedFontFamilyName;
     self.dayPicker.selectedDayColor = self.defaultColor1;
-    
+
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"EE"];
-    
+
     [self.dayPicker setStartDate:self.date endDate:[self endDate]]; // TODO create property for this value
-    
+
     [self.dayPicker setCurrentDate:self.date animated:NO];
-    
+
     self.dayPicker.currentDayHighlightColor = self.defaultColor2;
     self.dayPicker.selectedDayColor = self.defaultColor1;
 }
@@ -469,53 +400,54 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 - (void)setupConstraints {
     self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.dayPicker.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    NSObject *collectionView = self.collectionView, *dayPicker = self.dayPicker ?: [UIView new], *topLayoutGuide = self.topLayoutGuide, *bottomLayoutGuide = self.bottomLayoutGuide, *saveButton = self.saveButton ?: [UIView new], *relativeTimeButtons = self.relativeTimeButtons ?: [UIView new];
+
+    id collectionView = self.collectionView, dayPicker = self.dayPicker ?: [UIView new], topLayoutGuide = self.topLayoutGuide, bottomLayoutGuide = self
+            .bottomLayoutGuide, saveButton = self.saveButton ?: [UIView new], relativeTimeButtons = self.relativeTimeButtons ?: [UIView new];
     CGFloat saveButtonHeight = 44.0f;
     CGFloat relativeTimeButtonsHeight = saveButtonHeight;
 
     // [showDayPicker, showSaveButton]
     NSDictionary *constraints = @{
-      @[@YES, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView][relativeTimeButtons(%f)][saveButton(%f)][bottomLayoutGuide]", (long)kLIYDayPickerHeight, relativeTimeButtonsHeight, saveButtonHeight],
-      @[@YES, @NO] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView][bottomLayoutGuide]", (long)kLIYDayPickerHeight],
-      @[@NO, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][collectionView][relativeTimeButtons(%f)][saveButton(%f)][bottomLayoutGuide]", relativeTimeButtonsHeight, saveButtonHeight],
-      @[@NO, @NO] : @"V:[topLayoutGuide][collectionView][bottomLayoutGuide]"
+            @[@YES, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView][relativeTimeButtons(%f)][saveButton(%f)][bottomLayoutGuide]", (long)kLIYDayPickerHeight, relativeTimeButtonsHeight, saveButtonHeight],
+            @[@YES, @NO] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView][bottomLayoutGuide]", (long)kLIYDayPickerHeight],
+            @[@NO, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][collectionView][relativeTimeButtons(%f)][saveButton(%f)][bottomLayoutGuide]", relativeTimeButtonsHeight, saveButtonHeight],
+            @[@NO, @NO] : @"V:[topLayoutGuide][collectionView][bottomLayoutGuide]"
     };
-    
+
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:constraints[@[@(self.showDayPicker), @(self.saveButton != nil)]]
-                               options:0
-                               metrics:nil
-                               views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, collectionView, relativeTimeButtons, saveButton, bottomLayoutGuide)]];
+            constraintsWithVisualFormat:constraints[@[@(self.showDayPicker), @(self.saveButton != nil)]]
+                                options:(NSLayoutFormatOptions)0
+                                metrics:nil
+                                  views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, collectionView, relativeTimeButtons, saveButton, bottomLayoutGuide)]];
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:@"H:|[collectionView]|"
-                               options:0
-                               metrics:nil
-                               views:NSDictionaryOfVariableBindings(collectionView)]];
+            constraintsWithVisualFormat:@"H:|[collectionView]|"
+                                options:(NSLayoutFormatOptions)0
+                                metrics:nil
+                                  views:NSDictionaryOfVariableBindings(collectionView)]];
     if (self.showDayPicker) {
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"H:|[dayPicker]|"
-                                   options:0
-                                   metrics:nil
-                                   views:NSDictionaryOfVariableBindings(dayPicker)]];
+                constraintsWithVisualFormat:@"H:|[dayPicker]|"
+                                    options:(NSLayoutFormatOptions)0
+                                    metrics:nil
+                                      views:NSDictionaryOfVariableBindings(dayPicker)]];
     }
 
     if (self.relativeTimeButtons) {
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"H:|[relativeTimeButtons]|"
-                                   options:0
-                                   metrics:nil
-                                   views:NSDictionaryOfVariableBindings(relativeTimeButtons)]];
+                constraintsWithVisualFormat:@"H:|[relativeTimeButtons]|"
+                                    options:(NSLayoutFormatOptions)0
+                                    metrics:nil
+                                      views:NSDictionaryOfVariableBindings(relativeTimeButtons)]];
         [self.relativeTimeButtons layoutIfNeeded];
         [self layoutRelativeTimeButtons];
     }
-    
+
     if (self.saveButton) {
         [self.view addConstraints:[NSLayoutConstraint
-                                   constraintsWithVisualFormat:@"H:|[saveButton]|"
-                                   options:0
-                                   metrics:nil
-                                   views:NSDictionaryOfVariableBindings(saveButton)]];
+                constraintsWithVisualFormat:@"H:|[saveButton]|"
+                                    options:(NSLayoutFormatOptions)0
+                                    metrics:nil
+                                      views:NSDictionaryOfVariableBindings(saveButton)]];
     }
 }
 
@@ -526,57 +458,55 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     CGFloat buttonWidth = relativeTimeButtonsWidth / buttonCount;
     for (UIView *button in self.relativeTimeButtons.subviews) {
         button.frame = CGRectMake(nextButtonLeft, 0, buttonWidth, self.relativeTimeButtons.frame.size.height);
-        
+
         UIView *bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0, button.frame.size.height - 1, button.frame.size.width, 1)];
         bottomLineView.backgroundColor = [UIColor blackColor];
         [button addSubview:bottomLineView];
-        
+
         if (nextButtonLeft != 0) {
             UIView *leftLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, button.frame.size.height)];
             leftLineView.backgroundColor = [UIColor blackColor];
             [button addSubview:leftLineView];
         }
-        
+
         nextButtonLeft += buttonWidth;
     }
 }
 
 /// y is measured where 0 is the top of the collection view (after day column header and optionally all day event view)
 - (NSDate *)dateFromYCoord:(CGFloat)y {
-    CGFloat hour = round([self hourAtYCoord:y] * 4) / 4;
+    CGFloat hour = (CGFloat)(round([self hourAtYCoord:y] * 4) / 4);
     NSCalendar *cal = [NSCalendar currentCalendar];
     NSDateComponents *dateComponents = [cal components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.date];
-    dateComponents.hour = trunc(hour);
-    dateComponents.minute = round((hour - trunc(hour)) * 60);
+    dateComponents.hour = (NSInteger)trunc(hour);
+    dateComponents.minute = (NSInteger)round((hour - trunc(hour)) * 60);
     NSDate *selectedDate = [cal dateFromComponents:dateComponents];
     return selectedDate;
 }
 
--(NSDate *) combineDateAndTime:(NSDate *) dateForDay timeDate:(NSDate *) dateForTime{
-    
+- (NSDate *)combineDateAndTime:(NSDate *)dateForDay timeDate:(NSDate *)dateForTime {
+
     NSDateComponents *timeComps = [[NSCalendar currentCalendar] components:(NSCalendarUnitMinute | NSCalendarUnitHour) fromDate:dateForTime];
     NSDateComponents *dateComps = [[NSCalendar currentCalendar] components:(NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitYear) fromDate:dateForDay];
-    
+
     dateComps.hour = timeComps.hour;
     dateComps.minute = timeComps.minute;
-    
+
     NSDate *toReturn = [[NSCalendar currentCalendar] dateFromComponents:dateComps];
     return toReturn;
-    
 }
 
 - (NSDate *)nextDayForDate:(NSDate *)date {
     NSDateComponents *components = [[NSDateComponents alloc] init];
     [components setDay:1];
-    
+
     return [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:date options:0];
 }
 
 // TODO: give this method a better name and fix the magic numbers below
--(NSDate *) endDate{
-    return [self.date dateByAddingTimeInterval:60*60*24*14];
+- (NSDate *)endDate {
+    return [self.date dateByAddingTimeInterval:60 * 60 * 24 * 14];
 }
-
 
 - (void)reloadEvents {
     if (![self isViewLoaded] || !self.visibleCalendars || self.visibleCalendars.count == 0) {
@@ -586,7 +516,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
         [self.collectionView reloadData];
         return;
     }
-    
+
     EKEventStore *__weak weakEventStore = self.eventStore;
     typeof(self) __weak weakSelf = self;
     [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
@@ -595,7 +525,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
         if (!granted) {
             return;
         }
-        
+
         NSPredicate *predicate = [strongEventStore predicateForEventsWithStartDate:[strongSelf.date beginningOfDay]
                                                                            endDate:[strongSelf nextDayForDate:[strongSelf.date beginningOfDay]]
                                                                          calendars:strongSelf.visibleCalendars];
@@ -615,7 +545,6 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
             [strongSelf.collectionViewCalendarLayout invalidateLayoutCache];
             [strongSelf.collectionView reloadData];
         });
-        
     }];
 }
 
@@ -635,8 +564,8 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 /// y is measured where 0 is the top of the collection view (after day column header and optionally all day event view)
 - (CGFloat)hourAtYCoord:(CGFloat)y {
     CGFloat hour = (y + self.collectionView.contentOffset.y - kLIYGapToMidnight) / self.collectionViewCalendarLayout.hourHeight;
-    hour = fmax(hour, 0);
-    hour = fmin(hour, 24);
+    hour = (CGFloat)fmax(hour, 0);
+    hour = (CGFloat)fmin(hour, 24);
     return hour;
 }
 
@@ -644,7 +573,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     if (!self.navigationController) {
         return;
     }
-    
+
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Calendars" style:UIBarButtonItemStylePlain target:self action:@selector(calendarPickerButtonTapped)];
 }
 
@@ -667,14 +596,12 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (void)setDate:(NSDate *)date {
     _date = date;
-    
-    if (self.dayPicker.currentDate && ![date isSameDayAsDate:self.dayPicker.currentDate])
-    {
+
+    if (self.dayPicker.currentDate && ![date isSameDayAsDate:self.dayPicker.currentDate]) {
         [self.dayPicker setStartDate:self.date endDate:[self endDate]];
         [self.dayPicker setCurrentDate:date animated:YES];
-        
     }
-    
+
     // clear out events immediately because reloadEvents loads events asynchronously
     self.nonAllDayEvents = [NSMutableArray array];
     self.allDayEvents = [NSMutableArray array];
@@ -682,14 +609,14 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     [self.collectionView reloadData];
 }
 
--(void) setVisibleCalendars:(NSArray *)visibleCalendars{
+- (void)setVisibleCalendars:(NSArray *)visibleCalendars {
     _visibleCalendars = visibleCalendars;
     if (self.isViewLoaded) {
         [self reloadEvents];
     }
 }
 
-- (void)setAllDayEvents:(NSMutableArray *)allDayEvents {
+- (void)setAllDayEvents:(NSArray *)allDayEvents {
     _allDayEvents = allDayEvents;
     [self updateDayColumnHeaderHeight];
     if (self.selectedDate && self.allowTimeSelection) {
@@ -717,13 +644,13 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day {
     NSDate *timeDate = self.date;
-    if (self.selectedDate){
+    if (self.selectedDate) {
         timeDate = self.selectedDate;
     }
-    
+
     self.date = [self combineDateAndTime:day.date timeDate:timeDate];
     self.selectedDate = self.date;
-    
+
     [self reloadEvents];
 }
 
@@ -733,7 +660,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     EKEventViewController *vc = [[EKEventViewController alloc] init];
     EKEvent *event = self.nonAllDayEvents[indexPath.row];
     vc.event = event;
-    
+
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF =[c] %@", event.calendar.title];
     NSArray *matchingCalendars = [self.calendarNamesToFilterForEdit filteredArrayUsingPredicate:predicate];
     vc.allowsEditing = matchingCalendars.count == 0 && self.allowEventEditing;
@@ -742,7 +669,6 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 }
 
 #pragma mark - UICollectionViewDataSource
-
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
@@ -754,44 +680,44 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MSEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:MSEventCellReuseIdentifier forIndexPath:indexPath];
-    
+
     // this is a safety check since we were seeing a crash here. not sure how this would happen.
     if (indexPath.row < self.nonAllDayEvents.count) {
         cell.selectedDate = self.selectedDate;
         cell.event = self.nonAllDayEvents[indexPath.row];
         cell.showEventTimes = self.showEventTimes;
     }
-    
+
     return cell;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     UICollectionReusableView *view;
-    
+
     if (kind == MSCollectionElementKindDayColumnHeader) {
-        
+
         self.dayColumnHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSDayColumnHeaderReuseIdentifier forIndexPath:indexPath];
 
         if (self.showDayColumnHeader) { // TODO: this is a little misleading, the dayColumnHeader also shows the all day events, so if showDayColumnHeader = NO, we still show it, just at a different height
             self.dayColumnHeader.defaultFontFamilyName = self.defaultFontFamilyName;
             self.dayColumnHeader.defaultBoldFontFamilyName = self.defaultSelectedFontFamilyName;
             self.dayColumnHeader.timeHighlightColor = self.defaultColor1;
-            
+
             NSDate *day = [self.collectionViewCalendarLayout dateForDayColumnHeaderAtIndexPath:indexPath];
             NSDate *currentDay = [self currentTimeComponentsForCollectionView:self.collectionView layout:self.collectionViewCalendarLayout];
-            
+
             self.dayColumnHeader.showTimeInHeader = self.allowTimeSelection;
-            
-            if (self.selectedDate){
+
+            if (self.selectedDate) {
                 self.dayColumnHeader.day = [self combineDateAndTime:day timeDate:self.selectedDate];
-            }else{
+            } else {
                 self.dayColumnHeader.day = day;
             }
 
             self.dayColumnHeader.currentDay = [[day beginningOfDay] isEqualToDate:[currentDay beginningOfDay]];
             self.dayColumnHeader.dayTitlePrefix = self.dayTitlePrefix;
         }
-        
+
         if (self.allDayEvents.count == 0) {
             self.dayColumnHeader.showAllDaySection = NO;
         } else {
@@ -801,14 +727,14 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
             }];
             self.dayColumnHeader.allDayEventsLabel.text = [allDayEventTitles componentsJoinedByString:@", "];
         }
-        
+
         view = self.dayColumnHeader;
     } else if (kind == MSCollectionElementKindTimeRowHeader) {
         MSTimeRowHeader *timeRowHeader = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:MSTimeRowHeaderReuseIdentifier forIndexPath:indexPath];
         timeRowHeader.time = [self.collectionViewCalendarLayout dateForTimeRowHeaderAtIndexPath:indexPath];
         view = timeRowHeader;
     }
-    
+
     return view;
 }
 
@@ -830,9 +756,9 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     NSTimeInterval endDate = [event.endDate timeIntervalSince1970];
     endDate = fmin(endDate, [[self.date endOfDay] timeIntervalSince1970]);
     NSDate *startDate = [self collectionView:self.collectionView layout:self.collectionViewCalendarLayout startTimeForItemAtIndexPath:indexPath];
-    
-    if (endDate - [startDate timeIntervalSince1970] < 15*60) {
-        endDate = [startDate timeIntervalSince1970] + 30*60; // set to minimum 30 min gap
+
+    if (endDate - [startDate timeIntervalSince1970] < 15 * 60) {
+        endDate = [startDate timeIntervalSince1970] + 30 * 60; // set to minimum 30 min gap
     }
     return [NSDate dateWithTimeIntervalSince1970:endDate];
 }

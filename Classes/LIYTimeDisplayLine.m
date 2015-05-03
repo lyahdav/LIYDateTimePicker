@@ -51,7 +51,7 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
 - (void)initView {
     [self setupDateFormatter];
     [self removeMarginsFromView:self];
-    [self setupLine];
+    [self addLineView];
     [self addTimeBubble];
     [self addTimeLabel];
 }
@@ -67,9 +67,8 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
     self.bubbleView.layer.borderColor = _borderColor.CGColor;
 }
 
-- (void)setupLine {
+- (void)addLineView {
     self.lineView = [UIView new];
-    self.lineView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:self.lineView];
 }
 
@@ -123,7 +122,6 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
 
 - (void)addTimeBubble {
     self.bubbleView = [UIView new];
-    self.bubbleView.translatesAutoresizingMaskIntoConstraints = NO;
     self.bubbleView.layer.cornerRadius = 15.0f;
     self.bubbleView.layer.borderWidth = 1.0f;
     self.bubbleView.backgroundColor = [UIColor whiteColor];
@@ -132,7 +130,6 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
 
 - (void)addTimeLabel {
     self.timeLabel = [UILabel new];
-    self.timeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.timeLabel.textAlignment = NSTextAlignmentCenter;
     self.timeLabel.textColor = [UIColor colorWithHexString:@"353535"];
     self.timeLabel.font = [UIFont boldSystemFontOfSize:18.0f];

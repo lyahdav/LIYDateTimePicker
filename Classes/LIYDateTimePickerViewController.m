@@ -1,8 +1,6 @@
 #import "LIYDateTimePickerViewController.h"
 #import "ObjectiveSugar.h"
 #import "LIYCalendarPickerViewController.h"
-
-// Collection View Reusable Views
 #import "MSGridline.h"
 #import "MSTimeRowHeaderBackground.h"
 #import "MSDayColumnHeaderBackground.h"
@@ -15,6 +13,7 @@
 #import "NSDate+CupertinoYankee.h"
 #import "UIColor+HexString.h"
 #import "LIYTimeDisplayLine.h"
+#import "LIYRelativeTimePicker.h"
 
 NSString *const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString *const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
@@ -91,7 +90,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 @property (nonatomic, strong) NSArray *allDayEvents;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) UIButton *saveButton;
-@property (nonatomic, strong) UIView *relativeTimeButtons;
+@property (nonatomic, strong) UIView *relativeTimePickerContainer;
 @property (nonatomic, strong) EKEventStore *eventStore;
 @property (nonatomic, strong) LIYTimeDisplayLine *timeDisplayLine;
 @property (nonatomic, assign) BOOL isDoneLoading;
@@ -216,12 +215,6 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     [self.delegate dateTimePicker:self didSelectDate:self.selectedDate];
 }
 
-- (void)relativeTimeButtonTapped:(UIButton *)sender {
-    NSInteger minutes = sender.tag;
-    NSDate *newDate = [NSDate dateWithTimeIntervalSinceNow:minutes * 60];
-    [self.delegate dateTimePicker:self didSelectDate:newDate];
-}
-
 - (void)calendarPickerButtonTapped {
     typeof(self) __weak weakSelf = self;
     LIYCalendarPickerViewController *calendarPickerViewController =
@@ -271,8 +264,22 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 - (void)setupTimeSelection {
     self.timeDisplayLine = [LIYTimeDisplayLine timeDisplayLineInView:self.view withBorderColor:self.defaultColor1 fontName:self.defaultSelectedFontFamilyName
                                                          initialDate:self.selectedDate];
-    [self addRelativeTimeButtons];
+    [self setupRelativeTimePicker];
     [self setupSaveButton];
+}
+
+- (void)setupRelativeTimePicker {
+    self.relativeTimePickerContainer = [UIView new];
+    self.relativeTimePickerContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.relativeTimePickerContainer];
+    [LIYRelativeTimePicker timePickerInView:self.relativeTimePickerContainer withBackgroundColor:self.defaultColor2 buttonTappedBlock:^(NSInteger minutes) {
+        [self relativeTimeButtonTappedWithMinutes:minutes];
+    }];
+}
+
+- (void)relativeTimeButtonTappedWithMinutes:(NSInteger)minutes {
+    NSDate *newDate = [NSDate dateWithTimeIntervalSinceNow:minutes * 60];
+    [self.delegate dateTimePicker:self didSelectDate:newDate];
 }
 
 - (void)cancelTapped:(id)sender {
@@ -308,34 +315,6 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     self.saveButton.accessibilityIdentifier = self.saveButtonText;
 
     [self.view addSubview:self.saveButton];
-}
-
-- (void)addRelativeTimeButtons {
-    self.relativeTimeButtons = [[UIView alloc] initWithFrame:CGRectZero];
-    self.relativeTimeButtons.translatesAutoresizingMaskIntoConstraints = NO;
-
-    NSArray *relativeTimeButtonData = @[
-            @{@"minutes" : @(15), @"title" : @"15m"},
-            @{@"minutes" : @(60), @"title" : @"1h"},
-            @{@"minutes" : @(1440), @"title" : @"1d"},
-    ];
-    for (NSDictionary *relativeTimeButtonInfo in relativeTimeButtonData) {
-        NSInteger minutes = ((NSNumber *)relativeTimeButtonInfo[@"minutes"]).integerValue;
-        NSString *title = relativeTimeButtonInfo[@"title"];
-        UIButton *button = [self relativeTimeButtonWithTitle:title minutes:minutes];
-        [self.relativeTimeButtons addSubview:button];
-    }
-    [self.view addSubview:self.relativeTimeButtons];
-}
-
-- (UIButton *)relativeTimeButtonWithTitle:(NSString *)title minutes:(NSInteger)minutes {
-    UIButton *button = [[UIButton alloc] initWithFrame:CGRectZero];
-    [button setTitle:title forState:UIControlStateNormal];
-    button.tag = minutes;
-    button.backgroundColor = self.defaultColor2;
-    button.accessibilityIdentifier = title;
-    [button addTarget:self action:@selector(relativeTimeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    return button;
 }
 
 // From the top of the view controller (top of screen because it goes under status bar) to the line for the selected time
@@ -402,15 +381,15 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
     self.dayPicker.translatesAutoresizingMaskIntoConstraints = NO;
 
     id collectionView = self.collectionView, dayPicker = self.dayPicker ?: [UIView new], topLayoutGuide = self.topLayoutGuide, bottomLayoutGuide = self
-            .bottomLayoutGuide, saveButton = self.saveButton ?: [UIView new], relativeTimeButtons = self.relativeTimeButtons ?: [UIView new];
+            .bottomLayoutGuide, saveButton = self.saveButton ?: [UIView new], relativeTimePickerContainer = self.relativeTimePickerContainer ?: [UIView new];
     CGFloat saveButtonHeight = 44.0f;
     CGFloat relativeTimeButtonsHeight = saveButtonHeight;
 
     // [showDayPicker, showSaveButton]
     NSDictionary *constraints = @{
-            @[@YES, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView][relativeTimeButtons(%f)][saveButton(%f)][bottomLayoutGuide]", (long)kLIYDayPickerHeight, relativeTimeButtonsHeight, saveButtonHeight],
+            @[@YES, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView][relativeTimePickerContainer(%f)][saveButton(%f)][bottomLayoutGuide]", (long)kLIYDayPickerHeight, relativeTimeButtonsHeight, saveButtonHeight],
             @[@YES, @NO] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][collectionView][bottomLayoutGuide]", (long)kLIYDayPickerHeight],
-            @[@NO, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][collectionView][relativeTimeButtons(%f)][saveButton(%f)][bottomLayoutGuide]", relativeTimeButtonsHeight, saveButtonHeight],
+            @[@NO, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][collectionView][relativeTimePickerContainer(%f)][saveButton(%f)][bottomLayoutGuide]", relativeTimeButtonsHeight, saveButtonHeight],
             @[@NO, @NO] : @"V:[topLayoutGuide][collectionView][bottomLayoutGuide]"
     };
 
@@ -418,7 +397,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
             constraintsWithVisualFormat:constraints[@[@(self.showDayPicker), @(self.saveButton != nil)]]
                                 options:(NSLayoutFormatOptions)0
                                 metrics:nil
-                                  views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, collectionView, relativeTimeButtons, saveButton, bottomLayoutGuide)]];
+                                  views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, collectionView, relativeTimePickerContainer, saveButton, bottomLayoutGuide)]];
     [self.view addConstraints:[NSLayoutConstraint
             constraintsWithVisualFormat:@"H:|[collectionView]|"
                                 options:(NSLayoutFormatOptions)0
@@ -432,14 +411,12 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
                                       views:NSDictionaryOfVariableBindings(dayPicker)]];
     }
 
-    if (self.relativeTimeButtons) {
+    if (self.relativeTimePickerContainer) {
         [self.view addConstraints:[NSLayoutConstraint
-                constraintsWithVisualFormat:@"H:|[relativeTimeButtons]|"
+                constraintsWithVisualFormat:@"H:|[relativeTimePickerContainer]|"
                                     options:(NSLayoutFormatOptions)0
                                     metrics:nil
-                                      views:NSDictionaryOfVariableBindings(relativeTimeButtons)]];
-        [self.relativeTimeButtons layoutIfNeeded];
-        [self layoutRelativeTimeButtons];
+                                      views:NSDictionaryOfVariableBindings(relativeTimePickerContainer)]];
     }
 
     if (self.saveButton) {
@@ -448,28 +425,6 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
                                     options:(NSLayoutFormatOptions)0
                                     metrics:nil
                                       views:NSDictionaryOfVariableBindings(saveButton)]];
-    }
-}
-
-- (void)layoutRelativeTimeButtons {
-    CGFloat relativeTimeButtonsWidth = self.relativeTimeButtons.frame.size.width;
-    CGFloat nextButtonLeft = 0;
-    NSInteger buttonCount = self.relativeTimeButtons.subviews.count;
-    CGFloat buttonWidth = relativeTimeButtonsWidth / buttonCount;
-    for (UIView *button in self.relativeTimeButtons.subviews) {
-        button.frame = CGRectMake(nextButtonLeft, 0, buttonWidth, self.relativeTimeButtons.frame.size.height);
-
-        UIView *bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0, button.frame.size.height - 1, button.frame.size.width, 1)];
-        bottomLineView.backgroundColor = [UIColor blackColor];
-        [button addSubview:bottomLineView];
-
-        if (nextButtonLeft != 0) {
-            UIView *leftLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, button.frame.size.height)];
-            leftLineView.backgroundColor = [UIColor blackColor];
-            [button addSubview:leftLineView];
-        }
-
-        nextButtonLeft += buttonWidth;
     }
 }
 

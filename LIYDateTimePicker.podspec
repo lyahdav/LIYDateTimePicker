@@ -32,4 +32,5 @@ Pod::Spec.new do |s|
   s.dependency 'UIColor-HexString'
   s.dependency 'Masonry'
   s.dependency 'ObjectiveSugar'
+  s.dependency 'PureLayout'
 end

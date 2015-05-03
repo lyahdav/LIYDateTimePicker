@@ -36,6 +36,12 @@
 #define COCOAPODS_VERSION_MINOR_ObjectiveSugar 1
 #define COCOAPODS_VERSION_PATCH_ObjectiveSugar 0
 
+// PureLayout
+#define COCOAPODS_POD_AVAILABLE_PureLayout
+#define COCOAPODS_VERSION_MAJOR_PureLayout 2
+#define COCOAPODS_VERSION_MINOR_PureLayout 0
+#define COCOAPODS_VERSION_PATCH_PureLayout 6
+
 // UIColor-HexString
 #define COCOAPODS_POD_AVAILABLE_UIColor_HexString
 #define COCOAPODS_VERSION_MAJOR_UIColor_HexString 1

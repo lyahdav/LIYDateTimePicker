@@ -1,5 +1,6 @@
 #import <UIColor-HexString/UIColor+HexString.h>
 #import "LIYTimeDisplayLine.h"
+#import "PureLayout.h"
 
 const NSInteger LIYTimeSelectorHeight = 30;
 const NSInteger LIYTimeSelectorBubbleWidth = 120;
@@ -34,12 +35,6 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
     self.timeLabel.text = [self.dateFormatter stringFromDate:date];
 }
 
-- (void)positionInSuperview {
-    [self pinHorizontallyToSuperview];
-    [self centerVerticallyInSuperview];
-    [self setHeight];
-}
-
 #pragma mark - UIView
 
 - (instancetype)init {
@@ -54,12 +49,11 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
 #pragma mark - convenience
 
 - (void)initView {
-    self.translatesAutoresizingMaskIntoConstraints = NO;
     [self setupDateFormatter];
     [self removeMarginsFromView:self];
     [self setupLine];
-    [self setupTimeBubble];
-    [self setupTimeLabel];
+    [self addTimeBubble];
+    [self addTimeLabel];
 }
 
 - (void)setupDateFormatter {
@@ -73,23 +67,6 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
     self.bubbleView.layer.borderColor = _borderColor.CGColor;
 }
 
-- (void)setHeight {
-    NSString *format = [NSString stringWithFormat:@"V:[timeDisplayLine(%ld)]", (long)LIYTimeSelectorHeight];
-    [self.superview addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:format options:(NSLayoutFormatOptions)0 metrics:nil views:@{@"timeDisplayLine" : self}]];
-}
-
-- (void)pinHorizontallyToSuperview {
-    [self.superview addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:@"H:|[timeDisplayLine]|" options:(NSLayoutFormatOptions)0 metrics:nil views:@{@"timeDisplayLine" : self}]];
-}
-
-- (void)centerVerticallyInSuperview {
-    NSArray *constraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[superview]-(<=1)-[timeDisplayLine]" options:NSLayoutFormatAlignAllCenterY
-                                                                   metrics:nil views:@{@"superview" : self.superview, @"timeDisplayLine" : self}];
-    [self.superview addConstraints:constraints];
-}
-
 - (void)setupLine {
     self.lineView = [UIView new];
     self.lineView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -100,15 +77,17 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
     [self positionInSuperview];
     [self positionLineView];
     [self positionBubbleView];
-    [self positionTimeLabel];
+    [self pinTimeLabelToBubbleView];
 }
 
-- (void)positionTimeLabel {
-    [self removeMarginsFromView:self.bubbleView];
-    [self.bubbleView addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:@"H:|-[timeLabel]-|" options:(NSLayoutFormatOptions)0 metrics:nil views:@{@"timeLabel" : self.timeLabel}]];
-    [self.bubbleView addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:@"V:|-[timeLabel]-|" options:(NSLayoutFormatOptions)0 metrics:nil views:@{@"timeLabel" : self.timeLabel}]];
+- (void)positionInSuperview {
+    [self pinViewHorizontallyToSuperview:self];
+    [self autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [self autoSetDimension:ALDimensionHeight toSize:LIYTimeSelectorHeight];
+}
+
+- (void)pinTimeLabelToBubbleView {
+    [self.timeLabel autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero];
 }
 
 #pragma clang diagnostic push
@@ -121,59 +100,37 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
 #pragma clang diagnostic pop
 
 - (void)positionLineView {
-    [self centerLineViewVertically];
-    [self setLineViewHeight];
-    [self pinLineViewHorizontally];
+    [self.lineView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [self.lineView autoSetDimension:ALDimensionHeight toSize:1.0f];
+    [self pinViewHorizontallyToSuperview:self.lineView];
 }
 
-- (void)setLineViewHeight {
-    [self addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:@"V:[line(1)]" options:(NSLayoutFormatOptions)0 metrics:nil views:@{@"line" : self.lineView}]];
-}
-
-- (void)centerLineViewVertically {
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[superview]-(<=1)-[line]" options:NSLayoutFormatAlignAllCenterY
-                                                                 metrics:nil views:@{@"superview" : self, @"line" : self.lineView}]];
-}
-
-- (void)pinLineViewHorizontally {
-    [self addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:@"H:|-[line]-|" options:(NSLayoutFormatOptions)0 metrics:nil views:@{@"line" : self.lineView}]];
+- (void)pinViewHorizontallyToSuperview:(UIView *)view {
+    [view autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+    [view autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
 }
 
 - (void)positionBubbleView {
-    [self setBubbleViewWidth];
+    [self.bubbleView autoSetDimension:ALDimensionWidth toSize:LIYTimeSelectorBubbleWidth];
     [self pinBubbleViewVertically];
-    [self centerBubbleViewHorizontally];
-}
-
-- (void)centerBubbleViewHorizontally {
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[superview]-(<=1)-[bubble]" options:NSLayoutFormatAlignAllCenterX
-                                                                 metrics:nil views:@{@"superview" : self, @"bubble" : self.bubbleView}]];
+    [self.bubbleView autoAlignAxisToSuperviewAxis:ALAxisVertical];
 }
 
 - (void)pinBubbleViewVertically {
-    [self addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:@"V:|-[bubble]-|" options:(NSLayoutFormatOptions)0 metrics:nil views:@{@"bubble" : self.bubbleView}]];
+    [self.bubbleView autoPinEdgeToSuperviewEdge:ALEdgeTop];
+    [self.bubbleView autoPinEdgeToSuperviewEdge:ALEdgeBottom];
 }
 
-- (void)setBubbleViewWidth {
-    NSString *format = [NSString stringWithFormat:@"H:[bubble(%ld)]", (long)LIYTimeSelectorBubbleWidth];
-    [self addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:format options:(NSLayoutFormatOptions)0 metrics:nil views:@{@"bubble" : self.bubbleView}]];
-}
-
-- (void)setupTimeBubble {
+- (void)addTimeBubble {
     self.bubbleView = [UIView new];
     self.bubbleView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.bubbleView.backgroundColor = [UIColor redColor];
     self.bubbleView.layer.cornerRadius = 15.0f;
     self.bubbleView.layer.borderWidth = 1.0f;
-    self.bubbleView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
+    self.bubbleView.backgroundColor = [UIColor whiteColor];
     [self addSubview:self.bubbleView];
 }
 
-- (void)setupTimeLabel {
+- (void)addTimeLabel {
     self.timeLabel = [UILabel new];
     self.timeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.timeLabel.textAlignment = NSTextAlignmentCenter;

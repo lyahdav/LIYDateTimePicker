@@ -10,17 +10,13 @@
 
 static const NSInteger kLIYAllDayHeight = 20;
 
-@interface MSDayColumnHeader : UICollectionReusableView
+@interface MSDayColumnHeader : UIView
 
-@property (nonatomic, strong) NSDate *day;
-@property (nonatomic, assign) BOOL currentDay;
-@property (nonatomic) BOOL showAllDaySection;
-@property (nonatomic, strong) UILabel *allDayEventsLabel;
-@property (nonatomic, strong) NSString *dayTitlePrefix;
-@property (nonatomic, assign) BOOL showTimeInHeader;
-@property (nonatomic, strong) NSString *defaultFontFamilyName;
-@property (nonatomic, strong) NSString *defaultBoldFontFamilyName;
-@property (nonatomic, assign) CGFloat heightForHeader;
-@property (nonatomic, strong) UIColor *timeHighlightColor;
+@property (nonatomic, strong) NSDate *date;
+
+- (void)configureForDateHeaderWithDayTitlePrefix:(NSString *)dayTitlePrefix defaultFontFamilyName:(NSString *)defaultFontFamilyName defaultBoldFontFamilyName:(NSString *)defaultBoldFontFamilyName timeHighlightColor:(UIColor *)timeHighlightColor date:(NSDate *)date showTimeInHeader:(BOOL)showTimeInHeader;
+- (void)updateAllDaySectionWithEvents:(NSArray *)allDayEvents;
+- (CGFloat)height;
+- (void)positionInView:(UIView *)view;
 
 @end

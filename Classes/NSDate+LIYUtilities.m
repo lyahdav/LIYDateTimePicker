@@ -2,6 +2,13 @@
 
 @implementation NSDate (LIYUtilities)
 
++ (NSDate *)liy_dateFromString:(NSString *)dateString {
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    formatter.dateStyle = NSDateFormatterShortStyle;
+    formatter.timeStyle = NSDateFormatterShortStyle;
+    return [formatter dateFromString:dateString];
+}
+
 - (NSDate *)dateAtHour:(NSUInteger)hour minute:(NSUInteger)minute {
     NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self];
     dateComponents.hour = hour;

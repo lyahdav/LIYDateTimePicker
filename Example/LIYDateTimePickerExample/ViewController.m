@@ -1,6 +1,5 @@
 #import "ViewController.h"
 #import "LIYDateTimePickerViewController.h"
-#import "NSArray+ObjectiveSugar.h"
 #import "LIYCalendarPickerViewController.h"
 #import <EventKit/EventKit.h>
 
@@ -45,7 +44,7 @@
     LIYDateTimePickerViewController *vc = [LIYDateTimePickerViewController timePickerForDate:[NSDate date] delegate:self];
     vc.showCalendarPickerButton = YES;
     vc.showEventTimes = YES;
-    vc.showDayColumnHeader = NO;
+    vc.showDateInDayColumnHeader = NO;
     vc.allowTimeSelection = NO;
     [vc setVisibleCalendarsFromUserDefaults];
     [self.navigationController pushViewController:vc animated:YES];

@@ -9,7 +9,9 @@
 /* Begin PBXBuildFile section */
 		252311AAE4673440994A0BA9 /* LIYRelativeTimePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 252311FDE8AF476436CD608F /* LIYRelativeTimePicker.m */; };
 		2523128D9B1DB41CBE35F5D4 /* LIYTimeDisplayLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 25231F10B0BF98BD80797B3B /* LIYTimeDisplayLine.m */; };
+		252314F56B48BDE3F24E7872 /* LIYDateTimePickerViewControllerSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 25231561931F25473FC78F69 /* LIYDateTimePickerViewControllerSpec.m */; };
 		252316F55F53094AEF48EB51 /* LIYCalendarPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25231D73A3FF7DF696BF919F /* LIYCalendarPickerViewController.m */; };
+		25231BB7FB728605F9E85D54 /* LIYSpecHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 252311CA5288FC766FA8FF0E /* LIYSpecHelper.m */; };
 		89F04BAD3DBC38922C934CD9 /* libPods-LIYDateTimePickerExampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B67EE9B2C47A30C34F5A9FD /* libPods-LIYDateTimePickerExampleTests.a */; };
 		B737BC27809E40EDAB73D254 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86CB68FA9A864D7DB8411DB4 /* libPods.a */; };
 		FE697C69193AD37400D84E6C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE697C68193AD37400D84E6C /* Foundation.framework */; };
@@ -29,13 +31,13 @@
 		FE7AE16319536C6C0096E350 /* MSCurrentTimeGridline.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15219536C6C0096E350 /* MSCurrentTimeGridline.m */; };
 		FE7AE16419536C6C0096E350 /* MSCurrentTimeIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15419536C6C0096E350 /* MSCurrentTimeIndicator.m */; };
 		FE7AE16519536C6C0096E350 /* MSDayColumnHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15619536C6C0096E350 /* MSDayColumnHeader.m */; };
-		FE7AE16619536C6C0096E350 /* MSDayColumnHeaderBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15819536C6C0096E350 /* MSDayColumnHeaderBackground.m */; };
 		FE7AE16719536C6C0096E350 /* MSEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15A19536C6C0096E350 /* MSEventCell.m */; };
 		FE7AE16819536C6C0096E350 /* MSGridline.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15C19536C6C0096E350 /* MSGridline.m */; };
 		FE7AE16919536C6C0096E350 /* MSTimeRowHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE15E19536C6C0096E350 /* MSTimeRowHeader.m */; };
 		FE7AE16A19536C6C0096E350 /* MSTimeRowHeaderBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE16019536C6C0096E350 /* MSTimeRowHeaderBackground.m */; };
 		FE7AE16B19536C6C0096E350 /* LIYDateTimePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE7AE16219536C6C0096E350 /* LIYDateTimePickerViewController.m */; };
 		FEBFD30E1A6CE43D002B1DE3 /* NSDate+LIYUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FEBFD30D1A6CE43D002B1DE3 /* NSDate+LIYUtilities.m */; };
+		FEE388391AF68C4E00E20BC9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEE388381AF68C4E00E20BC9 /* LaunchScreen.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,10 +54,13 @@
 		035766424CFEB87455F1E911 /* Pods-LIYDateTimePickerExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LIYDateTimePickerExampleTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LIYDateTimePickerExampleTests/Pods-LIYDateTimePickerExampleTests.release.xcconfig"; sourceTree = "<group>"; };
 		25231050F51FEF9A76AF81B7 /* LIYCalendarPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIYCalendarPickerViewController.h; sourceTree = "<group>"; };
 		252310944BB6ED5987B31553 /* LIYRelativeTimePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIYRelativeTimePicker.h; sourceTree = "<group>"; };
+		252311CA5288FC766FA8FF0E /* LIYSpecHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYSpecHelper.m; sourceTree = "<group>"; };
 		252311FDE8AF476436CD608F /* LIYRelativeTimePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYRelativeTimePicker.m; sourceTree = "<group>"; };
+		25231561931F25473FC78F69 /* LIYDateTimePickerViewControllerSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYDateTimePickerViewControllerSpec.m; sourceTree = "<group>"; };
 		252317311E0A80B73AE2617D /* LIYTimeDisplayLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIYTimeDisplayLine.h; sourceTree = "<group>"; };
 		25231D73A3FF7DF696BF919F /* LIYCalendarPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYCalendarPickerViewController.m; sourceTree = "<group>"; };
 		25231F10B0BF98BD80797B3B /* LIYTimeDisplayLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYTimeDisplayLine.m; sourceTree = "<group>"; };
+		25231FE34CFC3EE90A1A9DFC /* LIYSpecHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIYSpecHelper.h; sourceTree = "<group>"; };
 		2ABDD0230DDD60A896854CFB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		2B67EE9B2C47A30C34F5A9FD /* libPods-LIYDateTimePickerExampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LIYDateTimePickerExampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		62F96872DCDA365C53B72A10 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -87,8 +92,6 @@
 		FE7AE15419536C6C0096E350 /* MSCurrentTimeIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSCurrentTimeIndicator.m; sourceTree = "<group>"; };
 		FE7AE15519536C6C0096E350 /* MSDayColumnHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSDayColumnHeader.h; sourceTree = "<group>"; };
 		FE7AE15619536C6C0096E350 /* MSDayColumnHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSDayColumnHeader.m; sourceTree = "<group>"; };
-		FE7AE15719536C6C0096E350 /* MSDayColumnHeaderBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSDayColumnHeaderBackground.h; sourceTree = "<group>"; };
-		FE7AE15819536C6C0096E350 /* MSDayColumnHeaderBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSDayColumnHeaderBackground.m; sourceTree = "<group>"; };
 		FE7AE15919536C6C0096E350 /* MSEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSEventCell.h; sourceTree = "<group>"; };
 		FE7AE15A19536C6C0096E350 /* MSEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSEventCell.m; sourceTree = "<group>"; };
 		FE7AE15B19536C6C0096E350 /* MSGridline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSGridline.h; sourceTree = "<group>"; };
@@ -101,6 +104,7 @@
 		FE7AE16219536C6C0096E350 /* LIYDateTimePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYDateTimePickerViewController.m; sourceTree = "<group>"; };
 		FEBFD30C1A6CE43D002B1DE3 /* NSDate+LIYUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+LIYUtilities.h"; sourceTree = "<group>"; };
 		FEBFD30D1A6CE43D002B1DE3 /* NSDate+LIYUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+LIYUtilities.m"; sourceTree = "<group>"; };
+		FEE388381AF68C4E00E20BC9 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +189,7 @@
 				FE697C7E193AD37400D84E6C /* ViewController.m */,
 				FE697C80193AD37400D84E6C /* Images.xcassets */,
 				FE697C6F193AD37400D84E6C /* Supporting Files */,
+				FEE388381AF68C4E00E20BC9 /* LaunchScreen.xib */,
 			);
 			path = LIYDateTimePickerExample;
 			sourceTree = "<group>";
@@ -205,6 +210,7 @@
 			children = (
 				FE697C93193AD37400D84E6C /* MSEventCellTests.m */,
 				FE697C8E193AD37400D84E6C /* Supporting Files */,
+				25231561931F25473FC78F69 /* LIYDateTimePickerViewControllerSpec.m */,
 			);
 			path = LIYDateTimePickerExampleTests;
 			sourceTree = "<group>";
@@ -214,6 +220,8 @@
 			children = (
 				FE697C8F193AD37400D84E6C /* LIYDateTimePickerExampleTests-Info.plist */,
 				FE697C90193AD37400D84E6C /* InfoPlist.strings */,
+				252311CA5288FC766FA8FF0E /* LIYSpecHelper.m */,
+				25231FE34CFC3EE90A1A9DFC /* LIYSpecHelper.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -246,8 +254,6 @@
 				FE7AE15419536C6C0096E350 /* MSCurrentTimeIndicator.m */,
 				FE7AE15519536C6C0096E350 /* MSDayColumnHeader.h */,
 				FE7AE15619536C6C0096E350 /* MSDayColumnHeader.m */,
-				FE7AE15719536C6C0096E350 /* MSDayColumnHeaderBackground.h */,
-				FE7AE15819536C6C0096E350 /* MSDayColumnHeaderBackground.m */,
 				FE7AE15919536C6C0096E350 /* MSEventCell.h */,
 				FE7AE15A19536C6C0096E350 /* MSEventCell.m */,
 				FE7AE15B19536C6C0096E350 /* MSGridline.h */,
@@ -340,6 +346,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FEE388391AF68C4E00E20BC9 /* LaunchScreen.xib in Resources */,
 				FE697C81193AD37400D84E6C /* Images.xcassets in Resources */,
 				FE697C73193AD37400D84E6C /* InfoPlist.strings in Resources */,
 				FE697C7C193AD37400D84E6C /* Main.storyboard in Resources */,
@@ -426,7 +433,6 @@
 			files = (
 				FE697C7F193AD37400D84E6C /* ViewController.m in Sources */,
 				FEBFD30E1A6CE43D002B1DE3 /* NSDate+LIYUtilities.m in Sources */,
-				FE7AE16619536C6C0096E350 /* MSDayColumnHeaderBackground.m in Sources */,
 				FE7AE16B19536C6C0096E350 /* LIYDateTimePickerViewController.m in Sources */,
 				FE7AE16A19536C6C0096E350 /* MSTimeRowHeaderBackground.m in Sources */,
 				FE7AE16719536C6C0096E350 /* MSEventCell.m in Sources */,
@@ -448,6 +454,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE697C94193AD37400D84E6C /* MSEventCellTests.m in Sources */,
+				252314F56B48BDE3F24E7872 /* LIYDateTimePickerViewControllerSpec.m in Sources */,
+				25231BB7FB728605F9E85D54 /* LIYSpecHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

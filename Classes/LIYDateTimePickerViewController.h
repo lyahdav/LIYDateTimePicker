@@ -28,7 +28,7 @@
 @property (nonatomic, assign) BOOL allowTimeSelection;
 @property (nonatomic, assign) BOOL showCancelButton;
 @property (nonatomic, assign) BOOL showDayPicker;
-@property (nonatomic, assign) BOOL showDayColumnHeader;
+@property (nonatomic, assign) BOOL showDateInDayColumnHeader;
 @property (nonatomic, assign) BOOL showEventTimes;
 @property (nonatomic, assign) BOOL showCalendarPickerButton;
 @property (nonatomic, assign) BOOL allowEventEditing;
@@ -51,6 +51,7 @@
 
 - (void)reloadEvents;
 - (CGFloat)middleYForTimeLine;
+- (void)scrollToTime:(NSDate *)dateTime;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
 - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day;
 - (void)setVisibleCalendarsFromUserDefaults;

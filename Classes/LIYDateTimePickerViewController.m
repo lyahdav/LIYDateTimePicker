@@ -13,6 +13,7 @@
 #import "UIColor+HexString.h"
 #import "LIYTimeDisplayLine.h"
 #import "LIYRelativeTimePicker.h"
+#import "ALView+PureLayout.h"
 
 NSString *const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString *const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
@@ -20,6 +21,7 @@ NSString *const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifie
 const NSInteger kLIYDayPickerHeight = 84;
 const CGFloat kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
 const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
+const CGFloat LIYSaveButtonHeight = 44.0f;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
@@ -88,11 +90,14 @@ const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
 @property (nonatomic, strong) NSArray *allDayEvents;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) UIButton *saveButton;
-@property (nonatomic, strong) UIView *relativeTimePickerContainer;
 @property (nonatomic, strong) EKEventStore *eventStore;
 @property (nonatomic, strong) LIYTimeDisplayLine *timeDisplayLine;
 @property (nonatomic) BOOL viewHasAppeared;
 @property (nonatomic, strong) NSDate *dateBeforeRotation;
+@property (nonatomic, strong) UIView *relativeTimePickerContainer;
+@property (nonatomic, strong) UIView *dayPickerContainer;
+@property (nonatomic, strong) UIView *saveButtonContainer;
+@property (nonatomic, strong) NSLayoutConstraint *relativeTimePickerHeightConstraint;
 
 @end
 
@@ -135,6 +140,24 @@ const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelTapped:)];
     }
 
+    [self setupCollectionView];
+
+    [self setupContainerViews];
+
+    if (self.showDayPicker) {
+        [self setupDayPicker];
+    }
+
+    if (self.allowTimeSelection) {
+        [self setupTimeSelection];
+    }
+
+    [self setupDayColumnHeader];
+
+    [self setupConstraints];
+}
+
+- (void)setupCollectionView {
     self.collectionViewCalendarLayout = [[LIYCollectionViewCalendarLayout alloc] init];
     self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0;
     self.collectionViewCalendarLayout.hourHeight = 50.0; //TODO const
@@ -160,19 +183,15 @@ const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
     [self.collectionViewCalendarLayout registerClass:MSGridline.class forDecorationViewOfKind:MSCollectionElementKindVerticalGridline];
     [self.collectionViewCalendarLayout registerClass:MSGridline.class forDecorationViewOfKind:MSCollectionElementKindHorizontalGridline];
     [self.collectionViewCalendarLayout registerClass:MSTimeRowHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindTimeRowHeaderBackground];
+}
 
-    if (self.showDayPicker) {
-        self.automaticallyAdjustsScrollViewInsets = NO;
-        [self createDayPicker];
-    }
-
-    if (self.allowTimeSelection) {
-        [self setupTimeSelection];
-    }
-
-    [self setupDayColumnHeader];
-
-    [self setupConstraints];
+- (void)setupContainerViews {
+    self.dayPickerContainer = [UIView new];
+    [self.view addSubview:self.dayPickerContainer];
+    self.relativeTimePickerContainer = [UIView new];
+    [self.view addSubview:self.relativeTimePickerContainer];
+    self.saveButtonContainer = [UIView new];
+    [self.view addSubview:self.saveButtonContainer];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -230,6 +249,7 @@ const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
 
 - (void)commonInit {
     _scrollIntervalMinutes = LIYDefaultScrollIntervalMinutes;
+    _showRelativeTimePicker = YES;
     _date = [NSDate date];
     _selectedDate = [NSDate date];
     _showDayPicker = YES;
@@ -282,9 +302,6 @@ const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
 }
 
 - (void)setupRelativeTimePicker {
-    self.relativeTimePickerContainer = [UIView new];
-    self.relativeTimePickerContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:self.relativeTimePickerContainer];
     [LIYRelativeTimePicker timePickerInView:self.relativeTimePickerContainer withBackgroundColor:self.defaultColor2 buttonTappedBlock:^(NSInteger minutes) {
         [self relativeTimeButtonTappedWithMinutes:minutes];
     }];
@@ -324,10 +341,10 @@ const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
     [self.saveButton setTitle:self.saveButtonText forState:UIControlStateNormal];
     self.saveButton.titleLabel.textColor = [UIColor whiteColor];
     self.saveButton.titleLabel.font = [UIFont fontWithName:self.defaultFontFamilyName size:18.0f];
-    self.saveButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.saveButton.accessibilityIdentifier = self.saveButtonText;
 
-    [self.view addSubview:self.saveButton];
+    [self.saveButtonContainer addSubview:self.saveButton];
+    [self.saveButton autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero];
 }
 
 // From the top of the view controller (top of screen because it goes under status bar) to the line for the selected time
@@ -361,9 +378,11 @@ const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
     return roundDateTime;
 }
 
-- (void)createDayPicker {
+- (void)setupDayPicker {
+    self.automaticallyAdjustsScrollViewInsets = NO;
     self.dayPicker = [[MZDayPicker alloc] initWithFrame:CGRectZero month:9 year:2013];
-    [self.view addSubview:self.dayPicker];
+    [self.dayPickerContainer addSubview:self.dayPicker];
+    [self.dayPicker autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero];
 
     self.dayPicker.delegate = self;
     self.dayPicker.dataSource = self;
@@ -388,60 +407,64 @@ const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
 }
 
 - (void)setupConstraints {
-    self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.dayPicker.translatesAutoresizingMaskIntoConstraints = NO;
+    [self setupDayPickerConstraints];
 
-    id collectionView = self.collectionView, dayPicker = self.dayPicker ?: [UIView new], topLayoutGuide = self.topLayoutGuide, bottomLayoutGuide = self
-            .bottomLayoutGuide, saveButton = self.saveButton ?: [UIView new], relativeTimePickerContainer = self.relativeTimePickerContainer ?: [UIView new],
-            dayColumnHeader = self.dayColumnHeader;
-    CGFloat saveButtonHeight = 44.0f;
-    CGFloat relativeTimeButtonsHeight = saveButtonHeight;
+    [self setupDayColumnHeaderConstraints];
 
-    // [showDayPicker, showSaveButton]
-    NSDictionary *constraints = @{
-            @[@YES, @YES] : [NSString stringWithFormat:
-                    @"V:[topLayoutGuide][dayPicker(%ld)][dayColumnHeader][collectionView][relativeTimePickerContainer(%f)][saveButton(%f)][bottomLayoutGuide]",
-                    (long)kLIYDayPickerHeight, relativeTimeButtonsHeight, saveButtonHeight],
-            @[@YES, @NO] : [NSString stringWithFormat:@"V:[topLayoutGuide][dayPicker(%ld)][dayColumnHeader][collectionView][bottomLayoutGuide]",
-                                                      (long)kLIYDayPickerHeight],
-            @[@NO, @YES] : [NSString stringWithFormat:@"V:[topLayoutGuide][collectionView][relativeTimePickerContainer(%f)][saveButton(%f)][bottomLayoutGuide]", relativeTimeButtonsHeight, saveButtonHeight],
-            @[@NO, @NO] : @"V:[topLayoutGuide][collectionView][bottomLayoutGuide]"
-    };
+    [self setupCollectionViewConstraints];
 
-    [self.view addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:constraints[@[@(self.showDayPicker), @(self.saveButton != nil)]]
-                                options:(NSLayoutFormatOptions)0
-                                metrics:nil
-                                  views:NSDictionaryOfVariableBindings(topLayoutGuide, dayPicker, dayColumnHeader, collectionView, relativeTimePickerContainer,
-                                          saveButton, bottomLayoutGuide)]];
-    [self.view addConstraints:[NSLayoutConstraint
-            constraintsWithVisualFormat:@"H:|[collectionView]|"
-                                options:(NSLayoutFormatOptions)0
-                                metrics:nil
-                                  views:NSDictionaryOfVariableBindings(collectionView)]];
-    if (self.showDayPicker) {
-        [self.view addConstraints:[NSLayoutConstraint
-                constraintsWithVisualFormat:@"H:|[dayPicker]|"
-                                    options:(NSLayoutFormatOptions)0
-                                    metrics:nil
-                                      views:NSDictionaryOfVariableBindings(dayPicker)]];
+    [self setupRelativeTimePickerConstraints];
+
+    [self setupSaveButtonConstraints];
+}
+
+- (void)setupDayPickerConstraints {
+    [self.dayPickerContainer autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero excludingEdge:ALEdgeBottom];
+    [self setContainerView:self.dayPickerContainer visible:self.dayPicker != nil withHeight:kLIYDayPickerHeight];
+}
+
+- (void)setContainerView:(UIView *)containerView visible:(BOOL)visible withHeight:(CGFloat)height {
+    [containerView autoSetDimension:ALDimensionHeight toSize:visible ? height : 0];
+    if (!visible) {
+        containerView.hidden = YES;
     }
+}
 
-    if (self.relativeTimePickerContainer) {
-        [self.view addConstraints:[NSLayoutConstraint
-                constraintsWithVisualFormat:@"H:|[relativeTimePickerContainer]|"
-                                    options:(NSLayoutFormatOptions)0
-                                    metrics:nil
-                                      views:NSDictionaryOfVariableBindings(relativeTimePickerContainer)]];
-    }
+- (void)setupDayColumnHeaderConstraints {
+    [self.dayColumnHeader positionInView:self.view];
+    [self.dayColumnHeader autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.dayPickerContainer];
+}
 
-    if (self.saveButton) {
-        [self.view addConstraints:[NSLayoutConstraint
-                constraintsWithVisualFormat:@"H:|[saveButton]|"
-                                    options:(NSLayoutFormatOptions)0
-                                    metrics:nil
-                                      views:NSDictionaryOfVariableBindings(saveButton)]];
+- (void)setupCollectionViewConstraints {
+    [self pinView:self.collectionView belowView:self.dayColumnHeader];
+}
+
+- (void)setupRelativeTimePickerConstraints {
+    [self pinView:self.relativeTimePickerContainer belowView:self.collectionView];
+    [self updateRelativeTimePickerContainerHeight];
+}
+
+- (void)updateRelativeTimePickerContainerHeight {
+    BOOL relativeTimePickerVisible = self.showRelativeTimePicker && self.allowTimeSelection;
+    CGFloat height = relativeTimePickerVisible ? LIYSaveButtonHeight : 0;
+    if (self.relativeTimePickerHeightConstraint) {
+        self.relativeTimePickerHeightConstraint.constant = height;
+    } else {
+        self.relativeTimePickerHeightConstraint = [self.relativeTimePickerContainer autoSetDimension:ALDimensionHeight toSize:height];
     }
+    self.relativeTimePickerContainer.hidden = !relativeTimePickerVisible;
+}
+
+- (void)setupSaveButtonConstraints {
+    [self pinView:self.saveButtonContainer belowView:self.relativeTimePickerContainer];
+    [self.saveButtonContainer autoPinToBottomLayoutGuideOfViewController:self withInset:0];
+    [self setContainerView:self.saveButtonContainer visible:self.saveButton != nil withHeight:LIYSaveButtonHeight];
+}
+
+- (void)pinView:(UIView *)view belowView:(UIView *)otherView {
+    [view autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+    [view autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+    [view autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:otherView];
 }
 
 /// y is measured where 0 is the top of the collection view (after day column header and optionally all day event view)
@@ -560,7 +583,6 @@ const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
     }
 
     [self.dayColumnHeader updateAllDaySectionWithEvents:self.allDayEvents];
-    [self.dayColumnHeader positionInView:self.view];
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -578,6 +600,11 @@ const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
         _eventStore = [EKEventStore new];
     }
     return _eventStore;
+}
+
+- (void)setShowRelativeTimePicker:(BOOL)showRelativeTimePicker {
+    _showRelativeTimePicker = showRelativeTimePicker;
+    [self updateRelativeTimePickerContainerHeight];
 }
 
 - (void)setDate:(NSDate *)date {

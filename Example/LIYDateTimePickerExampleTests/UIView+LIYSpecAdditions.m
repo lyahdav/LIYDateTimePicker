@@ -10,7 +10,8 @@
 - (UILabel *)liy_specsFindLabelWithText:(NSString *)text {
     NSPredicate *labelPredicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
         if ([evaluatedObject isKindOfClass:[UILabel class]]) {
-            if ([[evaluatedObject text] isEqualToString:text]) {
+            UILabel *label = evaluatedObject;
+            if ([self liy_isViewVisible:label] && [[evaluatedObject text] isEqualToString:text]) {
                 return YES;
             }
         }
@@ -18,6 +19,18 @@
     }];
 
     return (UILabel *)[self liy_traverseDescendantsWithPredicate:labelPredicate];
+}
+
+- (BOOL)liy_isViewVisible:(UIView *)view {
+    UIView *currentView = view;
+    while (currentView) {
+        if (currentView.hidden) {
+            return NO;
+        } else {
+            currentView = currentView.superview;
+        }
+    }
+    return YES;
 }
 
 #pragma mark - convenience

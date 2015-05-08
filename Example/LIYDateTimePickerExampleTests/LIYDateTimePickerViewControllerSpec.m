@@ -24,6 +24,12 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
             [[theValue(pickerViewController.scrollIntervalMinutes) should] equal:theValue(15)];
         });
 
+        it(@"allows hiding of the relative time picker", ^{
+            LIYDateTimePickerViewController *pickerViewController = [LIYSpecHelper visiblePickerViewController];
+            pickerViewController.showRelativeTimePicker = NO;
+            [[[pickerViewController.view liy_specsFindLabelWithText:@"15m"] should] beNil];
+        });
+
         context(@"at noon", ^{
             __block LIYDateTimePickerViewController *pickerViewController;
 

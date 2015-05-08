@@ -3,6 +3,7 @@
 #import <CupertinoYankee/NSDate+CupertinoYankee.h>
 #import "Kiwi.h"
 #import "LIYDateTimePickerViewController.h"
+#import "NSDate+LIYUtilities.h"
 
 @interface LIYMockEventStore : EKEventStore
 @property (nonatomic, strong) NSMutableArray *events;
@@ -63,12 +64,6 @@
     return mockEventStore;
 }
 
-+ (NSString *)dayOfMonthFromDate:(NSDate *)date {
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [calendar components:NSCalendarUnitDay fromDate:date];
-    return [@(components.month) description];
-}
-
 + (LIYDateTimePickerViewController *)visiblePickerViewController {
     LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:pickerViewController];
@@ -91,6 +86,10 @@
     pickerViewController.visibleCalendars = @[[EKCalendar nullMock]];
 
     return pickerViewController;
+}
+
++ (void)stubCurrentDateAs:(NSString *)dateString {
+    [NSDate stub:@selector(date) andReturn:[NSDate liy_dateFromString:dateString]];
 }
 
 @end

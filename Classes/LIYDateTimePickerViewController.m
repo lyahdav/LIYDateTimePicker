@@ -13,7 +13,6 @@
 #import "UIColor+HexString.h"
 #import "LIYTimeDisplayLine.h"
 #import "LIYRelativeTimePicker.h"
-#import "ALView+PureLayout.h"
 
 NSString *const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString *const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
@@ -92,9 +91,9 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 @property (nonatomic, strong) UIView *relativeTimePickerContainer;
 @property (nonatomic, strong) EKEventStore *eventStore;
 @property (nonatomic, strong) LIYTimeDisplayLine *timeDisplayLine;
-
 @property (nonatomic) BOOL viewHasAppeared;
 @property (nonatomic, strong) NSDate *dateBeforeRotation;
+
 @end
 
 @implementation LIYDateTimePickerViewController
@@ -305,7 +304,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 }
 
 - (void)setSelectedDate:(NSDate *)selectedDate {
-    _selectedDate = selectedDate;
+    _selectedDate = [self nearestValidDateFromDate:selectedDate];
     [self setSelectedTimeText];
 }
 

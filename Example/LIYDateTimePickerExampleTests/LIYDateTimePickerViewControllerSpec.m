@@ -8,6 +8,22 @@
 SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
     describe(@"LIYDateTimePickerViewController", ^{
 
+        it(@"allows setting 5 minute scroll interval", ^{
+            [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 12:00 PM"];
+
+            LIYDateTimePickerViewController *pickerViewController = [LIYSpecHelper visiblePickerViewController];
+            pickerViewController.scrollIntervalMinutes = 5;
+            NSDate *nextIncrementDate = [NSDate liy_dateFromString:@"5/3/15, 12:05 PM"];
+            [pickerViewController scrollToTime:nextIncrementDate];
+
+            [[pickerViewController.selectedDate should] equal:nextIncrementDate];
+        });
+
+        it(@"defaults to 15 minute scroll interval", ^{
+            LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController new];
+            [[theValue(pickerViewController.scrollIntervalMinutes) should] equal:theValue(15)];
+        });
+
         context(@"at noon", ^{
             __block LIYDateTimePickerViewController *pickerViewController;
 

@@ -48,6 +48,7 @@
 @property (nonatomic, strong) NSString *defaultSelectedFontFamilyName;
 @property (nonatomic, strong) NSString *saveButtonText;
 @property (nonatomic, strong) NSArray *nonAllDayEvents;
+@property (nonatomic) NSUInteger scrollIntervalMinutes;
 
 - (void)reloadEvents;
 - (CGFloat)middleYForTimeLine;

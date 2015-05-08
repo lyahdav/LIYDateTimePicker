@@ -18,8 +18,8 @@ NSString *const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString *const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
 NSString *const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
 const NSInteger kLIYDayPickerHeight = 84;
-CGFloat const kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
-CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
+const CGFloat kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
+const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
@@ -229,6 +229,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 #pragma mark - Convenience
 
 - (void)commonInit {
+    _scrollIntervalMinutes = LIYDefaultScrollIntervalMinutes;
     _date = [NSDate date];
     _selectedDate = [NSDate date];
     _showDayPicker = YES;
@@ -300,7 +301,7 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 
 - (void)setSelectedDateFromLocation {
     CGFloat topOfViewControllerToStartOfGrid = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + [self.dayColumnHeader height];
-    self.selectedDate = [self dateFromYCoord:[self middleYForTimeLine] - topOfViewControllerToStartOfGrid];
+    self.selectedDate = [self dateFromYCoordinate:[self middleYForTimeLine] - topOfViewControllerToStartOfGrid];
 }
 
 - (void)setSelectedDate:(NSDate *)selectedDate {
@@ -354,7 +355,8 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 }
 
 - (NSDate *)nearestValidDateFromDate:(NSDate *)date {
-    NSTimeInterval seconds = ceil([date timeIntervalSinceReferenceDate] / kLIYScrollIntervalSeconds) * kLIYScrollIntervalSeconds;
+    CGFloat scrollIntervalSeconds = self.scrollIntervalMinutes * 60.0f;
+    NSTimeInterval seconds = ceil([date timeIntervalSinceReferenceDate] / scrollIntervalSeconds) * scrollIntervalSeconds;
     NSDate *roundDateTime = [NSDate dateWithTimeIntervalSinceReferenceDate:seconds];
     return roundDateTime;
 }
@@ -443,8 +445,9 @@ CGFloat const kLIYScrollIntervalSeconds = 15 * 60.0f;
 }
 
 /// y is measured where 0 is the top of the collection view (after day column header and optionally all day event view)
-- (NSDate *)dateFromYCoord:(CGFloat)y {
-    CGFloat hour = (CGFloat)(round([self hourAtYCoord:y] * 4) / 4);
+- (NSDate *)dateFromYCoordinate:(CGFloat)y {
+    CGFloat intervalsPerHour = 60.0f / self.scrollIntervalMinutes;
+    CGFloat hour = (CGFloat)(round([self hourAtYCoord:y] * intervalsPerHour) / intervalsPerHour);
     NSCalendar *cal = [NSCalendar currentCalendar];
     NSDateComponents *dateComponents = [cal components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.date];
     dateComponents.hour = (NSInteger)trunc(hour);

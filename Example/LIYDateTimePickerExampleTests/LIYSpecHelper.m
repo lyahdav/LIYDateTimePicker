@@ -1,41 +1,8 @@
 #import "LIYSpecHelper.h"
-#import <EventKit/EventKit.h>
-#import <CupertinoYankee/NSDate+CupertinoYankee.h>
 #import "Kiwi.h"
 #import "LIYDateTimePickerViewController.h"
 #import "NSDate+LIYUtilities.h"
-
-@interface LIYMockEventStore : EKEventStore
-@property (nonatomic, strong) NSMutableArray *events;
-- (void)addAllDayEventAtDate:(NSDate *)date;
-@end
-
-@implementation LIYMockEventStore
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        self.events = [NSMutableArray array];
-    }
-    return self;
-}
-
-- (void)addAllDayEventAtDate:(NSDate *)date {
-    EKEvent *event = [EKEvent nullMock];
-    [event stub:@selector(isAllDay) andReturn:theValue(YES)];
-    [event stub:@selector(startDate) andReturn:[date beginningOfDay]];
-    [event stub:@selector(endDate) andReturn:[date endOfDay]];
-    [self.events addObject:event];
-}
-
-- (NSArray *)eventsMatchingPredicate:(NSPredicate *)predicate {
-    return self.events;
-}
-
-- (void)requestAccessToEntityType:(EKEntityType)entityType completion:(EKEventStoreRequestAccessCompletionHandler)completion {
-    completion(YES, nil);
-}
-
-@end
+#import "LIYMockEventStore.h"
 
 @implementation LIYSpecHelper
 
@@ -54,16 +21,6 @@
     [LIYSpecHelper tickRunLoopForSeconds:0.1];
 }
 
-+ (LIYMockEventStore *)mockEventStore {
-    return [LIYMockEventStore new];
-}
-
-+ (LIYMockEventStore *)mockEventStoreWithAllDayEventAt:(NSDate *)date {
-    LIYMockEventStore *mockEventStore = [LIYSpecHelper mockEventStore];
-    [mockEventStore addAllDayEventAtDate:date];
-    return mockEventStore;
-}
-
 + (LIYDateTimePickerViewController *)visiblePickerViewController {
     LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:pickerViewController];
@@ -78,7 +35,7 @@
 
 + (LIYDateTimePickerViewController *)pickerViewControllerWithAllDayEventAtDate:(NSDate *)date {
     // mock event store
-    LIYMockEventStore *mockEventStore = [LIYSpecHelper mockEventStoreWithAllDayEventAt:date];
+    LIYMockEventStore *mockEventStore = [LIYMockEventStore mockEventStoreWithAllDayEventAt:date];
     [EKEventStore stub:@selector(new) andReturn:mockEventStore];
 
     // load VC

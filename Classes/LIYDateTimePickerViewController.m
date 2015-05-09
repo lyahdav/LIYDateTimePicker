@@ -14,6 +14,7 @@
 #import "LIYTimeDisplayLine.h"
 #import "LIYRelativeTimePicker.h"
 #import "ALView+PureLayout.h"
+#import "LIYCalendarService.h"
 
 NSString *const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString *const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
@@ -491,13 +492,6 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
     return toReturn;
 }
 
-- (NSDate *)nextDayForDate:(NSDate *)date {
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-    [components setDay:1];
-
-    return [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:date options:0];
-}
-
 // TODO: give this method a better name and fix the magic numbers below
 - (NSDate *)endDate {
     return [self.date dateByAddingTimeInterval:60 * 60 * 24 * 14];
@@ -512,34 +506,12 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
         return;
     }
 
-    EKEventStore *__weak weakEventStore = self.eventStore;
     typeof(self) __weak weakSelf = self;
-    [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-        EKEventStore *strongEventStore = weakEventStore;
-        typeof(self) strongSelf = weakSelf;
-        if (!granted) {
-            return;
-        }
-
-        NSPredicate *predicate = [strongEventStore predicateForEventsWithStartDate:[strongSelf.date beginningOfDay]
-                                                                           endDate:[strongSelf nextDayForDate:[strongSelf.date beginningOfDay]]
-                                                                         calendars:strongSelf.visibleCalendars];
-        NSArray *events = [strongEventStore eventsMatchingPredicate:predicate];
-        dispatch_async(dispatch_get_main_queue(), ^{ // TODO invalidate previous block if a new one is enqueued
-            NSMutableArray *nonAllDayEvents = [NSMutableArray array];
-            NSMutableArray *allDayEvents = [NSMutableArray array];
-            for (EKEvent *event in events) {
-                if (event.isAllDay) {
-                    [allDayEvents addObject:event];
-                } else {
-                    [nonAllDayEvents addObject:event];
-                }
-            }
-            strongSelf.nonAllDayEvents = nonAllDayEvents;
-            strongSelf.allDayEvents = allDayEvents;
-            [strongSelf.collectionViewCalendarLayout invalidateLayoutCache];
-            [strongSelf.collectionView reloadData];
-        });
+    [[LIYCalendarService sharedInstance] eventsForDate:self.date calendars:self.visibleCalendars completion:^(NSArray *nonAllDayEvents, NSArray *allDayEvents) {
+        weakSelf.nonAllDayEvents = nonAllDayEvents;
+        weakSelf.allDayEvents = allDayEvents;
+        [weakSelf.collectionViewCalendarLayout invalidateLayoutCache];
+        [weakSelf.collectionView reloadData];
     }];
 }
 
@@ -596,10 +568,7 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 # pragma mark - properties
 
 - (EKEventStore *)eventStore {
-    if (_eventStore == nil) {
-        _eventStore = [EKEventStore new];
-    }
-    return _eventStore;
+    return [LIYCalendarService sharedInstance].eventStore;
 }
 
 - (void)setShowRelativeTimePicker:(BOOL)showRelativeTimePicker {

@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
+#import <EventKit/EventKit.h>
 
-@class LIYMockEventStore;
 @class LIYDateTimePickerViewController;
 
 @interface LIYSpecHelper : NSObject
@@ -8,8 +8,6 @@
 + (void)rotateDeviceToOrientation:(UIInterfaceOrientation)orientation;
 + (void)tickRunLoop;
 + (void)tickRunLoopForSeconds:(NSTimeInterval)seconds;
-+ (LIYMockEventStore *)mockEventStore;
-+ (LIYMockEventStore *)mockEventStoreWithAllDayEventAt:(NSDate *)date;
 + (LIYDateTimePickerViewController *)visiblePickerViewController;
 + (LIYDateTimePickerViewController *)pickerViewControllerWithAllDayEventAtDate:(NSDate *)date;
 

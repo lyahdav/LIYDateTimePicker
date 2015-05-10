@@ -14,14 +14,14 @@ DEPENDENCIES:
   - Masonry
   - MSCollectionViewCalendarLayout
   - MZDayPicker
-  - MZDayPicker (from `https://github.com/handl/MZDayPicker.git`, commit `883626917ea02099c51dc13719c29823febd7441`)
+  - MZDayPicker (from `https://github.com/handl/MZDayPicker.git`, branch `hightlight_today`)
   - ObjectiveSugar
   - PureLayout
   - UIColor-HexString
 
 EXTERNAL SOURCES:
   MZDayPicker:
-    :commit: 883626917ea02099c51dc13719c29823febd7441
+    :branch: hightlight_today
     :git: https://github.com/handl/MZDayPicker.git
 
 SPEC CHECKSUMS:

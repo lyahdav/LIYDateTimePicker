@@ -37,8 +37,8 @@ CGFloat const kDefaultCellFooterHeight = 8.0f;
 
 CGFloat const kDefaultDayLabelMaxZoomValue = 10.0f;
 
-NSInteger const kDefaultInitialInactiveDays = 8;
-NSInteger const kDefaultFinalInactiveDays = 8;
+NSInteger const kDefaultInitialInactiveDays = 30;
+NSInteger const kDefaultFinalInactiveDays = 30;
 
 #define kDefaultColorInactiveDay [UIColor lightGrayColor]
 #define kDefaultColorBackground [UIColor whiteColor]

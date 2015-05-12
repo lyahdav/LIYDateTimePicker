@@ -87,6 +87,25 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
             });
         });
 
+        context(@"when scrolling to the end of the day", ^{
+            __block LIYDateTimePickerViewController *pickerViewController;
+
+            beforeEach(^{
+                [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 1:05 PM"];
+                pickerViewController = [LIYSpecHelper visiblePickerViewController];
+                [pickerViewController.collectionView setContentOffset:CGPointMake(0, 10000) animated:NO];
+            });
+
+            it(@"doesn't continue advancing the selected date if you keep scrolling at the end of the day", ^{
+                [pickerViewController.collectionView setContentOffset:CGPointMake(0, 10001) animated:NO];
+                [[pickerViewController.selectedDate should] equal:[NSDate liy_dateFromString:@"5/4/15, 12:00 AM"]];
+            });
+
+            it(@"stays on the same day in the day picker", ^{
+                [[[pickerViewController.dayPicker.currentDate beginningOfDay] should] equal:[NSDate liy_dateFromString:@"5/3/15, 12:00 AM"]];
+            });
+        });
+
         context(@"when switching from a day without an all day event to a day with an all day event and then going to midnight", ^{
             __block LIYDateTimePickerViewController *pickerViewController;
             __block NSDate *tomorrowDate;
@@ -101,7 +120,6 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
 
                 // go to tomorrow
                 pickerViewController.selectedDate = tomorrowDate;
-                pickerViewController.date = tomorrowDate;
                 [pickerViewController reloadEvents];
 
                 [LIYSpecHelper tickRunLoop];

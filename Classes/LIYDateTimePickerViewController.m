@@ -15,6 +15,7 @@
 #import "LIYRelativeTimePicker.h"
 #import "ALView+PureLayout.h"
 #import "LIYCalendarService.h"
+#import "NSDate+LIYUtilities.h"
 
 NSString *const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString *const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
@@ -99,6 +100,7 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 @property (nonatomic, strong) UIView *dayPickerContainer;
 @property (nonatomic, strong) UIView *saveButtonContainer;
 @property (nonatomic, strong) NSLayoutConstraint *relativeTimePickerHeightConstraint;
+@property (nonatomic) BOOL skipUpdateDayPicker;
 
 @end
 
@@ -109,10 +111,7 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 + (instancetype)timePickerForDate:(NSDate *)date delegate:(id <LIYDateTimePickerDelegate>)delegate {
     LIYDateTimePickerViewController *vc = [self new];
     vc.delegate = delegate;
-
-    vc.date = date ?: [NSDate date];
-    vc.selectedDate = vc.date;
-
+    vc.selectedDate = date ?: [NSDate date];
     return vc;
 }
 
@@ -251,7 +250,6 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 - (void)commonInit {
     _scrollIntervalMinutes = LIYDefaultScrollIntervalMinutes;
     _showRelativeTimePicker = YES;
-    _date = [NSDate date];
     _selectedDate = [NSDate date];
     _showDayPicker = YES;
     _allowTimeSelection = YES;
@@ -319,12 +317,32 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 
 - (void)setSelectedDateFromLocation {
     CGFloat topOfViewControllerToStartOfGrid = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + [self.dayColumnHeader height];
+    self.skipUpdateDayPicker = YES;
     self.selectedDate = [self dateFromYCoordinate:[self middleYForTimeLine] - topOfViewControllerToStartOfGrid];
+    self.skipUpdateDayPicker = NO;
 }
 
 - (void)setSelectedDate:(NSDate *)selectedDate {
     _selectedDate = [self nearestValidDateFromDate:selectedDate];
+
     [self setSelectedTimeText];
+
+    if (!self.skipUpdateDayPicker) {
+        [self updateDayPickerDate];
+    }
+}
+
+- (void)updateDayPickerDate {
+    if (self.dayPicker.currentDate && ![self.selectedDate isSameDayAsDate:self.dayPicker.currentDate]) {
+        [self.dayPicker setStartDate:self.selectedDate endDate:[self dayPickerEndDate]];
+        [self.dayPicker setCurrentDate:self.selectedDate animated:YES];
+
+        // clear out events immediately because reloadEvents loads events asynchronously
+        self.nonAllDayEvents = [NSMutableArray array];
+        self.allDayEvents = [NSMutableArray array];
+        [self.collectionViewCalendarLayout invalidateLayoutCache];
+        [self.collectionView reloadData];
+    }
 }
 
 - (void)setSelectedTimeText {
@@ -354,11 +372,13 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 }
 
 - (CGFloat)statusBarHeight {
-    return self.navigationController.navigationBar.translucent ? 20.0f : 0.0f; // we have to use 20 always here regardless of if status bar height changes in call. Probably could fix if we use autolayout instead of frames.
+    // we have to use 20 always here regardless of if status bar height changes in call.
+    // Probably could fix if we use auto layout instead of frames.
+    return self.navigationController.navigationBar.translucent ? 20.0f : 0.0f;
 }
 
 - (CGFloat)navBarHeight {
-    return self.navigationController.navigationBar.translucent ? 44.0f : 0.0f; // TODO can we get this programmatically?
+    return self.navigationController.navigationBar.translucent ? 44.0f : 0.0f; // TODO can we compute this?
 }
 
 - (void)scrollToTime:(NSDate *)dateTime {
@@ -399,9 +419,8 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"EE"];
 
-    [self.dayPicker setStartDate:self.date endDate:[self endDate]]; // TODO create property for this value
-
-    [self.dayPicker setCurrentDate:self.date animated:NO];
+    [self.dayPicker setStartDate:self.selectedDate endDate:[self dayPickerEndDate]];
+    [self.dayPicker setCurrentDate:self.selectedDate animated:NO];
 
     self.dayPicker.currentDayHighlightColor = self.defaultColor2;
     self.dayPicker.selectedDayColor = self.defaultColor1;
@@ -471,30 +490,19 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 /// y is measured where 0 is the top of the collection view (after day column header and optionally all day event view)
 - (NSDate *)dateFromYCoordinate:(CGFloat)y {
     CGFloat intervalsPerHour = 60.0f / self.scrollIntervalMinutes;
-    CGFloat hour = (CGFloat)(round([self hourAtYCoord:y] * intervalsPerHour) / intervalsPerHour);
+    CGFloat hour = (CGFloat)(round([self hourAtYCoordinate:y] * intervalsPerHour) / intervalsPerHour);
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *dateComponents = [cal components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.date];
+    NSDateComponents *dateComponents = [cal components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.dayPicker.currentDate];
     dateComponents.hour = (NSInteger)trunc(hour);
     dateComponents.minute = (NSInteger)round((hour - trunc(hour)) * 60);
-    NSDate *selectedDate = [cal dateFromComponents:dateComponents];
-    return selectedDate;
+    NSDate *date = [cal dateFromComponents:dateComponents];
+    return date;
 }
 
-- (NSDate *)combineDateAndTime:(NSDate *)dateForDay timeDate:(NSDate *)dateForTime {
-
-    NSDateComponents *timeComps = [[NSCalendar currentCalendar] components:(NSCalendarUnitMinute | NSCalendarUnitHour) fromDate:dateForTime];
-    NSDateComponents *dateComps = [[NSCalendar currentCalendar] components:(NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitYear) fromDate:dateForDay];
-
-    dateComps.hour = timeComps.hour;
-    dateComps.minute = timeComps.minute;
-
-    NSDate *toReturn = [[NSCalendar currentCalendar] dateFromComponents:dateComps];
-    return toReturn;
-}
-
-// TODO: give this method a better name and fix the magic numbers below
-- (NSDate *)endDate {
-    return [self.date dateByAddingTimeInterval:60 * 60 * 24 * 14];
+- (NSDate *)dayPickerEndDate {
+    NSDateComponents *components = [[NSDateComponents alloc] init];
+    [components setDay:14];
+    return [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:self.selectedDate options:0];
 }
 
 - (void)reloadEvents {
@@ -507,7 +515,7 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
     }
 
     typeof(self) __weak weakSelf = self;
-    [[LIYCalendarService sharedInstance] eventsForDate:self.date calendars:self.visibleCalendars completion:^(NSArray *nonAllDayEvents, NSArray *allDayEvents) {
+    [[LIYCalendarService sharedInstance] eventsForDate:self.selectedDate calendars:self.visibleCalendars completion:^(NSArray *nonAllDayEvents, NSArray *allDayEvents) {
         weakSelf.nonAllDayEvents = nonAllDayEvents;
         weakSelf.allDayEvents = allDayEvents;
         [weakSelf.collectionViewCalendarLayout invalidateLayoutCache];
@@ -529,7 +537,7 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 }
 
 /// y is measured where 0 is the top of the collection view (after day column header and optionally all day event view)
-- (CGFloat)hourAtYCoord:(CGFloat)y {
+- (CGFloat)hourAtYCoordinate:(CGFloat)y {
     CGFloat hour = (y + self.collectionView.contentOffset.y - kLIYGapToMidnight) / self.collectionViewCalendarLayout.hourHeight;
     hour = (CGFloat)fmax(hour, 0);
     hour = (CGFloat)fmin(hour, 24);
@@ -576,21 +584,6 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
     [self updateRelativeTimePickerContainerHeight];
 }
 
-- (void)setDate:(NSDate *)date {
-    _date = date;
-
-    if (self.dayPicker.currentDate && ![date isSameDayAsDate:self.dayPicker.currentDate]) {
-        [self.dayPicker setStartDate:self.date endDate:[self endDate]];
-        [self.dayPicker setCurrentDate:date animated:YES];
-    }
-
-    // clear out events immediately because reloadEvents loads events asynchronously
-    self.nonAllDayEvents = [NSMutableArray array];
-    self.allDayEvents = [NSMutableArray array];
-    [self.collectionViewCalendarLayout invalidateLayoutCache];
-    [self.collectionView reloadData];
-}
-
 - (void)setVisibleCalendars:(NSArray *)visibleCalendars {
     _visibleCalendars = visibleCalendars;
     if (self.isViewLoaded) {
@@ -618,14 +611,7 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 #pragma mark - MZDayPickerDelegate
 
 - (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day {
-    NSDate *timeDate = self.date;
-    if (self.selectedDate) {
-        timeDate = self.selectedDate;
-    }
-
-    self.date = [self combineDateAndTime:day.date timeDate:timeDate];
-    self.selectedDate = self.date;
-
+    self.selectedDate = [NSDate dateFromDayDate:day.date timeDate:self.selectedDate];
     [self reloadEvents];
 }
 
@@ -683,20 +669,20 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 #pragma mark - MSCollectionViewCalendarLayout
 
 - (NSDate *)collectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout dayForSection:(NSInteger)section {
-    return self.date;
+    return self.selectedDate;
 }
 
 - (NSDate *)collectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout startTimeForItemAtIndexPath:(NSIndexPath *)indexPath {
     EKEvent *event = self.nonAllDayEvents[indexPath.item];
     NSTimeInterval startDate = [event.startDate timeIntervalSince1970];
-    startDate = fmax(startDate, [[self.date beginningOfDay] timeIntervalSince1970]);
+    startDate = fmax(startDate, [[self.selectedDate beginningOfDay] timeIntervalSince1970]);
     return [NSDate dateWithTimeIntervalSince1970:startDate];
 }
 
 - (NSDate *)collectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout endTimeForItemAtIndexPath:(NSIndexPath *)indexPath {
     EKEvent *event = self.nonAllDayEvents[indexPath.item];
     NSTimeInterval endDate = [event.endDate timeIntervalSince1970];
-    endDate = fmin(endDate, [[self.date endOfDay] timeIntervalSince1970]);
+    endDate = fmin(endDate, [[self.selectedDate endOfDay] timeIntervalSince1970]);
     NSDate *startDate = [self collectionView:self.collectionView layout:self.collectionViewCalendarLayout startTimeForItemAtIndexPath:indexPath];
 
     if (endDate - [startDate timeIntervalSince1970] < 15 * 60) {

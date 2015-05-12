@@ -34,8 +34,7 @@
 @property (nonatomic, assign) BOOL allowEventEditing;
 @property (nonatomic, assign) BOOL showRelativeTimePicker;
 @property (nonatomic, weak) id<LIYDateTimePickerDelegate> delegate;
-@property (nonatomic, strong) NSDate *date;
-@property (nonatomic, strong) NSDate *selectedDate; // TODO: a bit odd there's a date and selectedDate. Combine the two? Or give them better names.
+@property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) NSArray *visibleCalendars;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSString *dayTitlePrefix;

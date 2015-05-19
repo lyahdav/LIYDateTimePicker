@@ -23,19 +23,23 @@
 }
 
 - (EKEvent *)addAllDayEventAtDate:(NSDate *)date {
-    EKEvent *event = [EKEvent nullMock];
-    [event stub:@selector(isAllDay) andReturn:theValue(YES)];
-    [event stub:@selector(startDate) andReturn:[date beginningOfDay]];
-    [event stub:@selector(endDate) andReturn:[date endOfDay]];
-    [self.events addObject:event];
-    return event;
+    return [self addEventWithStartDate:[date beginningOfDay] endDate:[date endOfDay] isAllDay:YES];
 }
 
 - (EKEvent *)addNonAllDayEventAtDate:(NSDate *)date {
+    return [self addNonAllDayEventAtDate:date endDate:[date dateByAddingTimeInterval:60*60]];
+}
+
+- (EKEvent *)addNonAllDayEventAtDate:(NSDate *)startDate endDate:(NSDate *)endDate {
+    return [self addEventWithStartDate:startDate endDate:endDate isAllDay:NO];
+}
+
+- (EKEvent *)addEventWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate isAllDay:(BOOL)isAllDay {
     EKEvent *event = [EKEvent nullMock];
-    [event stub:@selector(isAllDay) andReturn:theValue(NO)];
-    [event stub:@selector(startDate) andReturn:date];
-    [event stub:@selector(endDate) andReturn:[date dateByAddingTimeInterval:60*60]];
+    [event stub:@selector(isAllDay) andReturn:theValue(isAllDay)];
+    [event stub:@selector(startDate) andReturn:startDate];
+    [event stub:@selector(endDate) andReturn:endDate];
+    [event stub:@selector(title) andReturn:@"Some Event"];
     [self.events addObject:event];
     return event;
 }

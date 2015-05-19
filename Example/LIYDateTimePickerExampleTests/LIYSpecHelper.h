@@ -10,6 +10,7 @@
 + (void)tickRunLoopForSeconds:(NSTimeInterval)seconds;
 + (LIYDateTimePickerViewController *)visiblePickerViewController;
 + (LIYDateTimePickerViewController *)pickerViewControllerWithAllDayEventAtDate:(NSDate *)date;
++ (LIYDateTimePickerViewController *)pickerViewControllerWithEventAtDate:(NSDate *)startDate endDate:(NSDate *)endDate;
 
 //! @param dateString in format @"5/3/15, 12:00 AM"
 + (void)stubCurrentDateAs:(NSString *)dateString;

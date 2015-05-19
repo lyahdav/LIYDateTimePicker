@@ -79,7 +79,7 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
 }
 
 - (UIEdgeInsets)contentPadding {
-    return UIEdgeInsetsMake(5.0, (kLIYBorderWidth + 4.0), 1.0, 4.0);
+    return UIEdgeInsetsMake(5.0, (kLIYBorderWidth + 4.0f), 1.0, 4.0);
 }
 
 - (void)moveEventTimeLabelToTop {
@@ -173,7 +173,7 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
 - (void)updateEventTimesLabel {
     if (self.showEventTimes) {
         self.eventTimeLabel.text = [self eventTimesString];
-        CGFloat fontSize = [self eventDurationMinutesInSelectedDay] > kLIYEventMinutesToShrinkFontSize ? 9.0 : 7.0;
+        CGFloat fontSize = [self eventDurationMinutesInSelectedDay] > kLIYEventMinutesToShrinkFontSize ? 9.0f : 7.0f;
         self.eventTimeLabel.font = [UIFont systemFontOfSize:fontSize];
 
         if ([self eventDurationMinutesInSelectedDay] <= kLIYEventMinutesToMoveEventTimeLabelToTop) {
@@ -232,13 +232,15 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
 - (NSString *)durationString {
     NSTimeInterval interval = [self eventTimeInterval];
     NSInteger remainingMinutes = (NSInteger)(interval / 60) % 60;
-    NSInteger hours = interval / 3600;
+    NSInteger hours = (NSInteger)(interval / 3600);
     if (hours < 1) {
-        return [NSString stringWithFormat:@"%ld minutes", remainingMinutes];
+        return [NSString stringWithFormat:@"%ld minutes", (long)remainingMinutes];
     } else if (remainingMinutes > 0) {
-        return [NSString stringWithFormat:@"%ld:%02ld hours", hours, remainingMinutes];
+        return [NSString stringWithFormat:@"%ld:%02ld hours", (long)hours, (long)remainingMinutes];
+    } else if (hours == 1) {
+        return @"1 hour";
     } else {
-        return [NSString stringWithFormat:@"%ld hours", hours];
+        return [NSString stringWithFormat:@"%ld hours", (long)hours];
     }
 }
 
@@ -250,17 +252,8 @@ const NSInteger kLIYEventMinutesToShrinkFontSize = 15;
 }
 
 - (NSDictionary *)titleAttributesHighlighted:(BOOL)highlighted {
-    CGFloat fontSize = [self eventDurationMinutesInSelectedDay] > kLIYEventMinutesToShrinkFontSize ? 12.0 : 7.0;
+    CGFloat fontSize = [self eventDurationMinutesInSelectedDay] > kLIYEventMinutesToShrinkFontSize ? 12.0f : 7.0f;
     return [self highlightAttributes:highlighted fontSize:fontSize bold:YES];
-}
-
-- (NSDictionary *)eventTimesLabelAttributesHighlighted:(BOOL)highlighted {
-    CGFloat fontSize = [self eventDurationMinutesInSelectedDay] > kLIYEventMinutesToShrinkFontSize ? 9.0 : 7.0;
-    return [self highlightAttributes:highlighted fontSize:fontSize bold:NO];
-}
-
-- (NSDictionary *)subtitleAttributesHighlighted:(BOOL)highlighted {
-    return [self highlightAttributes:highlighted fontSize:12.0 bold:NO];
 }
 
 - (NSDictionary *)highlightAttributes:(BOOL)isHighlighted fontSize:(CGFloat)fontSize bold:(BOOL)bold {

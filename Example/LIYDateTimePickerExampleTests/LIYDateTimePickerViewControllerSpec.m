@@ -3,10 +3,15 @@
 #import "NSDate+LIYUtilities.h"
 #import "LIYSpecHelper.h"
 #import "UIView+LIYSpecAdditions.h"
+#import "LIYCalendarService.h"
 #import <CupertinoYankee/NSDate+CupertinoYankee.h>
 
 SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
     describe(@"LIYDateTimePickerViewController", ^{
+
+        beforeEach(^{
+            [[LIYCalendarService sharedInstance] reset];
+        });
 
         it(@"allows setting 5 minute scroll interval", ^{
             [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 12:00 PM"];
@@ -128,7 +133,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                 [pickerViewController scrollToTime:[tomorrowDate beginningOfDay]];
             });
 
-            it(@"has the corret insets", ^{
+            it(@"has the correct insets", ^{
                 UIEdgeInsets insets = pickerViewController.collectionView.contentInset;
                 CGFloat topInsetOnIPhone6 = 121.5; // TODO: make this work on other devices
                 [[theValue(insets.top) should] equal:topInsetOnIPhone6 withDelta:0.1];
@@ -138,5 +143,26 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                 [[pickerViewController.selectedDate should] equal:[tomorrowDate beginningOfDay]];
             });
         });
+
+        context(@"when showing an event on the calendar", ^{
+            __block LIYDateTimePickerViewController *pickerViewController;
+
+            beforeEach(^{
+                [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 1:05 PM"];
+
+                // create picker with event for today
+                NSDate *eventStartDate = [NSDate liy_dateFromString:@"5/3/15, 2:00 PM"];
+                NSDate *eventEndDate = [NSDate liy_dateFromString:@"5/3/15, 3:00 PM"];
+                pickerViewController = [LIYSpecHelper pickerViewControllerWithEventAtDate:eventStartDate endDate:eventEndDate];
+                pickerViewController.showEventTimes = YES;
+
+                [LIYSpecHelper tickRunLoop];
+            });
+
+            it(@"has the event duration", ^{
+                [[[pickerViewController.view liy_specsFindLabelWithText:@"2 PM - 3 PM (1 hour)"] shouldNot] beNil];
+            });
+        });
+
     });
 SPEC_END

@@ -10,6 +10,7 @@
 
 - (EKEvent *)addAllDayEventAtDate:(NSDate *)date;
 - (EKEvent *)addNonAllDayEventAtDate:(NSDate *)date;
+- (EKEvent *)addNonAllDayEventAtDate:(NSDate *)startDate endDate:(NSDate *)endDate;
 
 @end
 

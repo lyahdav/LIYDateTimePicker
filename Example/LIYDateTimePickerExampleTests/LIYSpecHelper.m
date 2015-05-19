@@ -49,4 +49,17 @@
     [NSDate stub:@selector(date) andReturn:[NSDate liy_dateFromString:dateString]];
 }
 
++ (LIYDateTimePickerViewController *)pickerViewControllerWithEventAtDate:(NSDate *)startDate endDate:(NSDate *)endDate {
+    // mock event store
+    LIYMockEventStore *mockEventStore = [LIYMockEventStore mockEventStore];
+    [mockEventStore addNonAllDayEventAtDate:startDate endDate:endDate];
+    [EKEventStore stub:@selector(new) andReturn:mockEventStore];
+
+    // load picker view controller
+    LIYDateTimePickerViewController *pickerViewController = [LIYSpecHelper visiblePickerViewController];
+    pickerViewController.visibleCalendars = @[[EKCalendar nullMock]];
+
+    return pickerViewController;
+}
+
 @end

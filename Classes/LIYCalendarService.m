@@ -28,6 +28,10 @@ static LIYCalendarService *sharedInstance = nil;
     }];
 }
 
+- (void)reset {
+    self.eventStore = nil;
+}
+
 #pragma mark - properties
 
 - (EKEventStore *)eventStore {

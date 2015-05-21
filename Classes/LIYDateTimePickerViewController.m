@@ -249,7 +249,7 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 
 - (void)commonInit {
     _scrollIntervalMinutes = LIYDefaultScrollIntervalMinutes;
-    _showRelativeTimePicker = YES;
+    _showRelativeTimePicker = NO;
     _selectedDate = [NSDate date];
     _showDayPicker = YES;
     _allowTimeSelection = YES;

@@ -387,8 +387,26 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 
     CGFloat minuteFactor = dateComponents.minute / 60.0f;
     CGFloat timeFactor = dateComponents.hour + minuteFactor;
+
+    if (self.allowTimeSelection) {
+        [self scrollToTimeInTimePickerMode:timeFactor];
+    } else {
+        [self scrollToTimeInCalendarMode:timeFactor];
+    }
+}
+
+- (void)scrollToTimeInTimePickerMode:(CGFloat)timeFactor {
     CGFloat topInset = self.collectionView.contentInset.top;
     CGFloat timeY = (timeFactor * self.collectionViewCalendarLayout.hourHeight) - topInset;
+    [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:NO];
+}
+
+- (void)scrollToTimeInCalendarMode:(CGFloat)timeFactor {
+    CGFloat hourAtMiddleOfCollectionView = [self hourAtYCoordinate:self.collectionView.frame.size.height / 2];
+    CGFloat timeY = (timeFactor - hourAtMiddleOfCollectionView) * self.collectionViewCalendarLayout.hourHeight;
+    timeY = (CGFloat)fmax(0.0f, timeY);
+    CGFloat maxYOffset = self.collectionView.contentSize.height - self.collectionView.frame.size.height;
+    timeY = (CGFloat)fmin(maxYOffset, timeY);
     [self.collectionView setContentOffset:CGPointMake(0, timeY) animated:NO];
 }
 

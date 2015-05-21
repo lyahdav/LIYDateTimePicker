@@ -62,4 +62,18 @@
     return pickerViewController;
 }
 
++ (LIYDateTimePickerViewController *)visibleCalendarViewController {
+    LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController new];
+    pickerViewController.showDateInDayColumnHeader = NO;
+    pickerViewController.allowTimeSelection = NO;
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:pickerViewController];
+    navigationController.navigationBar.translucent = NO;
+    [UIApplication sharedApplication].keyWindow.rootViewController = navigationController;
+
+    // must wait for run loop for view controller to be rendered
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+
+    return pickerViewController;
+}
+
 @end

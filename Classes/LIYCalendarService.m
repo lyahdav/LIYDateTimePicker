@@ -32,6 +32,14 @@ static LIYCalendarService *sharedInstance = nil;
     self.eventStore = nil;
 }
 
+- (BOOL)calendars:(NSArray *)calendars haveEventsOnDate:(NSDate *)date {
+    NSPredicate *predicate = [self.eventStore predicateForEventsWithStartDate:[date beginningOfDay]
+                                                                      endDate:[date endOfDay]
+                                                                    calendars:calendars];
+    NSArray *events = [self.eventStore eventsMatchingPredicate:predicate];
+    return events.count > 0;
+}
+
 #pragma mark - properties
 
 - (EKEventStore *)eventStore {

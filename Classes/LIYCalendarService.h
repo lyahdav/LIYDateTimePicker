@@ -10,5 +10,6 @@
 
 - (void)eventsForDate:(NSDate *)date calendars:(NSArray *)calendars completion:(void (^)(NSArray *nonAllDayEvents, NSArray *allDayEvents))completionBlock;
 - (void)reset;
+- (BOOL)calendars:(NSArray *)calendars haveEventsOnDate:(NSDate *)date;
 
 @end

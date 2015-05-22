@@ -725,7 +725,7 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
 #pragma mark - JTCalendarDataSource
 
 - (BOOL)calendarHaveEvent:(JTCalendar *)calendar date:(NSDate *)date {
-    return NO;
+    return [[LIYCalendarService sharedInstance] calendars:self.visibleCalendars haveEventsOnDate:date];
 }
 
 - (void)calendarDidDateSelected:(JTCalendar *)calendar date:(NSDate *)date {

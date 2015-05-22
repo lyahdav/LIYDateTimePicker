@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
 
   # s.public_header_files = 'Classes/**/*.h'
   # s.frameworks = 'SomeFramework', 'AnotherFramework'
-  s.dependency 'MZDayPicker'
+  s.dependency 'JTCalendar'
   s.dependency 'MSCollectionViewCalendarLayout'
   s.dependency 'UIColor-HexString'
   s.dependency 'Masonry'

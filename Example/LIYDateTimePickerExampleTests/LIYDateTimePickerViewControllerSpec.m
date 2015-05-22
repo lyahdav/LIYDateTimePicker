@@ -5,12 +5,33 @@
 #import "UIView+LIYSpecAdditions.h"
 #import "LIYCalendarService.h"
 #import <CupertinoYankee/NSDate+CupertinoYankee.h>
+#import <JTCalendar/JTCalendar.h>
 
 SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
     describe(@"LIYDateTimePickerViewController", ^{
 
         beforeEach(^{
             [[LIYCalendarService sharedInstance] reset];
+        });
+
+        it(@"shows the day picker by default", ^{
+            LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController new];
+            [[theValue(pickerViewController.showDayPicker) should] equal:theValue(YES)];
+        });
+
+        it(@"initializes the day picker to the given date", ^{
+            NSDate *someDate = [NSDate liy_dateFromString:@"5/21/15, 12:00 PM"];
+            LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController timePickerForDate:someDate delegate:nil];
+            [pickerViewController view];
+            [[pickerViewController.dayPicker.currentDateSelected should] equal:someDate];
+            [[pickerViewController.dayPicker.currentDate should] equal:someDate];
+        });
+        
+        it(@"allows hiding the day picker", ^{
+            [LIYSpecHelper stubCurrentDateAs:@"5/21/15, 12:00 PM"];
+            LIYDateTimePickerViewController *pickerViewController = [LIYSpecHelper visiblePickerViewController];
+            pickerViewController.showDayPicker = NO;
+            [[[pickerViewController.view liy_specsFindLabelWithText:@"TUE"] should] beNil];
         });
 
         it(@"allows setting 5 minute scroll interval", ^{
@@ -120,7 +141,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
             });
 
             it(@"stays on the same day in the day picker", ^{
-                [[[pickerViewController.dayPicker.currentDate beginningOfDay] should] equal:[NSDate liy_dateFromString:@"5/3/15, 12:00 AM"]];
+                [[[pickerViewController.dayPicker.currentDateSelected beginningOfDay] should] equal:[NSDate liy_dateFromString:@"5/3/15, 12:00 AM"]];
             });
         });
 
@@ -148,7 +169,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
 
             it(@"has the correct insets", ^{
                 UIEdgeInsets insets = pickerViewController.collectionView.contentInset;
-                CGFloat topInsetOnIPhone6 = 121.5; // TODO: make this work on other devices
+                CGFloat topInsetOnIPhone6 = 115.5; // TODO: make this work on other devices
                 [[theValue(insets.top) should] equal:topInsetOnIPhone6 withDelta:0.1];
             });
 
@@ -203,7 +224,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                     pickerViewController = [LIYSpecHelper visibleCalendarViewController];
                 });
                 it(@"scrolls to center noon", ^{
-                    CGFloat contentOffsetForNoonOnIPhone6 = 360.5f; // TODO would be nice to not hard-code
+                    CGFloat contentOffsetForNoonOnIPhone6 = 363.5f; // TODO would be nice to not hard-code
                     [[theValue(pickerViewController.collectionView.contentOffset.y) should] equal:contentOffsetForNoonOnIPhone6 withDelta:0.1];
                 });
             });

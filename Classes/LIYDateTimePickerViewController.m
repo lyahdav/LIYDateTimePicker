@@ -9,6 +9,7 @@
 #import "MSCurrentTimeGridline.h"
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
+#import <JTCalendar/JTCalendar.h>
 #import "NSDate+CupertinoYankee.h"
 #import "UIColor+HexString.h"
 #import "LIYTimeDisplayLine.h"
@@ -20,10 +21,11 @@
 NSString *const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString *const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
 NSString *const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifier";
-const NSInteger kLIYDayPickerHeight = 84;
 const CGFloat kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
 const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
 const CGFloat LIYSaveButtonHeight = 44.0f;
+const CGFloat LIYDayPickerMenuViewHeight = 30.0f;
+const CGFloat LIYDayPickerContentViewHeight = 60.0f;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
@@ -67,40 +69,24 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 
 @end
 
-#pragma mark - NSDate (LIYAdditional)
-
-// TODO: this shouldn't be necessary as it's defined in MZDayPicker.h, but it's required for `pod lib lint` to succeed. Figure out how to fix that.
-@implementation NSDate (LIYAdditional)
-
-- (BOOL)isSameDayAsDate:(NSDate *)date {
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-
-    NSCalendarUnit unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit;
-    NSDateComponents *comp1 = [calendar components:unitFlags fromDate:self];
-    NSDateComponents *comp2 = [calendar components:unitFlags fromDate:date];
-
-    return [comp1 day] == [comp2 day] &&
-            [comp1 month] == [comp2 month] &&
-            [comp1 year] == [comp2 year];
-}
-@end
-
 #pragma mark - LIYDateTimePickerViewController
 
-@interface LIYDateTimePickerViewController () <MZDayPickerDelegate, MZDayPickerDataSource, MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate>
+@interface LIYDateTimePickerViewController () <MSCollectionViewDelegateCalendarLayout, UICollectionViewDataSource, UICollectionViewDelegate, UIScrollViewDelegate, JTCalendarDataSource>
 
+@property (nonatomic) BOOL viewHasAppeared;
+@property (nonatomic) BOOL skipUpdateDayPicker;
 @property (nonatomic, strong) NSArray *allDayEvents;
-@property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) EKEventStore *eventStore;
 @property (nonatomic, strong) LIYTimeDisplayLine *timeDisplayLine;
-@property (nonatomic) BOOL viewHasAppeared;
 @property (nonatomic, strong) NSDate *dateBeforeRotation;
 @property (nonatomic, strong) UIView *relativeTimePickerContainer;
-@property (nonatomic, strong) UIView *dayPickerContainer;
 @property (nonatomic, strong) UIView *saveButtonContainer;
 @property (nonatomic, strong) NSLayoutConstraint *relativeTimePickerHeightConstraint;
-@property (nonatomic) BOOL skipUpdateDayPicker;
+@property (nonatomic, strong) JTCalendarMenuView *dayPickerMenuView;
+@property (nonatomic, strong) JTCalendarContentView *dayPickerContentView;
+@property (nonatomic, strong) NSLayoutConstraint *dayPickerMenuViewHeightConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *dayPickerContentViewHeightConstraint;
 
 @end
 
@@ -136,6 +122,8 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.view.backgroundColor = [UIColor whiteColor];
+
     if (self.showCancelButton) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelTapped:)];
     }
@@ -144,54 +132,19 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 
     [self setupContainerViews];
 
-    if (self.showDayPicker) {
-        [self setupDayPicker];
-    }
-
     if (self.allowTimeSelection) {
         [self setupTimeSelection];
     }
 
     [self setupDayColumnHeader];
 
+    [self setupDayPicker];
+
     [self setupConstraints];
 }
 
-- (void)setupCollectionView {
-    self.collectionViewCalendarLayout = [[LIYCollectionViewCalendarLayout alloc] init];
-    self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0;
-    self.collectionViewCalendarLayout.hourHeight = 50.0; //TODO const
-
-    [self setCollectionViewSectionWidth];
-    self.collectionViewCalendarLayout.delegate = self;
-    self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.collectionViewCalendarLayout];
-    self.collectionView.dataSource = self;
-    self.collectionView.delegate = self;
-    self.collectionView.backgroundColor = [UIColor colorWithHexString:@"#ededed"];
-    [self.view addSubview:self.collectionView];
-
-    [self.collectionView registerClass:MSEventCell.class forCellWithReuseIdentifier:MSEventCellReuseIdentifier];
-    [self.collectionView registerClass:MSTimeRowHeader.class forSupplementaryViewOfKind:MSCollectionElementKindTimeRowHeader withReuseIdentifier:MSTimeRowHeaderReuseIdentifier];
-
-    // TODO: we really don't need this, but we're required to register a class for the day column header. Maybe fork MSCollectionViewCalendarLayout to make day column
-    // header optional
-    [self.collectionView registerClass:MSTimeRowHeader.class forSupplementaryViewOfKind:MSCollectionElementKindDayColumnHeader withReuseIdentifier:MSDayColumnHeaderReuseIdentifier];
-
-    // These are optional. If you don't want any of the decoration views, just don't register a class for them.
-    [self.collectionViewCalendarLayout registerClass:MSCurrentTimeIndicator.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeIndicator];
-    [self.collectionViewCalendarLayout registerClass:MSCurrentTimeGridline.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeHorizontalGridline];
-    [self.collectionViewCalendarLayout registerClass:MSGridline.class forDecorationViewOfKind:MSCollectionElementKindVerticalGridline];
-    [self.collectionViewCalendarLayout registerClass:MSGridline.class forDecorationViewOfKind:MSCollectionElementKindHorizontalGridline];
-    [self.collectionViewCalendarLayout registerClass:MSTimeRowHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindTimeRowHeaderBackground];
-}
-
-- (void)setupContainerViews {
-    self.dayPickerContainer = [UIView new];
-    [self.view addSubview:self.dayPickerContainer];
-    self.relativeTimePickerContainer = [UIView new];
-    [self.view addSubview:self.relativeTimePickerContainer];
-    self.saveButtonContainer = [UIView new];
-    [self.view addSubview:self.saveButtonContainer];
+- (void)viewDidLayoutSubviews {
+    [self.dayPicker repositionViews];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -250,14 +203,66 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 - (void)commonInit {
     _scrollIntervalMinutes = LIYDefaultScrollIntervalMinutes;
     _showRelativeTimePicker = NO;
-    _selectedDate = [NSDate date];
     _showDayPicker = YES;
+    _selectedDate = [NSDate date];
     _allowTimeSelection = YES;
     _allowEventEditing = YES;
     _defaultColor1 = [UIColor colorWithHexString:@"59c7f1"];
     _defaultColor2 = [UIColor orangeColor];
     _saveButtonText = @"Save";
     _showDateInDayColumnHeader = YES;
+}
+
+- (void)setupDayPicker {
+    self.dayPicker = [JTCalendar new];
+    self.dayPicker.calendarAppearance.isWeekMode = YES;
+    [self.dayPicker setDataSource:self];
+    [self setDayPickerDate:self.selectedDate];
+
+    self.dayPickerMenuView = [JTCalendarMenuView new];
+    [self.dayPicker setMenuMonthsView:self.dayPickerMenuView];
+    [self.view addSubview:self.dayPickerMenuView];
+
+    self.dayPickerContentView = [JTCalendarContentView new];
+    [self.dayPicker setContentView:self.dayPickerContentView];
+    [self.view addSubview:self.dayPickerContentView];
+
+    [self.dayPicker reloadData];
+}
+
+- (void)setupCollectionView {
+    self.collectionViewCalendarLayout = [[LIYCollectionViewCalendarLayout alloc] init];
+    self.collectionViewCalendarLayout.dayColumnHeaderHeight = 0;
+    self.collectionViewCalendarLayout.hourHeight = 50.0; //TODO const
+
+    [self setCollectionViewSectionWidth];
+    self.collectionViewCalendarLayout.delegate = self;
+    self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.collectionViewCalendarLayout];
+    self.collectionView.dataSource = self;
+    self.collectionView.delegate = self;
+    self.collectionView.backgroundColor = [UIColor colorWithHexString:@"#ededed"];
+    [self.view addSubview:self.collectionView];
+
+    [self.collectionView registerClass:MSEventCell.class forCellWithReuseIdentifier:MSEventCellReuseIdentifier];
+    [self.collectionView registerClass:MSTimeRowHeader.class forSupplementaryViewOfKind:MSCollectionElementKindTimeRowHeader withReuseIdentifier:MSTimeRowHeaderReuseIdentifier];
+
+    // TODO: we really don't need this, but we're required to register a class for the day column header. Maybe fork MSCollectionViewCalendarLayout to make day column
+    // header optional
+    [self.collectionView registerClass:MSTimeRowHeader.class forSupplementaryViewOfKind:MSCollectionElementKindDayColumnHeader withReuseIdentifier:MSDayColumnHeaderReuseIdentifier];
+
+    // These are optional. If you don't want any of the decoration views, just don't register a class for them.
+    [self.collectionViewCalendarLayout registerClass:MSCurrentTimeIndicator.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeIndicator];
+    [self.collectionViewCalendarLayout registerClass:MSCurrentTimeGridline.class forDecorationViewOfKind:MSCollectionElementKindCurrentTimeHorizontalGridline];
+    [self.collectionViewCalendarLayout registerClass:MSGridline.class forDecorationViewOfKind:MSCollectionElementKindVerticalGridline];
+    [self.collectionViewCalendarLayout registerClass:MSGridline.class forDecorationViewOfKind:MSCollectionElementKindHorizontalGridline];
+    [self.collectionViewCalendarLayout registerClass:MSTimeRowHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindTimeRowHeaderBackground];
+}
+
+- (void)setupContainerViews {
+    self.relativeTimePickerContainer = [UIView new];
+    [self.view addSubview:self.relativeTimePickerContainer];
+    self.saveButtonContainer = [UIView new];
+    [self.view addSubview:self.saveButtonContainer];
 }
 
 - (void)setCollectionViewSectionWidth {
@@ -274,23 +279,27 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
     }
 
     UIEdgeInsets edgeInsets = self.collectionView.contentInset;
-    edgeInsets.top = [self collectionViewEdgeInsetTop];
-    edgeInsets.bottom = [self collectionViewEdgeInsetBottom];
+    edgeInsets.top = [self collectionViewContentInsetTop];
+    edgeInsets.bottom = [self collectionViewContentInsetBottom];
     self.collectionView.contentInset = edgeInsets;
 }
 
-- (CGFloat)collectionViewEdgeInsetTop {
-    CGFloat viewControllerTopToMidnightBeginningOfDay = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + [self.dayColumnHeader height] +
+- (CGFloat)collectionViewContentInsetTop {
+    CGFloat viewControllerTopToMidnightBeginningOfDay = [self statusBarHeight] + [self navBarHeight] + [self dayPickerHeight] + [self.dayColumnHeader height] +
             kLIYGapToMidnight;
     CGFloat edgeInsetTop = [self middleYForTimeLine] - viewControllerTopToMidnightBeginningOfDay;
     return edgeInsetTop;
 }
 
-- (CGFloat)collectionViewEdgeInsetBottom {
-    CGFloat viewControllerTopToEndOfDayMidnightTop = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + [self.dayColumnHeader height] + self
+- (CGFloat)collectionViewContentInsetBottom {
+    CGFloat viewControllerTopToEndOfDayMidnightTop = [self statusBarHeight] + [self navBarHeight] + [self dayPickerHeight] + [self.dayColumnHeader height] + self
             .collectionView.frame.size.height - kLIYGapToMidnight;
     CGFloat edgeInsetBottom = viewControllerTopToEndOfDayMidnightTop - [self middleYForTimeLine];
     return edgeInsetBottom;
+}
+
+- (CGFloat)dayPickerHeight {
+    return LIYDayPickerMenuViewHeight + LIYDayPickerContentViewHeight;
 }
 
 - (void)setupTimeSelection {
@@ -316,7 +325,7 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 }
 
 - (void)setSelectedDateFromLocation {
-    CGFloat topOfViewControllerToStartOfGrid = [self statusBarHeight] + [self navBarHeight] + kLIYDayPickerHeight + [self.dayColumnHeader height];
+    CGFloat topOfViewControllerToStartOfGrid = [self statusBarHeight] + [self navBarHeight] + [self dayPickerHeight] + [self.dayColumnHeader height];
     self.skipUpdateDayPicker = YES;
     self.selectedDate = [self dateFromYCoordinate:[self middleYForTimeLine] - topOfViewControllerToStartOfGrid];
     self.skipUpdateDayPicker = NO;
@@ -333,9 +342,12 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 }
 
 - (void)updateDayPickerDate {
-    if (self.dayPicker.currentDate && ![self.selectedDate isSameDayAsDate:self.dayPicker.currentDate]) {
-        [self.dayPicker setStartDate:self.selectedDate endDate:[self dayPickerEndDate]];
-        [self.dayPicker setCurrentDate:self.selectedDate animated:YES];
+    if (![self isViewLoaded]) {
+        return;
+    }
+
+    if (![self.selectedDate isSameDayAsDate:self.dayPicker.currentDateSelected]) {
+        [self setDayPickerDate:self.selectedDate];
 
         // clear out events immediately because reloadEvents loads events asynchronously
         self.nonAllDayEvents = [NSMutableArray array];
@@ -343,6 +355,14 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
         [self.collectionViewCalendarLayout invalidateLayoutCache];
         [self.collectionView reloadData];
     }
+}
+
+- (void)setDayPickerDate:(NSDate *)date {
+    // hack documented here: https://github.com/jonathantribouharet/JTCalendar#warning-2
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"kJTCalendarDaySelected" object:date];
+
+    [self.dayPicker setCurrentDateSelected:date];
+    self.dayPicker.currentDate = date;
 }
 
 - (void)setSelectedTimeText {
@@ -417,33 +437,6 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
     return roundDateTime;
 }
 
-- (void)setupDayPicker {
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    self.dayPicker = [[MZDayPicker alloc] initWithFrame:CGRectZero month:9 year:2013];
-    [self.dayPickerContainer addSubview:self.dayPicker];
-    [self.dayPicker autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero];
-
-    self.dayPicker.delegate = self;
-    self.dayPicker.dataSource = self;
-
-    self.dayPicker.dayNameLabelFontSize = 10.0f;
-    self.dayPicker.dayLabelFontSize = 16.0f;
-    self.dayPicker.dayLabelFont = self.defaultFontFamilyName;
-    self.dayPicker.dayNameLabelFont = self.defaultFontFamilyName;
-    self.dayPicker.dayLabelFont = self.defaultFontFamilyName;
-    self.dayPicker.daySelectedFont = self.defaultSelectedFontFamilyName;
-    self.dayPicker.selectedDayColor = self.defaultColor1;
-
-    self.dateFormatter = [[NSDateFormatter alloc] init];
-    [self.dateFormatter setDateFormat:@"EE"];
-
-    [self.dayPicker setStartDate:self.selectedDate endDate:[self dayPickerEndDate]];
-    [self.dayPicker setCurrentDate:self.selectedDate animated:NO];
-
-    self.dayPicker.currentDayHighlightColor = self.defaultColor2;
-    self.dayPicker.selectedDayColor = self.defaultColor1;
-}
-
 - (void)setupConstraints {
     [self setupDayPickerConstraints];
 
@@ -457,8 +450,38 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 }
 
 - (void)setupDayPickerConstraints {
-    [self.dayPickerContainer autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero excludingEdge:ALEdgeBottom];
-    [self setContainerView:self.dayPickerContainer visible:self.dayPicker != nil withHeight:kLIYDayPickerHeight];
+    [self.dayPickerMenuView autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero excludingEdge:ALEdgeBottom];
+
+    [self.dayPickerContentView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.dayPickerMenuView];
+    [self.dayPickerContentView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+    [self.dayPickerContentView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+
+    [self updateDayPickerHeight];
+}
+
+- (void)updateDayPickerHeight {
+    [self updateDayPickerContentViewHeight];
+    [self updateDayPickerMenuView];
+}
+
+- (void)updateDayPickerMenuView {
+    CGFloat dayPickerMenuViewHeight = self.showDayPicker ? LIYDayPickerMenuViewHeight : 0;
+    if (self.dayPickerMenuViewHeightConstraint) {
+        self.dayPickerMenuViewHeightConstraint.constant = dayPickerMenuViewHeight;
+    } else {
+        self.dayPickerMenuViewHeightConstraint = [self.dayPickerMenuView autoSetDimension:ALDimensionHeight toSize:dayPickerMenuViewHeight];
+    }
+    self.dayPickerMenuView.hidden = !self.showDayPicker;
+}
+
+- (void)updateDayPickerContentViewHeight {
+    CGFloat dayPickerContentViewHeight = self.showDayPicker ? LIYDayPickerContentViewHeight : 0;
+    if (self.dayPickerContentViewHeightConstraint) {
+        self.dayPickerContentViewHeightConstraint.constant = dayPickerContentViewHeight;
+    } else {
+        self.dayPickerContentViewHeightConstraint = [self.dayPickerContentView autoSetDimension:ALDimensionHeight toSize:dayPickerContentViewHeight];
+    }
+    self.dayPickerContentView.hidden = !self.showDayPicker;
 }
 
 - (void)setContainerView:(UIView *)containerView visible:(BOOL)visible withHeight:(CGFloat)height {
@@ -470,7 +493,7 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 
 - (void)setupDayColumnHeaderConstraints {
     [self.dayColumnHeader positionInView:self.view];
-    [self.dayColumnHeader autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.dayPickerContainer];
+    [self.dayColumnHeader autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.dayPickerContentView];
 }
 
 - (void)setupCollectionViewConstraints {
@@ -510,17 +533,11 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
     CGFloat intervalsPerHour = 60.0f / self.scrollIntervalMinutes;
     CGFloat hour = (CGFloat)(round([self hourAtYCoordinate:y] * intervalsPerHour) / intervalsPerHour);
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *dateComponents = [cal components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.dayPicker.currentDate];
+    NSDateComponents *dateComponents = [cal components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.dayPicker.currentDateSelected];
     dateComponents.hour = (NSInteger)trunc(hour);
     dateComponents.minute = (NSInteger)round((hour - trunc(hour)) * 60);
     NSDate *date = [cal dateFromComponents:dateComponents];
     return date;
-}
-
-- (NSDate *)dayPickerEndDate {
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-    [components setDay:14];
-    return [[NSCalendar currentCalendar] dateByAddingComponents:components toDate:self.selectedDate options:0];
 }
 
 - (void)reloadEvents {
@@ -602,6 +619,11 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
     [self updateRelativeTimePickerContainerHeight];
 }
 
+- (void)setShowDayPicker:(BOOL)showDayPicker {
+    _showDayPicker = showDayPicker;
+    [self updateDayPickerHeight];
+}
+
 - (void)setVisibleCalendars:(NSArray *)visibleCalendars {
     _visibleCalendars = visibleCalendars;
     if (self.isViewLoaded) {
@@ -618,19 +640,6 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
     if (self.selectedDate && self.allowTimeSelection) {
         [self scrollToTime:self.selectedDate]; // it's possible the scroll changed when all day now shows
     }
-}
-
-#pragma mark - MZDayPickerDataSource
-
-- (NSString *)dayPicker:(MZDayPicker *)dayPicker titleForCellDayNameLabelInDay:(MZDay *)day {
-    return [self.dateFormatter stringFromDate:day.date];
-}
-
-#pragma mark - MZDayPickerDelegate
-
-- (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day {
-    self.selectedDate = [NSDate dateFromDayDate:day.date timeDate:self.selectedDate];
-    [self reloadEvents];
 }
 
 #pragma mark - UICollectionViewDelegate
@@ -711,6 +720,17 @@ const CGFloat LIYSaveButtonHeight = 44.0f;
 
 - (NSDate *)currentTimeComponentsForCollectionView:(UICollectionView *)collectionView layout:(MSCollectionViewCalendarLayout *)collectionViewCalendarLayout {
     return [NSDate date];
+}
+
+#pragma mark - JTCalendarDataSource
+
+- (BOOL)calendarHaveEvent:(JTCalendar *)calendar date:(NSDate *)date {
+    return NO;
+}
+
+- (void)calendarDidDateSelected:(JTCalendar *)calendar date:(NSDate *)date {
+    self.selectedDate = [NSDate dateFromDayDate:date timeDate:self.selectedDate];
+    [self reloadEvents];
 }
 
 @end

@@ -1,17 +1,9 @@
-//
-//  ViewController.h
-//  CalendarExample
-//
-//  Created by Liron Yahdav on 5/29/14.
-//  Copyright (c) 2014 Handle. All rights reserved.
-//
-
 #import <UIKit/UIKit.h>
 #import "MSDayColumnHeader.h"
 #import "MSCollectionViewCalendarLayout.h"
-#import "MZDayPicker.h"
 
 @class LIYDateTimePickerViewController;
+@class JTCalendar;
 
 @protocol LIYDateTimePickerDelegate <NSObject>
 
@@ -40,7 +32,6 @@
 @property (nonatomic, strong) NSString *dayTitlePrefix;
 @property (nonatomic, strong) MSDayColumnHeader *dayColumnHeader;
 @property (nonatomic, strong) MSCollectionViewCalendarLayout *collectionViewCalendarLayout;
-@property (nonatomic, strong) MZDayPicker *dayPicker;
 @property (nonatomic, strong) NSArray *calendarNamesToFilterForEdit;
 @property (nonatomic, strong) UIColor *defaultColor1;
 @property (nonatomic, strong) UIColor *defaultColor2;
@@ -49,12 +40,10 @@
 @property (nonatomic, strong) NSString *saveButtonText;
 @property (nonatomic, strong) NSArray *nonAllDayEvents;
 @property (nonatomic) NSUInteger scrollIntervalMinutes;
+@property (strong, nonatomic) JTCalendar *dayPicker;
 
 - (void)reloadEvents;
-- (CGFloat)middleYForTimeLine;
 - (void)scrollToTime:(NSDate *)dateTime;
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath;
-- (void)dayPicker:(MZDayPicker *)dayPicker didSelectDay:(MZDay *)day;
 - (void)setVisibleCalendarsFromUserDefaults;
 
 @end

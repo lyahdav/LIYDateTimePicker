@@ -1,35 +1,29 @@
 PODS:
   - CupertinoYankee (0.1.1)
+  - JTCalendar (1.2.3)
   - Kiwi (2.3.1)
   - Masonry (0.5.3)
   - MSCollectionViewCalendarLayout (0.1.3):
     - CupertinoYankee (~> 0.1)
-  - MZDayPicker (0.0.1)
   - ObjectiveSugar (1.1.0)
   - PureLayout (2.0.6)
   - UIColor-HexString (1.1.0)
 
 DEPENDENCIES:
+  - JTCalendar
   - Kiwi
   - Masonry
   - MSCollectionViewCalendarLayout
-  - MZDayPicker
-  - MZDayPicker (from `https://github.com/handl/MZDayPicker.git`, branch `hightlight_today`)
   - ObjectiveSugar
   - PureLayout
   - UIColor-HexString
 
-EXTERNAL SOURCES:
-  MZDayPicker:
-    :branch: hightlight_today
-    :git: https://github.com/handl/MZDayPicker.git
-
 SPEC CHECKSUMS:
   CupertinoYankee: 742ab22e47518167d0c78d2eaa5aed5b6e26af3b
+  JTCalendar: 246ea3e338fb97624846ec77cdcde448242c4d5c
   Kiwi: f038a6c61f7a9e4d7766bff5717aa3b3fdb75f55
   Masonry: 9f515466afe48632562342a40a1c224071a1a022
   MSCollectionViewCalendarLayout: fba6fefdb3a340cb3e4f10725c6b3a530e6f6817
-  MZDayPicker: 94f265c68d72c6665a2324b1284a61708d2d7e3d
   ObjectiveSugar: a6a25f23d657c19df0a0b972466d5b5ca9f5295c
   PureLayout: f25f0bb904d5ccfe6e31da3cb869185259f02e0d
   UIColor-HexString: f8a5612bd6772fed8db58ee594b42a0b2831750e

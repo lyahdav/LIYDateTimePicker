@@ -12,17 +12,17 @@
 #define COCOAPODS_VERSION_MINOR_CupertinoYankee 1
 #define COCOAPODS_VERSION_PATCH_CupertinoYankee 1
 
+// JTCalendar
+#define COCOAPODS_POD_AVAILABLE_JTCalendar
+#define COCOAPODS_VERSION_MAJOR_JTCalendar 1
+#define COCOAPODS_VERSION_MINOR_JTCalendar 2
+#define COCOAPODS_VERSION_PATCH_JTCalendar 3
+
 // MSCollectionViewCalendarLayout
 #define COCOAPODS_POD_AVAILABLE_MSCollectionViewCalendarLayout
 #define COCOAPODS_VERSION_MAJOR_MSCollectionViewCalendarLayout 0
 #define COCOAPODS_VERSION_MINOR_MSCollectionViewCalendarLayout 1
 #define COCOAPODS_VERSION_PATCH_MSCollectionViewCalendarLayout 3
-
-// MZDayPicker
-#define COCOAPODS_POD_AVAILABLE_MZDayPicker
-#define COCOAPODS_VERSION_MAJOR_MZDayPicker 0
-#define COCOAPODS_VERSION_MINOR_MZDayPicker 0
-#define COCOAPODS_VERSION_PATCH_MZDayPicker 1
 
 // Masonry
 #define COCOAPODS_POD_AVAILABLE_Masonry

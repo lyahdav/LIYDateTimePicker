@@ -5,13 +5,14 @@
 #import "UIView+LIYSpecAdditions.h"
 #import "LIYCalendarService.h"
 #import <CupertinoYankee/NSDate+CupertinoYankee.h>
-#import <JTCalendar/JTCalendar.h>
+#import "LIYJTCalendar.h"
 
 SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
     describe(@"LIYDateTimePickerViewController", ^{
 
         beforeEach(^{
             [[LIYCalendarService sharedInstance] reset];
+            [EKEventStore stub:@selector(new) andReturn:[EKEventStore nullMock]];
         });
 
         it(@"shows the day picker by default", ^{
@@ -56,6 +57,48 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
             [[[pickerViewController.view liy_specsFindLabelWithText:@"15m"] should] beNil];
         });
 
+        context(@"at 12:00am", ^{
+            __block LIYDateTimePickerViewController *pickerViewController;
+
+            beforeEach(^{
+                [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 12:00 AM"];
+                pickerViewController = [LIYSpecHelper visiblePickerViewController];
+            });
+            
+            it(@"updates the insets when switching from week to month", ^{
+                [pickerViewController switchToMonthPicker];
+                [LIYSpecHelper tickRunLoop];
+
+                UIEdgeInsets insets = pickerViewController.collectionView.contentInset;
+                CGFloat topInsetOnIPhone6 = 131.5; // TODO: make this work on other devices
+                [[theValue(insets.top) should] equal:topInsetOnIPhone6 withDelta:0.1];
+            });
+            
+            it(@"doesn't update the selected date when switching from week to month view and in calendar mode", ^{
+                pickerViewController.allowTimeSelection = NO;
+                
+                [[pickerViewController shouldNot] receive:@selector(setSelectedDate:)];
+                [pickerViewController switchToMonthPicker];
+                [LIYSpecHelper tickRunLoop];
+            });
+        });
+        
+        context(@"at 3:00am", ^{
+            __block LIYDateTimePickerViewController *pickerViewController;
+            
+            beforeEach(^{
+                [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 3:00 AM"];
+                pickerViewController = [LIYSpecHelper visiblePickerViewController];
+            });
+            
+            it(@"updates the selected date when switching from week to month", ^{
+                [pickerViewController switchToMonthPicker];
+                [LIYSpecHelper tickRunLoop];
+                
+                [[pickerViewController.selectedDate should] equal:[NSDate liy_dateFromString:@"5/3/15, 3:00 AM"]];
+            });
+        });
+        
         context(@"at 1:00am", ^{
             __block LIYDateTimePickerViewController *pickerViewController;
 
@@ -125,6 +168,23 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                 [[[pickerViewController.view liy_specsFindLabelWithText:@"1:15 PM"] shouldNot] beNil];
             });
         });
+        
+        context(@"at 11:45pm when in month view", ^{
+            __block LIYDateTimePickerViewController *pickerViewController;
+            
+            beforeEach(^{
+                [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 11:45 PM"];
+                pickerViewController = [LIYSpecHelper visiblePickerViewController];
+                [pickerViewController switchToMonthPicker];
+                [LIYSpecHelper tickRunLoop];
+            });
+            
+            it(@"keeps the selected date when switching to week view", ^{
+                [pickerViewController switchToWeekPicker];
+                [LIYSpecHelper tickRunLoop];
+                [[pickerViewController.selectedDate should] equal:[NSDate liy_dateFromString:@"5/3/15, 11:45 PM"]];
+            });
+        });
 
         context(@"when scrolling to the end of the day", ^{
             __block LIYDateTimePickerViewController *pickerViewController;
@@ -150,8 +210,6 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
             __block NSDate *tomorrowDate;
 
             beforeEach(^{
-                pickerViewController = [LIYSpecHelper visiblePickerViewController];
-
                 // create picker with all day event for tomorrow
                 NSTimeInterval oneDay = 60 * 60 * 24;
                 tomorrowDate = [NSDate dateWithTimeIntervalSinceNow:oneDay];
@@ -165,11 +223,13 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
 
                 // scroll to 12am
                 [pickerViewController scrollToTime:[tomorrowDate beginningOfDay]];
+
+                [LIYSpecHelper tickRunLoop];
             });
 
             it(@"has the correct insets", ^{
                 UIEdgeInsets insets = pickerViewController.collectionView.contentInset;
-                CGFloat topInsetOnIPhone6 = 115.5; // TODO: make this work on other devices
+                CGFloat topInsetOnIPhone6 = 191.5f; // TODO: make this work on other devices
                 [[theValue(insets.top) should] equal:topInsetOnIPhone6 withDelta:0.1];
             });
 
@@ -224,7 +284,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                     pickerViewController = [LIYSpecHelper visibleCalendarViewController];
                 });
                 it(@"scrolls to center noon", ^{
-                    CGFloat contentOffsetForNoonOnIPhone6 = 363.5f; // TODO would be nice to not hard-code
+                    CGFloat contentOffsetForNoonOnIPhone6 = 348.5f; // TODO would be nice to not hard-code
                     [[theValue(pickerViewController.collectionView.contentOffset.y) should] equal:contentOffsetForNoonOnIPhone6 withDelta:0.1];
                 });
             });

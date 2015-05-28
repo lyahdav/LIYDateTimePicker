@@ -3,7 +3,7 @@
 #import "MSCollectionViewCalendarLayout.h"
 
 @class LIYDateTimePickerViewController;
-@class JTCalendar;
+@class LIYJTCalendar;
 
 @protocol LIYDateTimePickerDelegate <NSObject>
 
@@ -40,9 +40,11 @@
 @property (nonatomic, strong) NSString *saveButtonText;
 @property (nonatomic, strong) NSArray *nonAllDayEvents;
 @property (nonatomic) NSUInteger scrollIntervalMinutes;
-@property (strong, nonatomic) JTCalendar *dayPicker;
+@property (strong, nonatomic) LIYJTCalendar *dayPicker;
 
 - (void)reloadEvents;
+- (void)switchToMonthPicker;
+- (void)switchToWeekPicker;
 - (void)scrollToTime:(NSDate *)dateTime;
 - (void)setVisibleCalendarsFromUserDefaults;
 

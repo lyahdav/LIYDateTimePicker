@@ -17,5 +17,6 @@
 
 - (void)reloadData;
 - (void)reloadAppearance;
+- (void)enableWeekMonthPanWithMinimumHeight:(CGFloat)minimumHeight andMaximumHeight:(CGFloat)maximumHeight byUpdatingContainerHeightConstraint:(NSLayoutConstraint *)containerHeightConstraint andContentViewHeightConstraint:(NSLayoutConstraint *)contentViewHeightConstraint;
 
 @end

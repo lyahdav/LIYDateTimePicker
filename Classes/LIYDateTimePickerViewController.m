@@ -9,7 +9,7 @@
 #import "MSCurrentTimeGridline.h"
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
-#import <JTCalendar/JTCalendar.h>
+#import "LIYJTCalendar.h"
 #import "NSDate+CupertinoYankee.h"
 #import "UIColor+HexString.h"
 #import "LIYTimeDisplayLine.h"
@@ -24,8 +24,8 @@ NSString *const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifie
 const CGFloat kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
 const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
 const CGFloat LIYSaveButtonHeight = 44.0f;
-const CGFloat LIYDayPickerMenuViewHeight = 30.0f;
-const CGFloat LIYDayPickerContentViewHeight = 60.0f;
+const CGFloat LIYDayPickerContentViewWeekHeight = 60.0f;
+const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
@@ -83,10 +83,10 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
 @property (nonatomic, strong) UIView *relativeTimePickerContainer;
 @property (nonatomic, strong) UIView *saveButtonContainer;
 @property (nonatomic, strong) NSLayoutConstraint *relativeTimePickerHeightConstraint;
-@property (nonatomic, strong) JTCalendarMenuView *dayPickerMenuView;
 @property (nonatomic, strong) JTCalendarContentView *dayPickerContentView;
-@property (nonatomic, strong) NSLayoutConstraint *dayPickerMenuViewHeightConstraint;
+@property (nonatomic, strong) UIView *dayPickerContentViewContainer;
 @property (nonatomic, strong) NSLayoutConstraint *dayPickerContentViewHeightConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *dayPickerContentViewContainerHeightConstraint;
 
 @end
 
@@ -180,7 +180,37 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
     [self scrollToTime:self.dateBeforeRotation]; // required because rotation causes a scroll away from selectedDate
 }
 
-#pragma mark - Actions
+#pragma mark - public
+
+- (void)switchToMonthPicker {
+    self.dayPicker.calendarAppearance.isWeekMode = NO;
+    self.dayPickerContentViewHeightConstraint.constant = LIYDayPickerContentViewMonthHeight;
+    [self updateDayPickerHeight];
+    [self.dayPicker reloadAppearance];
+}
+
+- (void)switchToWeekPicker {
+    self.dayPicker.calendarAppearance.isWeekMode = YES;
+    self.dayPickerContentViewHeightConstraint.constant = LIYDayPickerContentViewWeekHeight;
+    [self updateDayPickerHeight];
+    [self.dayPicker reloadAppearance];
+}
+
+- (void)scrollToTime:(NSDate *)dateTime {
+    NSDate *roundDateTime = [self nearestValidDateFromDate:dateTime];
+    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:roundDateTime];
+    
+    CGFloat minuteFactor = dateComponents.minute / 60.0f;
+    CGFloat timeFactor = dateComponents.hour + minuteFactor;
+    
+    if (self.allowTimeSelection) {
+        [self scrollToTimeInTimePickerMode:timeFactor];
+    } else {
+        [self scrollToTimeInCalendarMode:timeFactor];
+    }
+}
+
+#pragma mark - actions
 
 - (void)saveButtonTapped {
     [self.delegate dateTimePicker:self didSelectDate:self.selectedDate];
@@ -198,7 +228,7 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
     [self presentViewController:navigationController animated:YES completion:nil];
 }
 
-#pragma mark - Convenience
+#pragma mark - convenience
 
 - (void)commonInit {
     _scrollIntervalMinutes = LIYDefaultScrollIntervalMinutes;
@@ -214,20 +244,34 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
 }
 
 - (void)setupDayPicker {
-    self.dayPicker = [JTCalendar new];
+    self.dayPicker = [LIYJTCalendar new];
+    typeof(self) __weak weakSelf = self;
+    self.dayPicker.reloadAppearanceBlock = ^(LIYJTCalendar *calendar){
+        [weakSelf updateViewForMonthWeekToggle];
+    };
+    
     self.dayPicker.calendarAppearance.isWeekMode = YES;
+    self.dayPicker.updateSelectedDateOnSwipe = YES;
     [self.dayPicker setDataSource:self];
     [self setDayPickerDate:self.selectedDate];
 
-    self.dayPickerMenuView = [JTCalendarMenuView new];
-    [self.dayPicker setMenuMonthsView:self.dayPickerMenuView];
-    [self.view addSubview:self.dayPickerMenuView];
+    self.dayPickerContentViewContainer = [UIView new];
+    [self.view addSubview:self.dayPickerContentViewContainer];
 
     self.dayPickerContentView = [JTCalendarContentView new];
     [self.dayPicker setContentView:self.dayPickerContentView];
-    [self.view addSubview:self.dayPickerContentView];
+    [self.dayPickerContentViewContainer addSubview:self.dayPickerContentView];
 
     [self.dayPicker reloadData];
+}
+
+- (void)updateViewForMonthWeekToggle {
+    if (self.allowTimeSelection) {
+        NSDate *previousSelectedDate = self.selectedDate;
+        [self.view layoutIfNeeded];
+        [self updateCollectionViewContentInset];
+        [self scrollToTime:previousSelectedDate];
+    }
 }
 
 - (void)setupCollectionView {
@@ -279,32 +323,18 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
     }
 
     UIEdgeInsets edgeInsets = self.collectionView.contentInset;
-    edgeInsets.top = [self collectionViewContentInsetTop];
-    edgeInsets.bottom = [self collectionViewContentInsetBottom];
+    edgeInsets.top = [self collectionViewContentInset];
+    edgeInsets.bottom = [self collectionViewContentInset];
     self.collectionView.contentInset = edgeInsets;
 }
 
-- (CGFloat)collectionViewContentInsetTop {
-    CGFloat viewControllerTopToMidnightBeginningOfDay = [self statusBarHeight] + [self navBarHeight] + [self dayPickerHeight] + [self.dayColumnHeader height] +
-            kLIYGapToMidnight;
-    CGFloat edgeInsetTop = [self middleYForTimeLine] - viewControllerTopToMidnightBeginningOfDay;
-    return edgeInsetTop;
-}
-
-- (CGFloat)collectionViewContentInsetBottom {
-    CGFloat viewControllerTopToEndOfDayMidnightTop = [self statusBarHeight] + [self navBarHeight] + [self dayPickerHeight] + [self.dayColumnHeader height] + self
-            .collectionView.frame.size.height - kLIYGapToMidnight;
-    CGFloat edgeInsetBottom = viewControllerTopToEndOfDayMidnightTop - [self middleYForTimeLine];
-    return edgeInsetBottom;
-}
-
-- (CGFloat)dayPickerHeight {
-    return LIYDayPickerMenuViewHeight + LIYDayPickerContentViewHeight;
+- (CGFloat)collectionViewContentInset {
+    return [self middleYForTimeLine] - kLIYGapToMidnight;
 }
 
 - (void)setupTimeSelection {
     self.timeDisplayLine = [LIYTimeDisplayLine timeDisplayLineInView:self.view withBorderColor:self.defaultColor1 fontName:self.defaultSelectedFontFamilyName
-                                                         initialDate:self.selectedDate];
+                                                         initialDate:self.selectedDate verticallyCenteredWithView:self.collectionView];
     [self setupRelativeTimePicker];
     [self setupSaveButton];
 }
@@ -325,9 +355,8 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
 }
 
 - (void)setSelectedDateFromLocation {
-    CGFloat topOfViewControllerToStartOfGrid = [self statusBarHeight] + [self navBarHeight] + [self dayPickerHeight] + [self.dayColumnHeader height];
     self.skipUpdateDayPicker = YES;
-    self.selectedDate = [self dateFromYCoordinate:[self middleYForTimeLine] - topOfViewControllerToStartOfGrid];
+    self.selectedDate = [self dateFromYCoordinate:[self middleYForTimeLine]];
     self.skipUpdateDayPicker = NO;
 }
 
@@ -386,33 +415,8 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
     [self.saveButton autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero];
 }
 
-// From the top of the view controller (top of screen because it goes under status bar) to the line for the selected time
 - (CGFloat)middleYForTimeLine {
-    return self.view.frame.size.height / 2.0f;
-}
-
-- (CGFloat)statusBarHeight {
-    // we have to use 20 always here regardless of if status bar height changes in call.
-    // Probably could fix if we use auto layout instead of frames.
-    return self.navigationController.navigationBar.translucent ? 20.0f : 0.0f;
-}
-
-- (CGFloat)navBarHeight {
-    return self.navigationController.navigationBar.translucent ? 44.0f : 0.0f; // TODO can we compute this?
-}
-
-- (void)scrollToTime:(NSDate *)dateTime {
-    NSDate *roundDateTime = [self nearestValidDateFromDate:dateTime];
-    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:roundDateTime];
-
-    CGFloat minuteFactor = dateComponents.minute / 60.0f;
-    CGFloat timeFactor = dateComponents.hour + minuteFactor;
-
-    if (self.allowTimeSelection) {
-        [self scrollToTimeInTimePickerMode:timeFactor];
-    } else {
-        [self scrollToTimeInCalendarMode:timeFactor];
-    }
+    return self.collectionView.frame.size.height / 2.0f;
 }
 
 - (void)scrollToTimeInTimePickerMode:(CGFloat)timeFactor {
@@ -450,38 +454,22 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
 }
 
 - (void)setupDayPickerConstraints {
-    [self.dayPickerMenuView autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero excludingEdge:ALEdgeBottom];
-
-    [self.dayPickerContentView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.dayPickerMenuView];
-    [self.dayPickerContentView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
-    [self.dayPickerContentView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+    [self.dayPickerContentViewContainer autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero excludingEdge:ALEdgeBottom];
+    [self.dayPickerContentView autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero excludingEdge:ALEdgeTop];
+    self.dayPickerContentViewHeightConstraint = [self.dayPickerContentView autoSetDimension:ALDimensionHeight toSize:LIYDayPickerContentViewWeekHeight];
+    self.dayPickerContentViewContainerHeightConstraint = [self.dayPickerContentViewContainer autoSetDimension:ALDimensionHeight toSize:0];
+    [self.dayPickerContentView enableWeekMonthPanWithMinimumHeight:LIYDayPickerContentViewWeekHeight andMaximumHeight:LIYDayPickerContentViewMonthHeight byUpdatingContainerHeightConstraint:self.dayPickerContentViewContainerHeightConstraint andContentViewHeightConstraint:self.dayPickerContentViewHeightConstraint];
 
     [self updateDayPickerHeight];
 }
 
 - (void)updateDayPickerHeight {
-    [self updateDayPickerContentViewHeight];
-    [self updateDayPickerMenuView];
-}
-
-- (void)updateDayPickerMenuView {
-    CGFloat dayPickerMenuViewHeight = self.showDayPicker ? LIYDayPickerMenuViewHeight : 0;
-    if (self.dayPickerMenuViewHeightConstraint) {
-        self.dayPickerMenuViewHeightConstraint.constant = dayPickerMenuViewHeight;
+    if (self.showDayPicker) {
+        self.dayPickerContentViewContainerHeightConstraint.constant = self.dayPickerContentViewHeightConstraint.constant;
     } else {
-        self.dayPickerMenuViewHeightConstraint = [self.dayPickerMenuView autoSetDimension:ALDimensionHeight toSize:dayPickerMenuViewHeight];
+        self.dayPickerContentViewContainerHeightConstraint.constant = 0;
     }
-    self.dayPickerMenuView.hidden = !self.showDayPicker;
-}
-
-- (void)updateDayPickerContentViewHeight {
-    CGFloat dayPickerContentViewHeight = self.showDayPicker ? LIYDayPickerContentViewHeight : 0;
-    if (self.dayPickerContentViewHeightConstraint) {
-        self.dayPickerContentViewHeightConstraint.constant = dayPickerContentViewHeight;
-    } else {
-        self.dayPickerContentViewHeightConstraint = [self.dayPickerContentView autoSetDimension:ALDimensionHeight toSize:dayPickerContentViewHeight];
-    }
-    self.dayPickerContentView.hidden = !self.showDayPicker;
+    self.dayPickerContentViewContainer.hidden = !self.showDayPicker;
 }
 
 - (void)setContainerView:(UIView *)containerView visible:(BOOL)visible withHeight:(CGFloat)height {
@@ -603,7 +591,7 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (self.allowTimeSelection && self.viewHasAppeared) {
+    if (self.dayPicker.panGestureState == UIGestureRecognizerStatePossible && self.allowTimeSelection && self.viewHasAppeared) {
         [self setSelectedDateFromLocation];
     }
 }
@@ -635,6 +623,7 @@ const CGFloat LIYDayPickerContentViewHeight = 60.0f;
     _allDayEvents = allDayEvents;
     [self.dayColumnHeader updateAllDaySectionWithEvents:allDayEvents];
     if (self.isViewLoaded) {
+        [self.view layoutIfNeeded];
         [self updateCollectionViewContentInset];
     }
     if (self.selectedDate && self.allowTimeSelection) {

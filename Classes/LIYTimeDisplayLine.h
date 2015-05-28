@@ -2,7 +2,7 @@
 
 @interface LIYTimeDisplayLine : UIView
 
-+ (LIYTimeDisplayLine *)timeDisplayLineInView:(UIView *)view withBorderColor:(UIColor *)borderColor fontName:(NSString *)fontName initialDate:(NSDate *)initialDate;
++ (LIYTimeDisplayLine *)timeDisplayLineInView:(UIView *)view withBorderColor:(UIColor *)borderColor fontName:(NSString *)fontName initialDate:(NSDate *)initialDate verticallyCenteredWithView:(UIView *)verticallyCenteredWithView;
 
 @property (nonatomic, copy) UIColor *borderColor;
 

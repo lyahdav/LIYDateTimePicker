@@ -6,8 +6,10 @@
 //
 
 #import "JTCalendar.h"
+#import "NSDate+JTAdditions.h"
 
 #define NUMBER_PAGES_LOADED 5 // Must be the same in JTCalendarView, JTCalendarMenuView, JTCalendarContentView
+#define SECONDS_IN_A_WEEK 86400 * 7
 
 @interface JTCalendar(){
     BOOL cacheLastWeekMode;
@@ -197,12 +199,51 @@
         if([self.dataSource respondsToSelector:@selector(calendarDidLoadPreviousPage)]){
             [self.dataSource calendarDidLoadPreviousPage];
         }
+        if (self.updateSelectedDateOnSwipe) {
+            [self selectPreviousDate];
+        }
     }
     else if(currentPage > (NUMBER_PAGES_LOADED / 2)){
         if([self.dataSource respondsToSelector:@selector(calendarDidLoadNextPage)]){
             [self.dataSource calendarDidLoadNextPage];
         }
+        if (self.updateSelectedDateOnSwipe) {
+            [self selectNextDate];
+        }
     }
+}
+
+- (void)selectNextDate {
+    if (self.calendarAppearance.isWeekMode) {
+        self.currentDateSelected = [self.currentDateSelected dateByAddingTimeInterval:SECONDS_IN_A_WEEK];
+    } else {
+        if (![self selectedDateIsFocused]) {
+            self.currentDateSelected = [self.currentDateSelected jt_nextMonthWithCalendar:self.calendarAppearance.calendar];
+        }
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"kJTCalendarDaySelected" object:self.currentDateSelected];
+    [self.dataSource calendarDidDateSelected:self date:self.currentDateSelected];
+}
+
+- (void)selectPreviousDate {
+    if (self.calendarAppearance.isWeekMode) {
+        self.currentDateSelected = [self.currentDateSelected dateByAddingTimeInterval:-SECONDS_IN_A_WEEK];
+    } else {
+        if (![self selectedDateIsFocused]) {
+            self.currentDateSelected = [self.currentDateSelected jt_previousMonthWithCalendar:self.calendarAppearance.calendar];
+        }
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"kJTCalendarDaySelected" object:self.currentDateSelected];
+    [self.dataSource calendarDidDateSelected:self date:self.currentDateSelected];
+}
+
+- (BOOL)selectedDateIsFocused {
+    NSDateComponents *components = [self.calendarAppearance.calendar components:(NSCalendarUnitMonth | NSCalendarUnitYear) fromDate:self.currentDate];
+    NSInteger currentMonth = components.month;
+    NSInteger currentYear = components.year;
+    
+    components = [self.calendarAppearance.calendar components:(NSCalendarUnitMonth | NSCalendarUnitYear) fromDate:self.currentDateSelected];
+    return currentMonth == components.month && currentYear == components.year;
 }
 
 - (void)repositionViews

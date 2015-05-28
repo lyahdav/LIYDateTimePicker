@@ -24,6 +24,7 @@
 
 @property (nonatomic) NSDate *currentDate;
 @property (nonatomic) NSDate *currentDateSelected;
+@property (nonatomic) BOOL updateSelectedDateOnSwipe;
 
 @property (nonatomic, readonly) JTCalendarDataCache *dataCache;
 @property (nonatomic, readonly) JTCalendarAppearance *calendarAppearance;

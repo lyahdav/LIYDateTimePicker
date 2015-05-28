@@ -32,6 +32,7 @@ LIYDateTimePicker requires either iOS 7.x and above.
 
 Simply add the following lines to your Podfile:
 
+    pod 'JTCalendar', :git => 'https://github.com/kgellci/JTCalendar.git', :commit => '5204659eaf90b6187e00710eaa6edc8927101340' # This must be placed before LIYDateTimePicker
     pod 'LIYDateTimePicker', :git => 'https://github.com/lyahdav/LIYDateTimePicker.git'
 
 ## Author

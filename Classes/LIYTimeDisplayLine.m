@@ -18,12 +18,12 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
 
 #pragma mark - class methods
 
-+ (LIYTimeDisplayLine *)timeDisplayLineInView:(UIView *)view withBorderColor:(UIColor *)borderColor fontName:(NSString *)fontName initialDate:(NSDate *)initialDate {
++ (LIYTimeDisplayLine *)timeDisplayLineInView:(UIView *)view withBorderColor:(UIColor *)borderColor fontName:(NSString *)fontName initialDate:(NSDate *)initialDate verticallyCenteredWithView:(UIView *)verticallyCenteredWithView {
     LIYTimeDisplayLine *timeDisplayLine = [LIYTimeDisplayLine new];
     [view addSubview:timeDisplayLine];
     timeDisplayLine.borderColor = borderColor;
     [timeDisplayLine setFontByName:fontName];
-    [timeDisplayLine positionViews];
+    [timeDisplayLine positionViewsWithVerticallyCenteredView:verticallyCenteredWithView];
     [timeDisplayLine updateLabelFromDate:initialDate];
 
     return timeDisplayLine;
@@ -72,16 +72,16 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
     [self addSubview:self.lineView];
 }
 
-- (void)positionViews {
-    [self positionInSuperview];
+- (void)positionViewsWithVerticallyCenteredView:(UIView *)verticallyCenteredWithView {
+    [self positionInSuperviewWithVerticallyCenteredView:verticallyCenteredWithView];
     [self positionLineView];
     [self positionBubbleView];
     [self pinTimeLabelToBubbleView];
 }
 
-- (void)positionInSuperview {
+- (void)positionInSuperviewWithVerticallyCenteredView:(UIView *)verticallyCenteredWithView {
     [self pinViewHorizontallyToSuperview:self];
-    [self autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [self autoAlignAxis:ALAxisHorizontal toSameAxisOfView:verticallyCenteredWithView];
     [self autoSetDimension:ALDimensionHeight toSize:LIYTimeSelectorHeight];
 }
 

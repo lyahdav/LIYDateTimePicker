@@ -14,8 +14,13 @@
 
 #define NUMBER_PAGES_LOADED 5 // Must be the same in JTCalendarView, JTCalendarMenuView, JTCalendarContentView
 
-@interface JTCalendarContentView(){
+@interface JTCalendarContentView() <UIGestureRecognizerDelegate>{
     NSMutableArray *monthsViews;
+    UIPanGestureRecognizer *weekMonthPanGesture;
+    NSLayoutConstraint *weekMonthContainerHeightConstraint;
+    NSLayoutConstraint *weekMonthContentHeightConstraint;
+    CGFloat minHeightForWeekMonthContainerHeightConstraint;
+    CGFloat maxHeightForWeekMonthContainerHeightConstraint;
 }
 
 @end
@@ -149,6 +154,75 @@
     componentsNewDate.weekday = calendar.firstWeekday;
     
     return [calendar dateFromComponents:componentsNewDate];
+}
+
+- (void)enableWeekMonthPanWithMinimumHeight:(CGFloat)minimumHeight andMaximumHeight:(CGFloat)maximumHeight byUpdatingContainerHeightConstraint:(NSLayoutConstraint *)containerHeightConstraint andContentViewHeightConstraint:(NSLayoutConstraint *)contentViewHeightConstraint {
+    if (weekMonthPanGesture) {
+        [self removeGestureRecognizer:weekMonthPanGesture];
+    }
+    minHeightForWeekMonthContainerHeightConstraint = minimumHeight;
+    maxHeightForWeekMonthContainerHeightConstraint = maximumHeight;
+    weekMonthContainerHeightConstraint = containerHeightConstraint;
+    weekMonthContentHeightConstraint = contentViewHeightConstraint;
+    weekMonthPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleWeekMonthPan:)];
+    weekMonthPanGesture.delegate = self;
+    [self addGestureRecognizer:weekMonthPanGesture];
+}
+
+- (void)handleWeekMonthPan:(UIPanGestureRecognizer *)panGesture {
+    // Setting height constraint to follow pan
+    CGPoint touchOffset = [panGesture translationInView:panGesture.view];
+    weekMonthContainerHeightConstraint.constant += touchOffset.y;
+    weekMonthContainerHeightConstraint.constant = MAX(MIN(maxHeightForWeekMonthContainerHeightConstraint, weekMonthContainerHeightConstraint.constant), minHeightForWeekMonthContainerHeightConstraint);
+    
+    // Setting opacity based on pan
+    CGFloat opacity = 0;
+    if (self.calendarManager.calendarAppearance.isWeekMode) {
+        opacity = 1.0f - (weekMonthContainerHeightConstraint.constant / maxHeightForWeekMonthContainerHeightConstraint);
+    } else {
+        opacity = (weekMonthContainerHeightConstraint.constant - minHeightForWeekMonthContainerHeightConstraint) / (maxHeightForWeekMonthContainerHeightConstraint - minHeightForWeekMonthContainerHeightConstraint);
+    }
+    self.layer.opacity = opacity + .15f;
+    
+    if (panGesture.state == UIGestureRecognizerStateEnded) {
+        if ([panGesture velocityInView:self].y > 0) {
+            weekMonthContainerHeightConstraint.constant = maxHeightForWeekMonthContainerHeightConstraint;
+        } else {
+            weekMonthContainerHeightConstraint.constant = minHeightForWeekMonthContainerHeightConstraint;
+        }
+        weekMonthPanGesture.enabled = NO;
+        BOOL willBecomeWeekMode = weekMonthContainerHeightConstraint.constant < maxHeightForWeekMonthContainerHeightConstraint;
+        [UIView animateWithDuration:0.15f animations:^{
+            [self layoutIfNeeded];
+            if (self.calendarManager.calendarAppearance.isWeekMode == willBecomeWeekMode) {
+                self.layer.opacity = 1.0f;
+            } else {
+                self.layer.opacity = 0.15f;
+            }
+        } completion:^(BOOL finished) {
+            self.calendarManager.calendarAppearance.isWeekMode = willBecomeWeekMode;
+            [self.calendarManager reloadAppearance];
+            weekMonthPanGesture.enabled = YES;
+            weekMonthContentHeightConstraint.constant = weekMonthContainerHeightConstraint.constant;
+            [UIView animateWithDuration:.25
+                             animations:^{
+                                 self.layer.opacity = 1;
+                             }];
+        }];
+        return;
+    }
+    
+    [panGesture setTranslation:CGPointZero inView:panGesture.view];
+}
+
+#pragma mark - UIGestureRecognizer Delegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if ([gestureRecognizer isEqual:weekMonthPanGesture]) {
+        CGPoint translation = [weekMonthPanGesture velocityInView:self];
+        return fabs(translation.y) > fabs(translation.x);
+    }
+    return YES;
 }
 
 #pragma mark - JTCalendarManager

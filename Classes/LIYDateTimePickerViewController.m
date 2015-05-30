@@ -184,14 +184,14 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 
 - (void)switchToMonthPicker {
     self.dayPicker.calendarAppearance.isWeekMode = NO;
-    self.dayPickerContentViewHeightConstraint.constant = LIYDayPickerContentViewMonthHeight;
+    self.dayPickerContentViewHeightConstraint.constant = self.dayPickerMonthHeight;
     [self updateDayPickerHeight];
     [self.dayPicker reloadAppearance];
 }
 
 - (void)switchToWeekPicker {
     self.dayPicker.calendarAppearance.isWeekMode = YES;
-    self.dayPickerContentViewHeightConstraint.constant = LIYDayPickerContentViewWeekHeight;
+    self.dayPickerContentViewHeightConstraint.constant = self.dayPickerWeekHeight;
     [self updateDayPickerHeight];
     [self.dayPicker reloadAppearance];
 }
@@ -241,17 +241,21 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
     _defaultColor2 = [UIColor orangeColor];
     _saveButtonText = @"Save";
     _showDateInDayColumnHeader = YES;
+    _dayPickerWeekHeight = LIYDayPickerContentViewWeekHeight;
+    _dayPickerMonthHeight = LIYDayPickerContentViewMonthHeight;
 }
 
 - (void)setupDayPicker {
     self.dayPicker = [LIYJTCalendar new];
+    self.dayPicker.calendarAppearance.focusSelectedDayChangeMode = YES;
+    self.dayPicker.calendarAppearance.isWeekMode = YES;
+    self.dayPicker.updateSelectedDateOnSwipe = YES;
+
     typeof(self) __weak weakSelf = self;
     self.dayPicker.reloadAppearanceBlock = ^(LIYJTCalendar *calendar){
         [weakSelf updateViewForMonthWeekToggle];
     };
     
-    self.dayPicker.calendarAppearance.isWeekMode = YES;
-    self.dayPicker.updateSelectedDateOnSwipe = YES;
     [self.dayPicker setDataSource:self];
     [self setDayPickerDate:self.selectedDate];
 
@@ -456,9 +460,9 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 - (void)setupDayPickerConstraints {
     [self.dayPickerContentViewContainer autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero excludingEdge:ALEdgeBottom];
     [self.dayPickerContentView autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero excludingEdge:ALEdgeTop];
-    self.dayPickerContentViewHeightConstraint = [self.dayPickerContentView autoSetDimension:ALDimensionHeight toSize:LIYDayPickerContentViewWeekHeight];
+    self.dayPickerContentViewHeightConstraint = [self.dayPickerContentView autoSetDimension:ALDimensionHeight toSize:self.dayPickerWeekHeight];
     self.dayPickerContentViewContainerHeightConstraint = [self.dayPickerContentViewContainer autoSetDimension:ALDimensionHeight toSize:0];
-    [self.dayPickerContentView enableWeekMonthPanWithMinimumHeight:LIYDayPickerContentViewWeekHeight andMaximumHeight:LIYDayPickerContentViewMonthHeight byUpdatingContainerHeightConstraint:self.dayPickerContentViewContainerHeightConstraint andContentViewHeightConstraint:self.dayPickerContentViewHeightConstraint];
+    [self.dayPickerContentView enableWeekMonthPanWithMinimumHeight:self.dayPickerWeekHeight andMaximumHeight:self.dayPickerMonthHeight byUpdatingContainerHeightConstraint:self.dayPickerContentViewContainerHeightConstraint andContentViewHeightConstraint:self.dayPickerContentViewHeightConstraint];
 
     [self updateDayPickerHeight];
 }

@@ -25,6 +25,8 @@
 @property (nonatomic, assign) BOOL showCalendarPickerButton;
 @property (nonatomic, assign) BOOL allowEventEditing;
 @property (nonatomic, assign) BOOL showRelativeTimePicker;
+@property (nonatomic, assign) CGFloat dayPickerWeekHeight;
+@property (nonatomic, assign) CGFloat dayPickerMonthHeight;
 @property (nonatomic, weak) id<LIYDateTimePickerDelegate> delegate;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) NSArray *visibleCalendars;

@@ -75,6 +75,7 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 
 @property (nonatomic) BOOL viewHasAppeared;
 @property (nonatomic) BOOL skipUpdateDayPicker;
+@property (nonatomic) BOOL hasScrolledToSelectedDate;
 @property (nonatomic, strong) NSArray *allDayEvents;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) EKEventStore *eventStore;
@@ -154,6 +155,12 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
     if (self.showCalendarPickerButton) {
         [self addCalendarPickerButton];
     }
+    
+    if (!self.hasScrolledToSelectedDate) {
+        [self.view layoutIfNeeded];
+        [self scrollToTime:self.selectedDate];
+        self.hasScrolledToSelectedDate = YES;
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -163,8 +170,6 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
         [self updateCollectionViewContentInset];
     }
     self.viewHasAppeared = YES;
-
-    [self scrollToTime:self.selectedDate];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {

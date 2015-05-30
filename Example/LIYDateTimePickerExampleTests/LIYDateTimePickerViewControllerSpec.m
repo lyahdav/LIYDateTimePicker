@@ -284,7 +284,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                     pickerViewController = [LIYSpecHelper visibleCalendarViewController];
                 });
                 it(@"scrolls to center noon", ^{
-                    CGFloat contentOffsetForNoonOnIPhone6 = 348.5f; // TODO would be nice to not hard-code
+                    CGFloat contentOffsetForNoonOnIPhone6 = 349.0f; // TODO would be nice to not hard-code
                     [[theValue(pickerViewController.collectionView.contentOffset.y) should] equal:contentOffsetForNoonOnIPhone6 withDelta:0.1];
                 });
             });

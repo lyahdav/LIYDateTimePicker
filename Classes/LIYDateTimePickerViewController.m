@@ -463,7 +463,10 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 }
 
 - (void)setupDayPickerConstraints {
-    [self.dayPickerContentViewContainer autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero excludingEdge:ALEdgeBottom];
+    [self.dayPickerContentViewContainer autoPinToTopLayoutGuideOfViewController:self withInset:0];
+    [self.dayPickerContentViewContainer autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+    [self.dayPickerContentViewContainer autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+
     [self.dayPickerContentView autoPinEdgesToSuperviewEdgesWithInsets:ALEdgeInsetsZero excludingEdge:ALEdgeTop];
     self.dayPickerContentViewHeightConstraint = [self.dayPickerContentView autoSetDimension:ALDimensionHeight toSize:self.dayPickerWeekHeight];
     self.dayPickerContentViewContainerHeightConstraint = [self.dayPickerContentViewContainer autoSetDimension:ALDimensionHeight toSize:0];

@@ -37,7 +37,7 @@ static NSString *LIYSelectedCalendarIdentifiersKey = @"LIYSelectedCalendarIdenti
     LIYCalendarPickerViewController *calendarPickerViewController = [LIYCalendarPickerViewController new];
     calendarPickerViewController.eventStore = eventStore;
     calendarPickerViewController.completionBlock = ^(NSArray *selectedCalendarIdentifiers) {
-        [self setSelectedCalendarIdenfiersInUserDefaults:selectedCalendarIdentifiers];
+        [self setSelectedCalendarIdentifiersInUserDefaults:selectedCalendarIdentifiers];
         completion(selectedCalendarIdentifiers);
     };
     calendarPickerViewController.initialSelectedCalendarIdentifiers = [self selectedCalendarIdentifiersFromUserDefaultsForEventStore:eventStore];
@@ -46,10 +46,11 @@ static NSString *LIYSelectedCalendarIdentifiersKey = @"LIYSelectedCalendarIdenti
 
 + (NSArray *)selectedCalendarIdentifiersFromUserDefaultsForEventStore:(EKEventStore *)eventStore {
     NSArray *selectedCalendarIdentifiers = [[NSUserDefaults standardUserDefaults] arrayForKey:LIYSelectedCalendarIdentifiersKey];
-    return selectedCalendarIdentifiers ?: @[eventStore.defaultCalendarForNewEvents.calendarIdentifier];
+    NSString *defaultCalendarIdentifier = eventStore.defaultCalendarForNewEvents.calendarIdentifier;
+    return selectedCalendarIdentifiers ?: (defaultCalendarIdentifier ? @[defaultCalendarIdentifier] : @[]);
 }
 
-+ (void)setSelectedCalendarIdenfiersInUserDefaults:(NSArray *)calendarIdentifiers {
++ (void)setSelectedCalendarIdentifiersInUserDefaults:(NSArray *)calendarIdentifiers {
     [[NSUserDefaults standardUserDefaults] setObject:calendarIdentifiers forKey:LIYSelectedCalendarIdentifiersKey];
 }
 

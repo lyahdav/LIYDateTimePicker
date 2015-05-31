@@ -27,7 +27,13 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
             [[pickerViewController.dayPicker.currentDateSelected should] equal:someDate];
             [[pickerViewController.dayPicker.currentDate should] equal:someDate];
         });
-        
+
+        it(@"sets the selected date to the nearest valid date", ^{
+            [LIYSpecHelper stubCurrentDateAs:@"5/21/15, 12:32 PM"];
+            LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController new];
+            [[pickerViewController.selectedDate should] equal:[NSDate liy_dateFromString:@"5/21/15, 12:45 PM"]];
+        });
+
         it(@"allows hiding the day picker", ^{
             [LIYSpecHelper stubCurrentDateAs:@"5/21/15, 12:00 PM"];
             LIYDateTimePickerViewController *pickerViewController = [LIYSpecHelper visiblePickerViewController];

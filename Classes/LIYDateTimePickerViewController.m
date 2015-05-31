@@ -98,7 +98,9 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 + (instancetype)timePickerForDate:(NSDate *)date delegate:(id <LIYDateTimePickerDelegate>)delegate {
     LIYDateTimePickerViewController *vc = [self new];
     vc.delegate = delegate;
-    vc.selectedDate = date ?: [NSDate date];
+    if (date) {
+        vc.selectedDate = date;
+    }
     return vc;
 }
 
@@ -239,7 +241,7 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
     _scrollIntervalMinutes = LIYDefaultScrollIntervalMinutes;
     _showRelativeTimePicker = NO;
     _showDayPicker = YES;
-    _selectedDate = [NSDate date];
+    self.selectedDate = [NSDate date]; // we use the property here to ensure we get a valid date
     _allowTimeSelection = YES;
     _allowEventEditing = YES;
     _defaultColor1 = [UIColor colorWithHexString:@"59c7f1"];

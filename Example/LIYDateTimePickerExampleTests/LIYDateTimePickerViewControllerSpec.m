@@ -190,6 +190,21 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                 [LIYSpecHelper tickRunLoop];
                 [[pickerViewController.selectedDate should] equal:[NSDate liy_dateFromString:@"5/3/15, 11:45 PM"]];
             });
+
+            it(@"keeps the selected date when panning to week view", ^{
+                // simulate gesture beginning
+                [pickerViewController.dayPicker stub:@selector(panGestureState) andReturn:theValue(UIGestureRecognizerStateChanged)];
+                CGPoint initialContentOffset = pickerViewController.collectionView.contentOffset;
+                [pickerViewController.collectionView setContentOffset:CGPointMake(0, initialContentOffset.y - 50) animated:NO];
+
+                // simulate gesture ending
+                [pickerViewController.dayPicker stub:@selector(panGestureState) andReturn:theValue(UIGestureRecognizerStatePossible)];
+                initialContentOffset = pickerViewController.collectionView.contentOffset;
+                [pickerViewController.collectionView setContentOffset:CGPointMake(0, initialContentOffset.y - 50) animated:NO];
+                [pickerViewController.dayPicker reloadAppearance];
+
+                [[pickerViewController.selectedDate should] equal:[NSDate liy_dateFromString:@"5/3/15, 11:45 PM"]];
+            });
         });
 
         context(@"when scrolling to the end of the day", ^{

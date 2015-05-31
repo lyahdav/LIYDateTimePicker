@@ -88,6 +88,7 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 @property (nonatomic, strong) UIView *dayPickerContentViewContainer;
 @property (nonatomic, strong) NSLayoutConstraint *dayPickerContentViewHeightConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *dayPickerContentViewContainerHeightConstraint;
+@property (nonatomic, strong) NSDate *selectedDateBeforePan;
 
 @end
 
@@ -204,6 +205,8 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 }
 
 - (void)scrollToTime:(NSDate *)dateTime {
+    NSParameterAssert(dateTime != nil);
+
     NSDate *roundDateTime = [self nearestValidDateFromDate:dateTime];
     NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitHour | NSCalendarUnitMinute fromDate:roundDateTime];
     
@@ -278,7 +281,8 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 
 - (void)updateViewForMonthWeekToggle {
     if (self.allowTimeSelection) {
-        NSDate *previousSelectedDate = self.selectedDate;
+        NSDate *previousSelectedDate = self.selectedDateBeforePan ?: self.selectedDate;
+        self.selectedDateBeforePan = nil;
         [self.view layoutIfNeeded];
         [self updateCollectionViewContentInset];
         [self scrollToTime:previousSelectedDate];
@@ -605,6 +609,9 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (self.dayPicker.panGestureState == UIGestureRecognizerStateChanged) {
+        self.selectedDateBeforePan = self.selectedDate;
+    }
     if (self.dayPicker.panGestureState == UIGestureRecognizerStatePossible && self.allowTimeSelection && self.viewHasAppeared) {
         [self setSelectedDateFromLocation];
     }

@@ -10,7 +10,7 @@
 }
 
 - (UIGestureRecognizerState)panGestureState {
-    return [[self.contentView valueForKeyPath:@"weekMonthPanGesture.state"] integerValue];
+    return (UIGestureRecognizerState)[[self.contentView valueForKeyPath:@"weekMonthPanGesture.state"] integerValue];
 }
 
 @end

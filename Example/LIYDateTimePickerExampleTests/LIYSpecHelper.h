@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <EventKit/EventKit.h>
 
+@class LIYCalendarViewController;
 @class LIYDateTimePickerViewController;
 
 @interface LIYSpecHelper : NSObject
@@ -8,7 +9,7 @@
 + (void)rotateDeviceToOrientation:(UIInterfaceOrientation)orientation;
 + (void)tickRunLoop;
 + (void)tickRunLoopForSeconds:(NSTimeInterval)seconds;
-+ (LIYDateTimePickerViewController *)visibleCalendarViewController;
++ (LIYCalendarViewController *)visibleCalendarViewController;
 + (LIYDateTimePickerViewController *)visiblePickerViewController;
 + (LIYDateTimePickerViewController *)pickerViewControllerWithAllDayEventAtDate:(NSDate *)date;
 + (LIYDateTimePickerViewController *)pickerViewControllerWithEventAtDate:(NSDate *)startDate endDate:(NSDate *)endDate;

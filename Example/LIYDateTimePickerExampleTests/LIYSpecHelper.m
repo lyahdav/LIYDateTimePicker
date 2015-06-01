@@ -1,8 +1,9 @@
 #import "LIYSpecHelper.h"
 #import "Kiwi.h"
-#import "LIYDateTimePickerViewController.h"
+#import "LIYCalendarViewController.h"
 #import "NSDate+LIYUtilities.h"
 #import "LIYMockEventStore.h"
+#import "LIYDateTimePickerViewController.h"
 
 @implementation LIYSpecHelper
 
@@ -62,18 +63,16 @@
     return pickerViewController;
 }
 
-+ (LIYDateTimePickerViewController *)visibleCalendarViewController {
-    LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController new];
-    pickerViewController.showDateInDayColumnHeader = NO;
-    pickerViewController.allowTimeSelection = NO;
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:pickerViewController];
++ (LIYCalendarViewController *)visibleCalendarViewController {
+    LIYCalendarViewController *calendarViewController = [LIYCalendarViewController new];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:calendarViewController];
     navigationController.navigationBar.translucent = NO;
     [UIApplication sharedApplication].keyWindow.rootViewController = navigationController;
 
     // must wait for run loop for view controller to be rendered
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 
-    return pickerViewController;
+    return calendarViewController;
 }
 
 @end

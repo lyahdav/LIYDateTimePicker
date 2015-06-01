@@ -1,11 +1,12 @@
 #import "Kiwi.h"
-#import "LIYDateTimePickerViewController.h"
+#import "LIYCalendarViewController.h"
 #import "NSDate+LIYUtilities.h"
 #import "LIYSpecHelper.h"
 #import "UIView+LIYSpecAdditions.h"
 #import "LIYCalendarService.h"
 #import <CupertinoYankee/NSDate+CupertinoYankee.h>
 #import "LIYJTCalendar.h"
+#import "LIYDateTimePickerViewController.h"
 
 SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
     describe(@"LIYDateTimePickerViewController", ^{
@@ -16,13 +17,13 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
         });
 
         it(@"shows the day picker by default", ^{
-            LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController new];
+            LIYCalendarViewController *pickerViewController = [LIYCalendarViewController new];
             [[theValue(pickerViewController.showDayPicker) should] equal:theValue(YES)];
         });
 
         it(@"initializes the day picker to the given date", ^{
             NSDate *someDate = [NSDate liy_dateFromString:@"5/21/15, 12:00 PM"];
-            LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController timePickerForDate:someDate delegate:nil];
+            LIYCalendarViewController *pickerViewController = [LIYDateTimePickerViewController timePickerForDate:someDate delegate:nil];
             [pickerViewController view];
             [[pickerViewController.dayPicker.currentDateSelected should] equal:someDate];
             [[pickerViewController.dayPicker.currentDate should] equal:someDate];
@@ -30,13 +31,13 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
 
         it(@"sets the selected date to the nearest valid date", ^{
             [LIYSpecHelper stubCurrentDateAs:@"5/21/15, 12:32 PM"];
-            LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController new];
+            LIYCalendarViewController *pickerViewController = [LIYCalendarViewController new];
             [[pickerViewController.selectedDate should] equal:[NSDate liy_dateFromString:@"5/21/15, 12:45 PM"]];
         });
 
         it(@"allows hiding the day picker", ^{
             [LIYSpecHelper stubCurrentDateAs:@"5/21/15, 12:00 PM"];
-            LIYDateTimePickerViewController *pickerViewController = [LIYSpecHelper visiblePickerViewController];
+            LIYCalendarViewController *pickerViewController = [LIYSpecHelper visiblePickerViewController];
             pickerViewController.showDayPicker = NO;
             [[[pickerViewController.view liy_specsFindLabelWithText:@"TUE"] should] beNil];
         });
@@ -44,7 +45,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
         it(@"allows setting 5 minute scroll interval", ^{
             [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 12:00 PM"];
 
-            LIYDateTimePickerViewController *pickerViewController = [LIYSpecHelper visiblePickerViewController];
+            LIYCalendarViewController *pickerViewController = [LIYSpecHelper visiblePickerViewController];
             pickerViewController.scrollIntervalMinutes = 5;
             NSDate *nextIncrementDate = [NSDate liy_dateFromString:@"5/3/15, 12:05 PM"];
             [pickerViewController scrollToTime:nextIncrementDate];
@@ -53,7 +54,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
         });
 
         it(@"defaults to 15 minute scroll interval", ^{
-            LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController new];
+            LIYCalendarViewController *pickerViewController = [LIYCalendarViewController new];
             [[theValue(pickerViewController.scrollIntervalMinutes) should] equal:theValue(15)];
         });
 
@@ -64,7 +65,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
         });
 
         context(@"at 12:00am", ^{
-            __block LIYDateTimePickerViewController *pickerViewController;
+            __block LIYCalendarViewController *pickerViewController;
 
             beforeEach(^{
                 [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 12:00 AM"];
@@ -79,18 +80,10 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                 CGFloat topInsetOnIPhone6 = 131.5; // TODO: make this work on other devices
                 [[theValue(insets.top) should] equal:topInsetOnIPhone6 withDelta:0.1];
             });
-            
-            it(@"doesn't update the selected date when switching from week to month view and in calendar mode", ^{
-                pickerViewController.allowTimeSelection = NO;
-                
-                [[pickerViewController shouldNot] receive:@selector(setSelectedDate:)];
-                [pickerViewController switchToMonthPicker];
-                [LIYSpecHelper tickRunLoop];
-            });
         });
         
         context(@"at 3:00am", ^{
-            __block LIYDateTimePickerViewController *pickerViewController;
+            __block LIYCalendarViewController *pickerViewController;
             
             beforeEach(^{
                 [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 3:00 AM"];
@@ -106,7 +99,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
         });
         
         context(@"at 1:00am", ^{
-            __block LIYDateTimePickerViewController *pickerViewController;
+            __block LIYCalendarViewController *pickerViewController;
 
             beforeEach(^{
                 [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 1:00 AM"];
@@ -119,7 +112,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
         });
 
         context(@"at noon", ^{
-            __block LIYDateTimePickerViewController *pickerViewController;
+            __block LIYCalendarViewController *pickerViewController;
 
             beforeEach(^{
                 [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 12:00 PM"];
@@ -176,7 +169,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
         });
         
         context(@"at 11:45pm when in month view", ^{
-            __block LIYDateTimePickerViewController *pickerViewController;
+            __block LIYCalendarViewController *pickerViewController;
             
             beforeEach(^{
                 [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 11:45 PM"];
@@ -208,7 +201,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
         });
 
         context(@"when scrolling to the end of the day", ^{
-            __block LIYDateTimePickerViewController *pickerViewController;
+            __block LIYCalendarViewController *pickerViewController;
 
             beforeEach(^{
                 [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 1:05 PM"];
@@ -227,7 +220,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
         });
 
         context(@"when switching from a day without an all day event to a day with an all day event and then going to midnight", ^{
-            __block LIYDateTimePickerViewController *pickerViewController;
+            __block LIYCalendarViewController *pickerViewController;
             __block NSDate *tomorrowDate;
 
             beforeEach(^{
@@ -260,7 +253,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
         });
 
         context(@"when showing an event on the calendar", ^{
-            __block LIYDateTimePickerViewController *pickerViewController;
+            __block LIYCalendarViewController *pickerViewController;
 
             beforeEach(^{
                 [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 1:05 PM"];
@@ -276,50 +269,6 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
 
             it(@"has the event duration", ^{
                 [[[pickerViewController.view liy_specsFindLabelWithText:@"2 PM - 3 PM (1 hour)"] shouldNot] beNil];
-            });
-        });
-
-        context(@"when in calendar mode", ^{
-            afterEach(^{
-                // TODO seems to be needed to prevent crash where view controller gets deallocated after test but scrollView still has reference to view controller and
-                // calls a method on its delegate (view controller). Find a better solution.
-                [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-            });
-
-            __block LIYDateTimePickerViewController *pickerViewController;
-
-            context(@"towards the beginning of the day", ^{
-                beforeEach(^{
-                    [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 1:00 AM"];
-                    pickerViewController = [LIYSpecHelper visibleCalendarViewController];
-                });
-
-                it(@"doesn't scroll", ^{
-                    [[theValue(pickerViewController.collectionView.contentOffset.y) should] equal:0 withDelta:0.1];
-                });
-            });
-
-            context(@"at noon", ^{
-                beforeEach(^{
-                    [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 12:00 PM"];
-                    pickerViewController = [LIYSpecHelper visibleCalendarViewController];
-                });
-                it(@"scrolls to center noon", ^{
-                    CGFloat contentOffsetForNoonOnIPhone6 = 349.0f; // TODO would be nice to not hard-code
-                    [[theValue(pickerViewController.collectionView.contentOffset.y) should] equal:contentOffsetForNoonOnIPhone6 withDelta:0.1];
-                });
-            });
-
-            context(@"towards the end of the day", ^{
-                beforeEach(^{
-                    [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 9:00 PM"];
-                    pickerViewController = [LIYSpecHelper visibleCalendarViewController];
-                });
-                it(@"scrolls to the end of the day", ^{
-                    UICollectionView *collectionView = pickerViewController.collectionView;
-                    CGFloat maximumContentOffset = collectionView.contentSize.height - collectionView.frame.size.height;
-                    [[theValue(collectionView.contentOffset.y) should] equal:maximumContentOffset withDelta:0.1];
-                });
             });
         });
     });

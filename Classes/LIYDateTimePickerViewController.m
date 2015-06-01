@@ -24,8 +24,8 @@ NSString *const MSTimeRowHeaderReuseIdentifier = @"MSTimeRowHeaderReuseIdentifie
 const CGFloat kLIYGapToMidnight = 20.0f; // TODO should compute, this is from the start of the grid to the 12am line
 const NSUInteger LIYDefaultScrollIntervalMinutes = 15;
 const CGFloat LIYSaveButtonHeight = 44.0f;
-const CGFloat LIYDayPickerContentViewWeekHeight = 60.0f;
-const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
+const CGFloat LIYDayPickerContentViewWeekHeight = 78.0f;
+const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
 
 # pragma mark - LIYCollectionViewCalendarLayout
 
@@ -499,7 +499,8 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 200.0f;
 
 - (void)setupDayColumnHeaderConstraints {
     [self.dayColumnHeader positionInView:self.view];
-    [self.dayColumnHeader autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.dayPickerContentView];
+    CGFloat columnHeaderPaddingToDayPicker = self.allowTimeSelection ? 0 : 10;
+    [self.dayColumnHeader autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.dayPickerContentView withOffset:columnHeaderPaddingToDayPicker];
 }
 
 - (void)setupCollectionViewConstraints {

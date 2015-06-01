@@ -11,7 +11,7 @@ PODS:
 
 DEPENDENCIES:
   - JTCalendar
-  - JTCalendar (from `https://github.com/kgellci/JTCalendar.git`, commit `5204659eaf90b6187e00710eaa6edc8927101340`)
+  - JTCalendar (from `https://github.com/kgellci/JTCalendar.git`, commit `e07d302195a88ec04256deeec9d83396dae79e1a`)
   - Kiwi
   - Masonry
   - MSCollectionViewCalendarLayout
@@ -21,7 +21,7 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   JTCalendar:
-    :commit: 5204659eaf90b6187e00710eaa6edc8927101340
+    :commit: e07d302195a88ec04256deeec9d83396dae79e1a
     :git: https://github.com/kgellci/JTCalendar.git
 
 SPEC CHECKSUMS:

@@ -499,7 +499,7 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
 
 - (void)setupDayColumnHeaderConstraints {
     [self.dayColumnHeader positionInView:self.view];
-    CGFloat columnHeaderPaddingToDayPicker = self.allowTimeSelection ? 0 : 10;
+    CGFloat columnHeaderPaddingToDayPicker = self.showDayPicker && self.allowTimeSelection ? 0 : 10;
     [self.dayColumnHeader autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.dayPickerContentView withOffset:columnHeaderPaddingToDayPicker];
 }
 

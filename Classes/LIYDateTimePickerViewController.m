@@ -67,6 +67,22 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
     }
 }
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        [self configureProperties];
+    }
+    return self;
+}
+
+// reverts the changes that superclass makes for iPad which allows horizontal scrolling
+- (void)configureProperties {
+    self.sectionWidth = 254.0;
+    self.dayColumnHeaderHeight = 50.0;
+    self.contentMargin = UIEdgeInsetsMake(20.0, 0.0, 20.0, 10.0);
+    self.sectionLayoutType = MSSectionLayoutTypeVerticalTile;
+}
+
 @end
 
 #pragma mark - LIYDateTimePickerViewController

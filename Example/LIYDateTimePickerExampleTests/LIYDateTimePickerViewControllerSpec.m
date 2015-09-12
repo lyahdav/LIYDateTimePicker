@@ -76,7 +76,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                 [LIYSpecHelper tickRunLoop];
 
                 UIEdgeInsets insets = pickerViewController.collectionView.contentInset;
-                CGFloat topInsetOnIPhone6 = 131.5; // TODO: make this work on other devices
+                CGFloat topInsetOnIPhone6 = 86.5; // TODO: make this work on other devices
                 [[theValue(insets.top) should] equal:topInsetOnIPhone6 withDelta:0.1];
             });
             
@@ -250,7 +250,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
 
             it(@"has the correct insets", ^{
                 UIEdgeInsets insets = pickerViewController.collectionView.contentInset;
-                CGFloat topInsetOnIPhone6 = 191.5f; // TODO: make this work on other devices
+                CGFloat topInsetOnIPhone6 = 182.5f; // TODO: make this work on other devices
                 [[theValue(insets.top) should] equal:topInsetOnIPhone6 withDelta:0.1];
             });
 
@@ -305,7 +305,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                     pickerViewController = [LIYSpecHelper visibleCalendarViewController];
                 });
                 it(@"scrolls to center noon", ^{
-                    CGFloat contentOffsetForNoonOnIPhone6 = 349.0f; // TODO would be nice to not hard-code
+                    CGFloat contentOffsetForNoonOnIPhone6 = 363.0f; // TODO would be nice to not hard-code
                     [[theValue(pickerViewController.collectionView.contentOffset.y) should] equal:contentOffsetForNoonOnIPhone6 withDelta:0.1];
                 });
             });

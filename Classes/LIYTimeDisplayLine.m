@@ -20,6 +20,7 @@ const NSInteger LIYTimeSelectorBubbleWidth = 120;
 
 + (LIYTimeDisplayLine *)timeDisplayLineInView:(UIView *)view withBorderColor:(UIColor *)borderColor fontName:(NSString *)fontName initialDate:(NSDate *)initialDate verticallyCenteredWithView:(UIView *)verticallyCenteredWithView {
     LIYTimeDisplayLine *timeDisplayLine = [LIYTimeDisplayLine new];
+    timeDisplayLine.userInteractionEnabled = NO;
     [view addSubview:timeDisplayLine];
     timeDisplayLine.borderColor = borderColor;
     [timeDisplayLine setFontByName:fontName];

@@ -10,7 +10,6 @@ PODS:
   - UIColor-HexString (1.1.0)
 
 DEPENDENCIES:
-  - JTCalendar
   - JTCalendar (from `https://github.com/kgellci/JTCalendar.git`, commit `e07d302195a88ec04256deeec9d83396dae79e1a`)
   - Kiwi
   - Masonry
@@ -24,9 +23,14 @@ EXTERNAL SOURCES:
     :commit: e07d302195a88ec04256deeec9d83396dae79e1a
     :git: https://github.com/kgellci/JTCalendar.git
 
+CHECKOUT OPTIONS:
+  JTCalendar:
+    :commit: e07d302195a88ec04256deeec9d83396dae79e1a
+    :git: https://github.com/kgellci/JTCalendar.git
+
 SPEC CHECKSUMS:
   CupertinoYankee: 742ab22e47518167d0c78d2eaa5aed5b6e26af3b
-  JTCalendar: c8bf0cefb0ba07f85508ff51b6c302d036327c47
+  JTCalendar: 246ea3e338fb97624846ec77cdcde448242c4d5c
   Kiwi: f038a6c61f7a9e4d7766bff5717aa3b3fdb75f55
   Masonry: 9f515466afe48632562342a40a1c224071a1a022
   MSCollectionViewCalendarLayout: fba6fefdb3a340cb3e4f10725c6b3a530e6f6817
@@ -34,4 +38,4 @@ SPEC CHECKSUMS:
   PureLayout: f25f0bb904d5ccfe6e31da3cb869185259f02e0d
   UIColor-HexString: f8a5612bd6772fed8db58ee594b42a0b2831750e
 
-COCOAPODS: 0.34.2
+COCOAPODS: 0.38.2

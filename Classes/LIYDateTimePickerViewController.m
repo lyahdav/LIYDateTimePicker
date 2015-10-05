@@ -597,9 +597,11 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
             return;
         }
         NSArray *calendarIdentifiers = [LIYCalendarPickerViewController selectedCalendarIdentifiersFromUserDefaultsForEventStore:weakSelf.eventStore];
-        weakSelf.visibleCalendars = [calendarIdentifiers map:^id(NSString *calendarIdentifier) {
-            return [weakSelf.eventStore calendarWithIdentifier:calendarIdentifier];
-        }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.visibleCalendars = [calendarIdentifiers map:^id(NSString *calendarIdentifier) {
+                return [weakSelf.eventStore calendarWithIdentifier:calendarIdentifier];
+            }];
+        });
     }];
 }
 

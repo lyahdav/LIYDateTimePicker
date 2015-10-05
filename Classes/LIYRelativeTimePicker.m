@@ -1,15 +1,19 @@
 #import "LIYRelativeTimePicker.h"
 #import "ALView+PureLayout.h"
 
+NSString *const LIYUserDefaultsKey_PreviousDate = @"LIYUserDefaultsKey_PreviousDate";
+
 @implementation LIYRelativeTimePicker
 
 #pragma mark - class methods
 
-+ (instancetype)timePickerInView:(UIView *)superview withBackgroundColor:(UIColor *)backgroundColor buttonTappedBlock:(void (^)(NSInteger))buttonTappedBlock {
++ (instancetype)timePickerInView:(UIView *)superview withBackgroundColor:(UIColor *)backgroundColor userDefaults:(NSUserDefaults *)userDefaults showPreviousDateButton:(BOOL)showPreviousDateButton relativeButtonTappedBlock:(void (^)(NSInteger))relativeButtonTappedBlock previousDateButtonTappedBlock:(void (^)(NSDate *))previousDateButtonTappedBlock {
     LIYRelativeTimePicker *timePicker = [LIYRelativeTimePicker new];
     timePicker.backgroundColor = backgroundColor;
-    timePicker.buttonTappedBlock = buttonTappedBlock;
-    [timePicker addButtons];
+    timePicker.userDefaults = userDefaults;
+    timePicker.relativeButtonTappedBlock = relativeButtonTappedBlock;
+    timePicker.previousDateButtonTappedBlock = previousDateButtonTappedBlock;
+    [timePicker addButtonsWithPreviousDateButton:showPreviousDateButton];
     [superview addSubview:timePicker];
     [timePicker positionButtons];
     return timePicker;
@@ -17,7 +21,7 @@
 
 #pragma mark - convenience
 
-- (void)addButtons {
+- (void)addButtonsWithPreviousDateButton:(BOOL)showPreviousDateButton {
     NSArray *relativeTimeButtonData = @[
             @{@"minutes" : @(15), @"title" : @"15m"},
             @{@"minutes" : @(60), @"title" : @"1h"},
@@ -28,6 +32,10 @@
         NSString *title = relativeTimeButtonInfo[@"title"];
         UIButton *button = [self relativeTimeButtonWithTitle:title minutes:minutes];
         [self addSubview:button];
+    }
+
+    if (showPreviousDateButton) {
+        [self addPreviousDateButton];
     }
 }
 
@@ -43,7 +51,44 @@
 
 - (void)relativeTimeButtonTapped:(UIButton *)sender {
     NSInteger minutes = sender.tag;
-    self.buttonTappedBlock(minutes);
+    self.relativeButtonTappedBlock(minutes);
+}
+
+- (void)addPreviousDateButton {
+    NSDate *previousDate = [self.userDefaults objectForKey:LIYUserDefaultsKey_PreviousDate];
+    if (previousDate != nil) {
+        NSString *title = [self previousDateTitleFromDate:previousDate];
+        UIButton *button = [self previousDateButtonWithTitle:title];
+        [self addSubview:button];
+    }
+}
+
+- (NSString *)previousDateTitleFromDate:(NSDate *)date {
+    static NSDateFormatter* dateFormatter = nil;
+    if (!dateFormatter) {
+            dateFormatter = [NSDateFormatter new];
+            [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+            [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+            [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+        }
+    NSString *title = [dateFormatter stringFromDate:date];
+    return title;
+}
+
+- (UIButton *)previousDateButtonWithTitle:(NSString *)title {
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectZero];
+    [button setTitle:title forState:UIControlStateNormal];
+    button.titleLabel.font = [UIFont systemFontOfSize:10];
+    button.backgroundColor = self.backgroundColor;
+    button.accessibilityIdentifier = title;
+    [button addTarget:self action:@selector(previousDateButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    button.accessibilityLabel = @"PreviousTime";
+    return button;
+}
+
+- (void)previousDateButtonTapped:(UIButton *)sender {
+    NSDate *previousDate = [self.userDefaults objectForKey:LIYUserDefaultsKey_PreviousDate];
+    self.previousDateButtonTappedBlock(previousDate);
 }
 
 - (void)positionButtons {

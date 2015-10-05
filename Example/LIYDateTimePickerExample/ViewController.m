@@ -34,7 +34,9 @@
 
 - (IBAction)onPickTimeTap:(id)sender {
     LIYDateTimePickerViewController *vc = [LIYDateTimePickerViewController timePickerForDate:[NSDate date] delegate:self];
+    vc.showRelativeTimePicker = YES;
     vc.showCalendarPickerButton = YES;
+    vc.showPreviousDateSelectionButton = YES;
     vc.showEventTimes = YES;
     [vc setVisibleCalendarsFromUserDefaults];
     [self.navigationController pushViewController:vc animated:YES];

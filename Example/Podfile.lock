@@ -1,7 +1,7 @@
 PODS:
   - CupertinoYankee (0.1.1)
   - JTCalendar (1.2.3)
-  - Kiwi (2.3.1)
+  - Kiwi (2.4.0)
   - Masonry (0.5.3)
   - MSCollectionViewCalendarLayout (0.1.3):
     - CupertinoYankee (~> 0.1)
@@ -31,7 +31,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   CupertinoYankee: 742ab22e47518167d0c78d2eaa5aed5b6e26af3b
   JTCalendar: 246ea3e338fb97624846ec77cdcde448242c4d5c
-  Kiwi: f038a6c61f7a9e4d7766bff5717aa3b3fdb75f55
+  Kiwi: f49c9d54b28917df5928fe44968a39ed198cb8a8
   Masonry: 9f515466afe48632562342a40a1c224071a1a022
   MSCollectionViewCalendarLayout: fba6fefdb3a340cb3e4f10725c6b3a530e6f6817
   ObjectiveSugar: a6a25f23d657c19df0a0b972466d5b5ca9f5295c

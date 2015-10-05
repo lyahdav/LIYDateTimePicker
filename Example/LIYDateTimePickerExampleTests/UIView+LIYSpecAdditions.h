@@ -8,5 +8,8 @@
 @interface UIView (LIYSpecAdditions)
 
 - (UILabel *)liy_specsFindLabelWithText:(NSString *)text;
+- (UIView *)liy_specsFindViewWithAccessibilityLabel:(NSString *)accessibilityLabel;
+- (UIView *)liy_specsFindViewWithAccessibilityIdentifier:(NSString *)accessibilityIdentifier;
+- (void)liy_specsTapButtonWithAccessibilityIdentifier:(NSString *)accessibilityIdentifer;
 
 @end

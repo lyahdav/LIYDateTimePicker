@@ -239,7 +239,7 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
 #pragma mark - actions
 
 - (void)saveButtonTapped {
-    [self.delegate dateTimePicker:self didSelectDate:self.selectedDate];
+    [self didSelectDate:self.selectedDate];
 }
 
 - (void)calendarPickerButtonTapped {
@@ -269,6 +269,7 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
     _showDateInDayColumnHeader = YES;
     _dayPickerWeekHeight = LIYDayPickerContentViewWeekHeight;
     _dayPickerMonthHeight = LIYDayPickerContentViewMonthHeight;
+    _userDefaults = [NSUserDefaults standardUserDefaults];
 }
 
 - (void)setupDayPicker {
@@ -371,14 +372,22 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
 }
 
 - (void)setupRelativeTimePicker {
-    [LIYRelativeTimePicker timePickerInView:self.relativeTimePickerContainer withBackgroundColor:self.defaultColor2 buttonTappedBlock:^(NSInteger minutes) {
+    [LIYRelativeTimePicker timePickerInView:self.relativeTimePickerContainer
+                        withBackgroundColor:self.defaultColor2
+                               userDefaults:self.userDefaults
+                     showPreviousDateButton:self.showPreviousDateSelectionButton
+                  relativeButtonTappedBlock:^(NSInteger minutes) {
         [self relativeTimeButtonTappedWithMinutes:minutes];
+    }         previousDateButtonTappedBlock:^(NSDate *previousDate) {
+        [self didSelectDate:previousDate];
     }];
 }
 
 - (void)relativeTimeButtonTappedWithMinutes:(NSInteger)minutes {
-    NSDate *newDate = [NSDate dateWithTimeIntervalSinceNow:minutes * 60];
-    [self.delegate dateTimePicker:self didSelectDate:newDate];
+    static const NSInteger secondsInMinute = 60;
+    // TODO: cannot use dateWithTimeIntervalSinceNow: here because of unit tests. Would be nice for unit tests to not rely on remembering to not use this method.
+    NSDate *newDate = [NSDate dateWithTimeInterval:minutes * secondsInMinute sinceDate:[NSDate date]];
+    [self didSelectDate:newDate];
 }
 
 - (void)cancelTapped:(id)sender {
@@ -621,6 +630,11 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
     }
 
     [self.dayColumnHeader updateAllDaySectionWithEvents:self.allDayEvents];
+}
+
+- (void)didSelectDate:(NSDate *)date {
+    [self.userDefaults setObject:date forKey:LIYUserDefaultsKey_PreviousDate];
+    [self.delegate dateTimePicker:self didSelectDate:date];
 }
 
 #pragma mark - UIScrollViewDelegate

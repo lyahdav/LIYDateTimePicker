@@ -18,6 +18,7 @@
 + (instancetype)timePickerForDate:(NSDate *)date delegate:(id<LIYDateTimePickerDelegate>)delegate;
 
 @property (nonatomic, assign) BOOL allowTimeSelection;
+@property (nonatomic, assign) BOOL showPreviousDateSelectionButton;
 @property (nonatomic, assign) BOOL showCancelButton;
 @property (nonatomic, assign) BOOL showDayPicker;
 @property (nonatomic, assign) BOOL showDateInDayColumnHeader;
@@ -43,6 +44,7 @@
 @property (nonatomic, strong) NSArray *nonAllDayEvents;
 @property (nonatomic) NSUInteger scrollIntervalMinutes;
 @property (strong, nonatomic) LIYJTCalendar *dayPicker;
+@property (nonatomic, strong) NSUserDefaults *userDefaults;
 
 - (void)reloadEvents;
 - (void)switchToMonthPicker;

@@ -6,6 +6,7 @@
 #import "LIYCalendarService.h"
 #import <CupertinoYankee/NSDate+CupertinoYankee.h>
 #import "LIYJTCalendar.h"
+#import "LIYFakes.h"
 
 SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
     describe(@"LIYDateTimePickerViewController", ^{
@@ -70,7 +71,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                 [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 12:00 AM"];
                 pickerViewController = [LIYSpecHelper visiblePickerViewController];
             });
-            
+
             it(@"updates the insets when switching from week to month", ^{
                 [pickerViewController switchToMonthPicker];
                 [LIYSpecHelper tickRunLoop];
@@ -79,32 +80,32 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                 CGFloat topInsetOnIPhone6 = 86.5; // TODO: make this work on other devices
                 [[theValue(insets.top) should] equal:topInsetOnIPhone6 withDelta:0.1];
             });
-            
+
             it(@"doesn't update the selected date when switching from week to month view and in calendar mode", ^{
                 pickerViewController.allowTimeSelection = NO;
-                
+
                 [[pickerViewController shouldNot] receive:@selector(setSelectedDate:)];
                 [pickerViewController switchToMonthPicker];
                 [LIYSpecHelper tickRunLoop];
             });
         });
-        
+
         context(@"at 3:00am", ^{
             __block LIYDateTimePickerViewController *pickerViewController;
-            
+
             beforeEach(^{
                 [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 3:00 AM"];
                 pickerViewController = [LIYSpecHelper visiblePickerViewController];
             });
-            
+
             it(@"updates the selected date when switching from week to month", ^{
                 [pickerViewController switchToMonthPicker];
                 [LIYSpecHelper tickRunLoop];
-                
+
                 [[pickerViewController.selectedDate should] equal:[NSDate liy_dateFromString:@"5/3/15, 3:00 AM"]];
             });
         });
-        
+
         context(@"at 1:00am", ^{
             __block LIYDateTimePickerViewController *pickerViewController;
 
@@ -141,6 +142,7 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
 
             it(@"allows scrolling to the end of the day when the device is landscape", ^{
                 [LIYSpecHelper rotateDeviceToOrientation:UIInterfaceOrientationLandscapeLeft];
+                [LIYSpecHelper tickRunLoopForSeconds:1]; // wait for rotation to finish
                 NSDate *endOfDayDate = [NSDate liy_dateFromString:@"5/3/15, 11:45 PM"];
                 [pickerViewController scrollToTime:endOfDayDate];
                 [[expectFutureValue(pickerViewController.selectedDate) shouldEventually] equal:endOfDayDate];
@@ -174,17 +176,17 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
                 [[[pickerViewController.view liy_specsFindLabelWithText:@"1:15 PM"] shouldNot] beNil];
             });
         });
-        
+
         context(@"at 11:45pm when in month view", ^{
             __block LIYDateTimePickerViewController *pickerViewController;
-            
+
             beforeEach(^{
                 [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 11:45 PM"];
                 pickerViewController = [LIYSpecHelper visiblePickerViewController];
                 [pickerViewController switchToMonthPicker];
                 [LIYSpecHelper tickRunLoop];
             });
-            
+
             it(@"keeps the selected date when switching to week view", ^{
                 [pickerViewController switchToWeekPicker];
                 [LIYSpecHelper tickRunLoop];
@@ -276,6 +278,66 @@ SPEC_BEGIN(LIYDateTimePickerViewControllerSpec)
 
             it(@"has the event duration", ^{
                 [[[pickerViewController.view liy_specsFindLabelWithText:@"2 PM - 3 PM (1 hour)"] shouldNot] beNil];
+            });
+        });
+
+        context(@"previous date button", ^{
+
+            context(@"when the show previous date setting is enabled", ^{
+                __block LIYDateTimePickerViewController *pickerViewController;
+                __block NSUserDefaults *userDefaults;
+                __block LIYFakeTimePickerDelegate *timePickerDelegate;
+
+                beforeEach(^{
+                    [LIYSpecHelper stubCurrentDateAs:@"5/3/15, 12:00 PM"];
+                    timePickerDelegate = [LIYFakeTimePickerDelegate new];
+                    userDefaults = [LIYFakeUserDefaults new];
+                    pickerViewController = [LIYSpecHelper pickerViewControllerWithPreviousDateForDate:[NSDate date] delegate:timePickerDelegate userDefaults:userDefaults];
+                });
+
+                it(@"hides the previous date button initially", ^{
+                    [[pickerViewController.view liy_specsFindViewWithAccessibilityLabel:@"PreviousTime"] shouldBeNil];
+                });
+
+                context(@"after selecting a date and returning to time picker", ^{
+                    __block NSString *expectedPreviousDateButtonIdentifier;
+                    __block NSDate *previousDate;
+
+                    beforeEach(^{
+                        // simulate selecting a time
+                        [pickerViewController.view liy_specsTapButtonWithAccessibilityIdentifier:@"15m"];
+                        previousDate = timePickerDelegate.lastSelectedDate;
+                        [previousDate shouldNotBeNil];
+
+                        pickerViewController = [LIYSpecHelper pickerViewControllerWithPreviousDateForDate:[NSDate date] delegate:timePickerDelegate userDefaults:userDefaults];
+                        expectedPreviousDateButtonIdentifier = @"5/3/15, 12:15 PM";
+                    });
+
+                    it(@"shows the previous date button with the previous date", ^{
+                        [[pickerViewController.view liy_specsFindViewWithAccessibilityIdentifier:expectedPreviousDateButtonIdentifier] shouldNotBeNil];
+                    });
+
+                    it(@"selects the previous date when tapping on the previous date button", ^{
+                        [pickerViewController.view liy_specsTapButtonWithAccessibilityIdentifier:expectedPreviousDateButtonIdentifier];
+                        [[timePickerDelegate.lastSelectedDate should] equal:previousDate];
+                    });
+                });
+            });
+
+            context(@"when the show previous date setting is disabled", ^{
+                it(@"hides the previous date button after selecting a date", ^{
+                    LIYFakeUserDefaults *userDefaults = [LIYFakeUserDefaults new];
+                    LIYDateTimePickerViewController *pickerViewController = [LIYSpecHelper pickerViewControllerWithPreviousDateForDate:[NSDate date]
+                                                                                                                              delegate:nil
+                                                                                                                          userDefaults:userDefaults];
+
+                    [pickerViewController.view liy_specsTapButtonWithAccessibilityIdentifier:@"15m"];
+
+                    pickerViewController = [LIYSpecHelper pickerViewControllerWithPreviousDateForDate:[NSDate date] delegate:nil userDefaults:userDefaults];
+                    pickerViewController.showPreviousDateSelectionButton = NO;
+
+                    [[pickerViewController.view liy_specsFindViewWithAccessibilityLabel:@"PreviousTime"] shouldBeNil];
+                });
             });
         });
 

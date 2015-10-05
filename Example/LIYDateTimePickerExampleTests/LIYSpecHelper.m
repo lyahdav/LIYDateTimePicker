@@ -76,4 +76,12 @@
     return pickerViewController;
 }
 
++ (LIYDateTimePickerViewController *)pickerViewControllerWithPreviousDateForDate:(NSDate *)date delegate:(id <LIYDateTimePickerDelegate>)delegate userDefaults:(NSUserDefaults *)userDefaults {
+    LIYDateTimePickerViewController *pickerViewController = [LIYDateTimePickerViewController timePickerForDate:date delegate:delegate];
+    pickerViewController.userDefaults = userDefaults;
+    pickerViewController.showPreviousDateSelectionButton = YES;
+    pickerViewController.showRelativeTimePicker = YES;
+    return pickerViewController;
+}
+
 @end

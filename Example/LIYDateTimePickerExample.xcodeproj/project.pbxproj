@@ -15,6 +15,7 @@
 		252317C55E41687DB0767071 /* UIView+LIYSpecAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 25231E427A119D4E5EC18B81 /* UIView+LIYSpecAdditions.m */; };
 		25231BB7FB728605F9E85D54 /* LIYSpecHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 252311CA5288FC766FA8FF0E /* LIYSpecHelper.m */; };
 		25231D2FA64E26CAF42BABE6 /* LIYCalendarService.m in Sources */ = {isa = PBXBuildFile; fileRef = 25231E280F5FAE615B3656F5 /* LIYCalendarService.m */; };
+		25231F32B153856B4693CE3E /* LIYFakes.m in Sources */ = {isa = PBXBuildFile; fileRef = 252312F8AE151DC81ACA08A8 /* LIYFakes.m */; };
 		25231F46F20E96BB4E2D7FB1 /* LIYMockEventStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 252314703B2A599AB54078D6 /* LIYMockEventStore.m */; };
 		89F04BAD3DBC38922C934CD9 /* libPods-LIYDateTimePickerExampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B67EE9B2C47A30C34F5A9FD /* libPods-LIYDateTimePickerExampleTests.a */; };
 		B737BC27809E40EDAB73D254 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86CB68FA9A864D7DB8411DB4 /* libPods.a */; };
@@ -62,6 +63,7 @@
 		252310944BB6ED5987B31553 /* LIYRelativeTimePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIYRelativeTimePicker.h; sourceTree = "<group>"; };
 		252311CA5288FC766FA8FF0E /* LIYSpecHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYSpecHelper.m; sourceTree = "<group>"; };
 		252311FDE8AF476436CD608F /* LIYRelativeTimePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYRelativeTimePicker.m; sourceTree = "<group>"; };
+		252312F8AE151DC81ACA08A8 /* LIYFakes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYFakes.m; sourceTree = "<group>"; };
 		2523139A1C79835728A61A78 /* LIYMockEventStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIYMockEventStore.h; sourceTree = "<group>"; };
 		252313A11CF7F61C9969153F /* UIView+LIYSpecAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+LIYSpecAdditions.h"; sourceTree = "<group>"; };
 		252314703B2A599AB54078D6 /* LIYMockEventStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYMockEventStore.m; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 		252317311E0A80B73AE2617D /* LIYTimeDisplayLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIYTimeDisplayLine.h; sourceTree = "<group>"; };
 		25231952F3002D23C6716310 /* LIYCalendarServiceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYCalendarServiceSpec.m; sourceTree = "<group>"; };
 		25231D73A3FF7DF696BF919F /* LIYCalendarPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYCalendarPickerViewController.m; sourceTree = "<group>"; };
+		25231DD31392108F9127906C /* LIYFakes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIYFakes.h; sourceTree = "<group>"; };
 		25231E280F5FAE615B3656F5 /* LIYCalendarService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LIYCalendarService.m; sourceTree = "<group>"; };
 		25231E2D784D7A27DBF39FC6 /* LIYCalendarService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LIYCalendarService.h; sourceTree = "<group>"; };
 		25231E427A119D4E5EC18B81 /* UIView+LIYSpecAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+LIYSpecAdditions.m"; sourceTree = "<group>"; };
@@ -242,6 +245,8 @@
 				252313A11CF7F61C9969153F /* UIView+LIYSpecAdditions.h */,
 				252314703B2A599AB54078D6 /* LIYMockEventStore.m */,
 				2523139A1C79835728A61A78 /* LIYMockEventStore.h */,
+				252312F8AE151DC81ACA08A8 /* LIYFakes.m */,
+				25231DD31392108F9127906C /* LIYFakes.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -486,6 +491,7 @@
 				25231BB7FB728605F9E85D54 /* LIYSpecHelper.m in Sources */,
 				252317C55E41687DB0767071 /* UIView+LIYSpecAdditions.m in Sources */,
 				25231F46F20E96BB4E2D7FB1 /* LIYMockEventStore.m in Sources */,
+				25231F32B153856B4693CE3E /* LIYFakes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -635,10 +641,6 @@
 			baseConfigurationReference = 77744C83141A40539ED4EAC9 /* Pods-LIYDateTimePickerExampleTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/LIYDateTimePickerExample.app/LIYDateTimePickerExample";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LIYDateTimePickerExample/LIYDateTimePickerExample-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -658,10 +660,6 @@
 			baseConfigurationReference = 035766424CFEB87455F1E911 /* Pods-LIYDateTimePickerExampleTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/LIYDateTimePickerExample.app/LIYDateTimePickerExample";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LIYDateTimePickerExample/LIYDateTimePickerExample-Prefix.pch";
 				INFOPLIST_FILE = "LIYDateTimePickerExampleTests/LIYDateTimePickerExampleTests-Info.plist";

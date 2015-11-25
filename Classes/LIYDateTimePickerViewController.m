@@ -17,6 +17,7 @@
 #import "ALView+PureLayout.h"
 #import "LIYCalendarService.h"
 #import "NSDate+LIYUtilities.h"
+#import "BDKCollectionIndexView.h"
 
 NSString *const MSEventCellReuseIdentifier = @"MSEventCellReuseIdentifier";
 NSString *const MSDayColumnHeaderReuseIdentifier = @"MSDayColumnHeaderReuseIdentifier";
@@ -96,6 +97,7 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
 @property (nonatomic, strong) UIButton *saveButton;
 @property (nonatomic, strong) EKEventStore *eventStore;
 @property (nonatomic, strong) LIYTimeDisplayLine *timeDisplayLine;
+@property (nonatomic, strong) BDKCollectionIndexView *collectionIndexView;
 @property (nonatomic, strong) NSDate *dateBeforeRotation;
 @property (nonatomic, strong) UIView *relativeTimePickerContainer;
 @property (nonatomic, strong) UIView *saveButtonContainer;
@@ -149,6 +151,8 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
     }
 
     [self setupCollectionView];
+    
+    [self setupCollectionIndexView];
 
     [self setupContainerViews];
 
@@ -334,6 +338,37 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
     [self.collectionViewCalendarLayout registerClass:MSTimeRowHeaderBackground.class forDecorationViewOfKind:MSCollectionElementKindTimeRowHeaderBackground];
 }
 
+- (void)setupCollectionIndexView {
+    self.collectionIndexView = [BDKCollectionIndexView indexViewWithFrame:CGRectZero indexTitles:@[]];
+    [self.collectionIndexView addTarget:self action:@selector(collectionIndexViewValueChanged:) forControlEvents:UIControlEventValueChanged];
+    self.collectionIndexView.indexTitles = [self collectionViewIndexTitles];
+    self.collectionIndexView.font = [UIFont systemFontOfSize:10];
+    self.collectionIndexView.hidden = !self.showHourScrubBar;
+    [self.view addSubview:self.collectionIndexView];
+}
+
+- (NSArray *)collectionViewIndexTitles {
+    NSMutableArray *titles = [NSMutableArray new];
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    dateFormatter.dateFormat = @"h a";
+    
+    for (NSInteger hour = 0; hour < 24; hour++) {
+        NSDateComponents *comps = [NSDateComponents new];
+        comps.hour = hour;
+        NSDate* date = [[NSCalendar currentCalendar] dateFromComponents:comps];
+        NSString* hourString = [dateFormatter stringFromDate:date];
+        [titles addObject:hourString];
+    }
+    return titles;
+}
+
+- (void)collectionIndexViewValueChanged:(BDKCollectionIndexView *)sender {
+    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitEra | NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:self.selectedDate];
+    dateComponents.hour = sender.currentIndex;
+    NSDate* indexDate = [[NSCalendar currentCalendar] dateFromComponents:dateComponents];
+    [self scrollToTime:indexDate];
+}
+
 - (void)setupContainerViews {
     self.relativeTimePickerContainer = [UIView new];
     [self.view addSubview:self.relativeTimePickerContainer];
@@ -491,6 +526,8 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
     [self setupRelativeTimePickerConstraints];
 
     [self setupSaveButtonConstraints];
+    
+    [self setupCollectionIndexViewConstraints];
 }
 
 - (void)setupDayPickerConstraints {
@@ -552,6 +589,13 @@ const CGFloat LIYDayPickerContentViewMonthHeight = 290.0f;
     [self pinView:self.saveButtonContainer belowView:self.relativeTimePickerContainer];
     [self.saveButtonContainer autoPinToBottomLayoutGuideOfViewController:self withInset:0];
     [self setContainerView:self.saveButtonContainer visible:self.saveButton != nil withHeight:LIYSaveButtonHeight];
+}
+
+- (void)setupCollectionIndexViewConstraints {
+    [self.collectionIndexView autoSetDimension:ALDimensionWidth toSize:32];
+    [self.collectionIndexView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+    [self.collectionIndexView autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.collectionView];
+    [self.collectionIndexView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.collectionView];
 }
 
 - (void)pinView:(UIView *)view belowView:(UIView *)otherView {

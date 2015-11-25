@@ -1,4 +1,5 @@
 PODS:
+  - BDKCollectionIndexView (2.2.1)
   - CupertinoYankee (0.1.1)
   - JTCalendar (1.2.3)
   - Kiwi (2.4.0)
@@ -10,6 +11,7 @@ PODS:
   - UIColor-HexString (1.1.0)
 
 DEPENDENCIES:
+  - BDKCollectionIndexView
   - JTCalendar (from `https://github.com/kgellci/JTCalendar.git`, commit `e07d302195a88ec04256deeec9d83396dae79e1a`)
   - Kiwi
   - Masonry
@@ -29,6 +31,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/kgellci/JTCalendar.git
 
 SPEC CHECKSUMS:
+  BDKCollectionIndexView: 819bd123d618f20c061caacd409e2d8f1590df7d
   CupertinoYankee: 742ab22e47518167d0c78d2eaa5aed5b6e26af3b
   JTCalendar: 246ea3e338fb97624846ec77cdcde448242c4d5c
   Kiwi: f49c9d54b28917df5928fe44968a39ed198cb8a8
@@ -38,4 +41,4 @@ SPEC CHECKSUMS:
   PureLayout: f25f0bb904d5ccfe6e31da3cb869185259f02e0d
   UIColor-HexString: f8a5612bd6772fed8db58ee594b42a0b2831750e
 
-COCOAPODS: 0.38.2
+COCOAPODS: 0.39.0

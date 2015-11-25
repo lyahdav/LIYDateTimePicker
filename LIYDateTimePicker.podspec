@@ -19,4 +19,5 @@ Pod::Spec.new do |s|
   s.dependency 'Masonry'
   s.dependency 'ObjectiveSugar'
   s.dependency 'PureLayout'
+  s.dependency 'BDKCollectionIndexView'
 end

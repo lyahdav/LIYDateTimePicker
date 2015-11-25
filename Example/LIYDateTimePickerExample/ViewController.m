@@ -38,6 +38,7 @@
     vc.showCalendarPickerButton = YES;
     vc.showPreviousDateSelectionButton = YES;
     vc.showEventTimes = YES;
+    vc.showHourScrubBar = YES;
     [vc setVisibleCalendarsFromUserDefaults];
     [self.navigationController pushViewController:vc animated:YES];
 }

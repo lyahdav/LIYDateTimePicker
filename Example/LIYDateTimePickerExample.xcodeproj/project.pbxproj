@@ -307,6 +307,7 @@
 				FE697C62193AD37400D84E6C /* Frameworks */,
 				FE697C63193AD37400D84E6C /* Resources */,
 				A930C94F7FED45E3B5E7D9BD /* Copy Pods Resources */,
+				CA804D61D08E7B899B2B76F4 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -326,6 +327,7 @@
 				FE697C83193AD37400D84E6C /* Frameworks */,
 				FE697C84193AD37400D84E6C /* Resources */,
 				6E69A821AC8E0E6627C18046 /* Copy Pods Resources */,
+				77F1758D21CC89743EA932D6 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -424,6 +426,21 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		77F1758D21CC89743EA932D6 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LIYDateTimePickerExampleTests/Pods-LIYDateTimePickerExampleTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		A930C94F7FED45E3B5E7D9BD /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -437,6 +454,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CA804D61D08E7B899B2B76F4 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D2B220969BDC49B78A327BDF /* Check Pods Manifest.lock */ = {
